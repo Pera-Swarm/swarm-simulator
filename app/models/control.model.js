@@ -1,38 +1,35 @@
-const { DataTypes, Model } = require('sequelize');
 
-module.exports = function (sequelize, Sequelize) {
-    class Control extends Model {}
-    Control.init({
-        controllerId: {
-            type: DataTypes.STRING
-        },
-        blower: {
-            type: DataTypes.STRING
-        },
-        mist: {
-            type: DataTypes.STRING
-        },
-        irrigation: {
-            type: DataTypes.STRING
-        },
-        curtain: {
-            type: DataTypes.STRING
-        },
-        version: {
-            type: DataTypes.DOUBLE
-        },
-        log: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        modified: {
-            type: DataTypes.STRING
-            // allowNull defaults to true
-        }
-    }, {
-        sequelize, // the connection instance
-        modelName: 'Control' // The model name
-    });
+module.exports = (sequelize, Sequelize) => {
+   const Control = sequelize.define("controller", {
+      id: {
+         type: Sequelize.INTEGER.UNSIGNED,
+         primaryKey: true,
+         autoIncrement: true
+      },
+      controllerId: {
+         type: Sequelize.INTEGER(5).UNSIGNED
+      },
+      blower: {
+         type: Sequelize.ENUM('0','1')
+      },
+      mist: {
+         type: Sequelize.ENUM('0','1')
+      },
+      irrigation: {
+         type: Sequelize.ENUM('0','1')
+      },
+      curtain: {
+         type: Sequelize.ENUM('0','1','2')
+      },
+      version: {
+         type: Sequelize.INTEGER(2).UNSIGNED
+      }
+   },
+   {
+      timestamps: true,
+      updatedAt: false,
+      tableName: "controller_log"
+   });
 
-    return Control;
+   return Control;
 };

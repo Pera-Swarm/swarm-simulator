@@ -1,9 +1,9 @@
 {
     "env": {
         "DB_HOST": "localhost",
-        "DB_USER": "root",
+        "DB_USER": "",
         "DB_PASS": "",
-        "DB_DATABASE": "swarm-robotics",
+        "DB_DATABASE": "swarm_server",
         "MQTT_HOST": "mqtt://68.183.188.135",
         "MQTT_USER": "ghController",
         "MQTT_PASS": "159iot",

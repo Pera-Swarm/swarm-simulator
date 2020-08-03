@@ -12,6 +12,10 @@ Please install node dependencies as follows:
 npm install
 ```
 
+### Environment Variables
+
+Please copy the _sample.env_ file and rename into _.env_ and complete the configurations for http, mysql and mqtt
+
 ### Database
 
 Start a MySQL database server with a database named 'swarm-robotics'.
