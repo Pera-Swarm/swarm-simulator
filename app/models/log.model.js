@@ -1,21 +1,25 @@
-const { DataTypes, Model } = require('sequelize');
 
-module.exports = function (sequelize, Sequelize) {
-    class Log extends Model {}
-    Log.init({
-        type: {
-            type: DataTypes.STRING
-        },
-        priority: {
-            type: DataTypes.INTEGER
-        },
-        message: {
-            type: DataTypes.STRING
-            // allowNull defaults to true
-        }
-    }, {
-        sequelize, // the connection instance
-        modelName: 'Log' // The model name
-    });
-    return Log;
+module.exports = (sequelize, Sequelize) => {
+   const SystemLog = sequelize.define("system_log", {
+      id: {
+         type: Sequelize.INTEGER(11).UNSIGNED,
+         primaryKey: true,
+         autoIncrement: true
+      },
+      type:{
+         type: Sequelize.ENUM('CONTROLLER','SENSOR','WEB','OTHER')
+      },
+      priority:{
+         type: Sequelize.INTEGER(2).UNSIGNED
+      },
+      message:{
+         type: Sequelize.TEXT
+      }
+   },{
+      timestamps: true,
+      updatedAt: false,
+      tableName: "system_log"
+   });
+
+   return SystemLog;
 };
