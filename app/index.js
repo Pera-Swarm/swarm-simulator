@@ -13,6 +13,6 @@ mqtt.start();
 cron.begin(mqtt);
 
 // force:true to drop the table if it already exists
-db.sequelize.sync({ force: false }).then(() => {
+db.sequelize.sync({ alter: true }).then(() => {
    console.log("sequalize: started");
 });
