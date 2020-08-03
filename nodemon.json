@@ -1,0 +1,15 @@
+{
+    "env": {
+        "DB_HOST": "localhost",
+        "DB_USER": "root",
+        "DB_PASS": "",
+        "DB_DATABASE": "swarm-robotics",
+        "MQTT_HOST": "msqtt://localhost",
+        "MQTT_CLIENT": "",
+        "MQTT_USER": "",
+        "MQTT_PASS": "",
+        "HTTP_HOST": "",
+        "HTTP_PORT": "",
+        "PORT": 5000
+  }
+}
