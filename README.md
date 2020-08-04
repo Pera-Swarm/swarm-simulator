@@ -38,5 +38,7 @@ npm start
 - [Sequelize](https://sequelize.org/master/index.html)
 - [Express](https://expressjs.com/)
 - [NodeJS](https://nodejs.org/)
+- [MQTT](https://github.com/mqttjs/MQTT.js)
+- [Cron](https://github.com/merencia/node-cron)
 - [React](https://reactjs.org/)
 - [Kubernetes](https://kubernetes.io/)
