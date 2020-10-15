@@ -56,3 +56,6 @@ dkms.conf
 .env
 /node_modules
 nodemon.json
+
+# Log files
+*.log
