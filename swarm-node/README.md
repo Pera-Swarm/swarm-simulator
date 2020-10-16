@@ -10,6 +10,8 @@ Please install node dependencies as follows:
 npm install
 ```
 
+Note: The Swarm Server should be running prior starting the 'swarm-node' in order to be registered to the swarm. So, you have to start the swarm server by running ```npm start``` or ```npm run dev``` in the directory `..\`.
+
 ### Environment Variables
 
 Please copy the _sample.env_ file and rename into _.env_ and complete the configurations for http and mqtt
@@ -37,6 +39,7 @@ npm run test
 ### To-Do
 - [ ] Setup a logger(Winston or Loggly)
 - [ ] ID registration [TBD]
+    - Sample registration is implemented for now
 - [ ] Controllers
     - ledstrip
     - motor
