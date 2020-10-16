@@ -19,6 +19,7 @@ setInterval(() => {
             if(success){
                 robotId = id;
                 logger.info('main: ROBOT ID Registration success (%s)', id);
+                setup.startMQTT();
             }else{
                 logger.warn('main: ROBOT ID Registration failed (%s)', id);
             }

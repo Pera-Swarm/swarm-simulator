@@ -1,10 +1,11 @@
-const { client } = require('../http/');
+const { client: httpClient } = require('../http/');
+const { client: mqttClient } = require('../mqtt/');
 const logger = require('../../logger/winston');
 
 const registerId = (callback) => {
     let ids;
     logger.info('protocol.setup.registerId: initial');
-    client.getIds((response) => {
+    httpClient.getIds((response) => {
         if(response !== undefined){
             ids = response;
             // allocate some id | 10 for now
@@ -18,6 +19,11 @@ const registerId = (callback) => {
     });
 }
 
+const startMQTT = () => {
+    mqttClient.start();
+}
+
 module.exports = {
-    registerId
+    registerId,
+    startMQTT
 }
