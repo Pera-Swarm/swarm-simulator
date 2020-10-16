@@ -1,8 +1,8 @@
 
 const mqttClient = require('mqtt');
-const mqttConfig = require("../config/mqtt.config.js");
+const mqttConfig = require("../config/mqtt.config");
 
-const mqttController = require("../mqtt/control.mqtt.js");
+const mqttController = require("../mqtt/control.mqtt");
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 
 mqtt.on('message', (topic, message, packet) => {
@@ -24,7 +24,7 @@ mqtt.on('message', (topic, message, packet) => {
          //mqttController.upload(message);
 
       }else if(topic=="v1/controller/sensorStation"){
-         //mqttController.upload(message);
+         // mqttController.upload(message);
       }
    }
 });
