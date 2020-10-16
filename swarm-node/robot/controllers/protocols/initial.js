@@ -1,9 +1,11 @@
+const logger = require('../../../logger/winston');
+
 /**
  * method initial
  * @param none
  */
 const initial = () => {
-    console.log('initial method');
+    logger.info('robot.controllers.protocols.initial.initial: ');
 }
 
 module.exports = {

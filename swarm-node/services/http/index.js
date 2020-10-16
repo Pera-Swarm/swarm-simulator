@@ -1,5 +1,5 @@
-const serverUrl = 'http://' + process.env.HTTP_HOST + ':' + process.env.HTTP_PORT;
+const client = require('./client');
 
 module.exports = {
-
+    client
 }

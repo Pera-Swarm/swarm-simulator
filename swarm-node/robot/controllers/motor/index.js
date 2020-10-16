@@ -1,10 +1,12 @@
+const logger = require('../../../logger/winston');
+
 /**
  * method move with increment by one for each axis
  * @param coordinates
  */
 const move = (coordinates) => {
     var { head, x, y } = coordinates;
-    console.log(head, x, y);
+    logger.info('robot.controllers.motor.move: coordinates(%s)', coordinates);
     coordinates = {
         head: head + 1,
         x: x + 1,
@@ -21,7 +23,7 @@ const move = (coordinates) => {
  */
 const moveSpecific = (coordinates, x, y) => {
     var { head, x, y } = coordinates;
-    console.log(head, x, y);
+    logger.info('robot.controllers.motor.moveSpecific: coordinates(%s)', coordinates);
     coordinates = {
         head: head + 1,
         x: x + 1,
@@ -36,6 +38,7 @@ const moveSpecific = (coordinates, x, y) => {
  */
 const stop = (coordinates) => {
     // does not change coordinates
+    logger.info('robot.controllers.motor.stop: coordinates(%s)', coordinates);
     return coordinates;
 }
 
@@ -50,6 +53,7 @@ const reset = (coordinates) => {
         x: 0,
         y: 0
     };
+    logger.info('robot.controllers.motor.reset: coordinates(%s)', coordinates);
     return coordinates;
 }
 

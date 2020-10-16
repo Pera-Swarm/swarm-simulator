@@ -1,9 +1,11 @@
+const logger = require('../../../logger/winston');
+
 /**
  * method lightUpAll
  * @param none
  */
 const lightenAll = () => {
-    console.log('LIGHT ALL!');
+    logger.info('robot.controllers.ledstrip.lightenAll: ');
 }
 
 module.exports = {
