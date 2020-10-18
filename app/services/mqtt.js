@@ -1,31 +1,34 @@
 
 const mqttClient = require('mqtt');
-const mqttConfig = require("../config/mqtt.config.js");
 
-const mqttController = require("../mqtt/control.mqtt.js");
+const mqttConfig = require("../config/mqtt.config");
+
+const mqttController = require("../mqtt/control.mqtt");
+
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
+
+const sensors = require("../robots/sensors.js");
 
 mqtt.on('message', (topic, message, packet) => {
 
-   // Only look for freash messages
+   // Only look for fresh messages
    if(packet.retain===false){
       console.log(topic + ": " + message);
+      var msg = message.toString();
 
-      if(topic=="v1/controller/blower"){
-         mqttController.upload(message);
+      // TODO: Implement this using MVC  ---------------------------------------
 
-      }else if(topic=="v1/controller/mist"){
-         //mqttController.upload(message);
+      if(topic=="v1/robot/live"){
+         // Process message and add robot if it isn't already in the robot list
 
-      }else if(topic=="v1/controller/irrigation"){
-         //mqttController.upload(message);
+      }else if(topic=="v1/localization/info"){
 
-      }else if(topic=="v1/controller/curtain"){
-         //mqttController.upload(message);
-
-      }else if(topic=="v1/controller/sensorStation"){
-         //mqttController.upload(message);
+      } else if(topic.startsWith("v1/sensor/")){
+         this.sensors.handleTopic(mqtt, topic, msg);
       }
+   }else{
+      // Also accept older messages
+
    }
 });
 
@@ -34,22 +37,40 @@ mqtt.on('error', function(err) {
    console.log(err);
 });
 
-exports.start = () => {
+exports.start = (sensors) => {
+
+   this.sensors = sensors; // @Ganindu, Please check the correctness
+
    mqtt.on('connect', () => {
-      const options={qos:2, rap:true,rh:true};
 
-      mqtt.subscribe('v1/controller/upload',options);
-      mqtt.subscribe('v1/controller/log',options);
+      // Subscribe to sensor related topics
+      sensors.subscribe(mqtt);
+
+      this.defaultSubscriptions();
+      this.setup();
 
    });
 }
 
-exports.sendMsgToController = (req, callback) => {
-   data = req.body;
-   mqtt.publish('v1/controller/' + req.body.id, JSON.stringify(req.body), function(){
-      console.log("mqtt: v1/controller/"+ req.body.id);
-      callback({message:"Success"});
-   });
+exports.defaultSubscriptions = () => {
+   const options={qos:2, rap:true,rh:true};
+
+   // Add default subscriptions to here
+   mqtt.subscribe('v1/robot/live',options);
+   mqtt.subscribe('v1/localization/info', options);
 }
 
+exports.setup = () => {
+   // Broadcast a discovery request for robots active
+   mqtt.publish('v1/robot/msg/broadcast', 'ID? -1', ()=>{
+      // Now each robot may reply with their IDs to the server
+      // To the topic -> v1/robot/live
+   });
+
+   // Request localization details from the Localization System
+   mqtt.publish('v1/localization/update', '', ()=>{
+      // Now localization system will reply with the localization details to the server
+      // To the topic -> v1/localization/info
+   });
+}
 exports.client = mqtt;

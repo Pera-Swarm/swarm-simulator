@@ -56,3 +56,6 @@ dkms.conf
 # Node JS
 .env
 /node_modules
+nodemon.json
+
+/package-lock.json
