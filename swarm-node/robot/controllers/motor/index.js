@@ -6,7 +6,7 @@ const logger = require('../../../logger/winston');
  */
 const move = (coordinates) => {
     var { head, x, y } = coordinates;
-    logger.info('robot.controllers.motor.move: coordinates(%s)', coordinates);
+    logger.log('debug', 'robot.controllers.motor.move: coordinates(%s)', coordinates);
     coordinates = {
         head: head + 1,
         x: x + 1,
@@ -23,7 +23,7 @@ const move = (coordinates) => {
  */
 const moveSpecific = (coordinates, x, y) => {
     var { head, x, y } = coordinates;
-    logger.info('robot.controllers.motor.moveSpecific: coordinates(%s)', coordinates);
+    logger.log('debug', 'robot.controllers.motor.moveSpecific: coordinates(%s)', coordinates);
     coordinates = {
         head: head + 1,
         x: x + 1,
@@ -38,7 +38,22 @@ const moveSpecific = (coordinates, x, y) => {
  */
 const stop = (coordinates) => {
     // does not change coordinates
-    logger.info('robot.controllers.motor.stop: coordinates(%s)', coordinates);
+    logger.log('debug', 'robot.controllers.motor.stop: coordinates(%s)', coordinates);
+    return coordinates;
+}
+
+/**
+ * method assign
+ * @param coordinates
+ */
+const assign = (coordinates) => {
+    // assign coordinates to initial values
+    coordinates = {
+        head: 0,
+        x: 0,
+        y: 0
+    };
+    logger.log('debug', 'robot.controllers.motor.assign: coordinates(%s)', coordinates);
     return coordinates;
 }
 
@@ -53,7 +68,7 @@ const reset = (coordinates) => {
         x: 0,
         y: 0
     };
-    logger.info('robot.controllers.motor.reset: coordinates(%s)', coordinates);
+    logger.log('debug', 'robot.controllers.motor.reset: coordinates(%s)', coordinates);
     return coordinates;
 }
 
