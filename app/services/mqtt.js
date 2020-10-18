@@ -18,8 +18,8 @@ mqtt.on('message', (topic, message, packet) => {
          // Process message and add robot if it isn't already in the robot list
 
       }else if(topic=="v1/localization/info"){
-
-      } else if(topic.startsWith("v1/sensor/")){
+         
+      }else if(topic.startsWith("v1/sensor/")){
          this.sensors.handleTopic(mqtt, topic, msg);
       }
    }else{
