@@ -21,7 +21,4 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.controller = require("../models/control.model.js")(sequelize, Sequelize);
-db.log = require("../models/log.model.js")(sequelize, Sequelize);
-
 module.exports = db;

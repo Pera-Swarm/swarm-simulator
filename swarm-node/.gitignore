@@ -47,7 +47,6 @@
 !*.model*
 *.cmd
 .tmp_versions/
-
 modules.order
 Module.symvers
 Mkfile.old
@@ -58,4 +57,5 @@ dkms.conf
 /node_modules
 nodemon.json
 
-/package-lock.json
+# Log files
+*.log
