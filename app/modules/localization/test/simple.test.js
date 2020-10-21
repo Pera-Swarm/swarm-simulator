@@ -66,7 +66,7 @@ describe('Simple Localization System', function() {
     });
 
     describe('#getIds()', function() {
-        it('should return the coordinates list', function() {
+        it('should return the ids list', function() {
             l.add(new Coordinate(1, 0, 0, -1));
             l.add(new Coordinate(2, 1, 1, -1));
             l.add(new Coordinate(3, -1, 0, -1));
@@ -107,7 +107,7 @@ describe('Simple Localization System', function() {
     });
 
     describe('#update()', function() {
-        it('should update a coordinate in the list', function() {
+        it('should update a coordinate already in the list or add to the list', function() {
             l.add(SAMPLE_COORDINATE_1);
             expect(l.update(new Coordinate(1, 1, 0, 0))).to.be.a('boolean').to.equal(true);
             expect(l.update(SAMPLE_COORDINATE_1)).to.be.a('boolean').to.equal(true);
