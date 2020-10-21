@@ -1,6 +1,7 @@
 class Coordinate {
 
-    constructor(heading, x, y, z) {
+    constructor(id, heading, x, y, z) {
+        this.id = id;
         this.heading = heading;
         this.x = x;
         this.y = y;
@@ -26,11 +27,19 @@ class Coordinate {
     }
 
     /**
+     * method for getting id
+     */
+    getId = () => {
+        return this.id;
+    }
+
+    /**
      * method for getting coordinates
      */
     getCoordinates = () => {
         if(this.z !== undefined){
             return {
+                id: this.id,
                 heading: this.heading,
                 x: this.x,
                 y: this.y,
@@ -38,6 +47,7 @@ class Coordinate {
             };
         }
         return {
+            id: this.id,
             heading: this.heading,
             x: this.x,
             y: this.y
@@ -69,4 +79,32 @@ class Coordinate {
     }
 }
 
-module.exports = Coordinate;
+/**
+ * method for validating a coordinate object.
+ * returns true if valid or -1 if not.
+ * @param {coordinate} coordinate
+ */
+const validateCoordinate = (coordinate) => {
+    var validity = -1, i = 0;
+    if (Object.prototype.hasOwnProperty.call(coordinate, 'id')) {
+        i += 1;
+    }
+    if (Object.prototype.hasOwnProperty.call(coordinate, 'heading')) {
+        i += 1;
+    }
+    if (Object.prototype.hasOwnProperty.call(coordinate, 'x')) {
+        i += 1;
+    }
+    if (Object.prototype.hasOwnProperty.call(coordinate, 'y')) {
+        i += 1;
+    }
+    if (i === 4) {
+        validity = true;
+    }
+    return validity;
+}
+
+module.exports = {
+    Coordinate,
+    validateCoordinate
+};
