@@ -104,7 +104,7 @@ describe('Localization', function() {
     });
 
     describe('#updateMany()', function() {
-        it('should update a coordinate in the list', function() {
+        it('should update multiple coordinates in the list', function() {
             l.add(new Coordinate(1, 0, 0, -1));
             l.add(new Coordinate(2, 1, 1, -1));
             l.add(new Coordinate(3, -1, 0, -1));
