@@ -15,21 +15,12 @@ var cron = require('node-cron');
 
 module.exports.update = (mqtt, id, time) => {
 
-   //const interval = '*/10 * * * *';  // 10 mins
    const interval = '*/10 * * * * *';   // every 10 seconds
 
    cron.schedule(interval, ()=>{
-      console.log("mqtt: v1/controller/sensorStations", id);
-
-      mqtt.client.publish('v1/controller/' + id + '/monitor', '1');
 
       setTimeout(()=>{
-         // Turn off
-         const payload = {
-             id,
-             timestamp: new Date()
-         }
-         mqtt.client.publish('v1/controller/' + id + '/monitor', JSON.stringify(payload));
+         //mqtt.client.publish('topic', 'data');
       }, time*10);
 
    },{
