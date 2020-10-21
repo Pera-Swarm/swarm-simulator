@@ -27,5 +27,7 @@ jobs:
         mqtt_host: ${{ secrets.MQTT_HOST }}
         mqtt_user: ${{ secrets.MQTT_USER }}
         mqtt_pass: ${{ secrets.MQTT_PASS }}
+        CI: true
     - run: npm ci
     - run: npm run build --if-present
+    - run: npm test
