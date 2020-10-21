@@ -56,7 +56,7 @@ class Localization {
      */
     add = (coordinate) => {
         var status = -1;
-        if (this.validate(coordinate)) {
+        if (this.validate(coordinate) === true) {
             if (this.findIndexById(coordinate.id) === -1) {
                 // push, if the coordinate is not in list
                 status = this.list.push(new Coordinate(coordinate.id, coordinate.heading, coordinate.x, coordinate.y));
@@ -139,9 +139,9 @@ class Localization {
         } else if(this.list[index]['id'] !== coordinate.id) {
             return -1;
         } else {
-            if(this.validate(coordinate)){
+            if(this.validate(coordinate) === true){
                 // update the particular coordinate by calling #setCoordinates() method
-                this.list[index].setCoordinates(coordinate.id, coordinate.heading, coordinate.x, coordinate.y, coordinate.z);
+                this.list[index].setCoordinates(coordinate.heading, coordinate.x, coordinate.y);
                 this.updated = Date.now();
                 return true;
             }
