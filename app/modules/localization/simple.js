@@ -60,7 +60,7 @@ class SimpleLocalizationSystem {
     add = (coordinate) => {
         if(coordinate && coordinate.id) {
             this.localization.add(coordinate);
-            this.ids.push(coordinate.id);
+            this.ids.push(coordinate['id']);
         };
     };
 
@@ -71,9 +71,19 @@ class SimpleLocalizationSystem {
      * supported coordinates types : array, valid_coordinate_object
      */
     update = (coordinates) => {
-        return this.localization.update(coordinates);
+        var status = this.localization.update(coordinates);
+        if (status === true) {
+            if (Array.isArray(coordinates)) {
+                coordinates.map((item) => {
+                    if (this.idExists(item['id']) === false) {
+                        this.ids.push(item['id']);
+                    }
+                })
+            }
+        }
+        return status;
     }
-    
+
 }
 
 module.exports = SimpleLocalizationSystem;
