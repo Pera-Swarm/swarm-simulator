@@ -7,10 +7,14 @@ const axios = require('axios');
 const express = require("./services/express")
 const mqtt = require("./services/mqtt.js");
 const cron = require("./services/cron.js");
-const sensors = require("./robots/sensors.js");
+
+// This is the root module of the system. Every feature can be accessed through this object
+const Robots = require('./robots/robots.js');
+
+var robots = new Robots();
 
 express.start()
-mqtt.start(sensors);
+mqtt.start(robots);
 cron.begin(mqtt);
 
 /*

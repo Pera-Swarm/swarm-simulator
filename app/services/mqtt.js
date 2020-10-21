@@ -2,9 +2,9 @@
 const mqttClient = require('mqtt');
 
 const mqttConfig = require("../config/mqtt.config");
-
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
-const sensors = require("../robots/sensors.js");
+
+var robots;
 
 mqtt.on('message', (topic, message, packet) => {
 
@@ -21,7 +21,7 @@ mqtt.on('message', (topic, message, packet) => {
       }else if(topic=="v1/localization/info"){
 
       } else if(topic.startsWith("v1/sensor/")){
-         this.sensors.handleTopic(mqtt, topic, msg);
+         this.robots.sensors.handleTopic(mqtt, topic, msg);
       }
    }else{
       // Also accept older messages
@@ -34,14 +34,13 @@ mqtt.on('error', function(err) {
    console.log(err);
 });
 
-exports.start = (sensors) => {
-
-   this.sensors = sensors; // @Ganindu, Please check the correctness
+exports.start = (robots) => {
+   this.robots = robots;
 
    mqtt.on('connect', () => {
 
       // Subscribe to sensor related topics
-      sensors.subscribe(mqtt);
+      this.robots.sensors.subscribe(mqtt);
 
       this.defaultSubscriptions();
       this.setup();
