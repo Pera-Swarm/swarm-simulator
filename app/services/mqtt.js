@@ -3,7 +3,7 @@ const mqttClient = require('mqtt');
 
 const mqttConfig = require("../config/mqtt.config");
 
-const mqttController = require("../mqtt/control.mqtt");
+// const mqttController = require("../mqtt/control.mqtt");
 
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 
