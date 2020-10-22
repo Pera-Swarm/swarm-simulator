@@ -14,17 +14,18 @@ var cron = require('node-cron');
 */
 
 module.exports.update = (mqtt, id, time) => {
+    const interval = '*/10 * * * * *'; // every 10 seconds
 
-   const interval = '*/10 * * * * *';   // every 10 seconds
-
-   cron.schedule(interval, ()=>{
-
-      setTimeout(()=>{
-         //mqtt.client.publish('topic', 'data');
-      }, time*10);
-
-   },{
-      scheduled: true,
-      timezone: "Asia/Colombo"
-   });
-}
+    cron.schedule(
+        interval,
+        () => {
+            setTimeout(() => {
+                //mqtt.client.publish('topic', 'data');
+            }, time * 10);
+        },
+        {
+            scheduled: true,
+            timezone: 'Asia/Colombo'
+        }
+    );
+};

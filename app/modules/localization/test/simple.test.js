@@ -34,14 +34,9 @@ const SAMPLE_INVALID_COORDINATE_2 = {
     y: 9
 };
 
-const SAMPLE_COORDINATES_LIST_1 = [
-    SAMPLE_COORDINATE_1
-];
+const SAMPLE_COORDINATES_LIST_1 = [SAMPLE_COORDINATE_1];
 
-const SAMPLE_COORDINATES_LIST_2 = [
-    SAMPLE_COORDINATE_1,
-    SAMPLE_COORDINATE_2
-];
+const SAMPLE_COORDINATES_LIST_2 = [SAMPLE_COORDINATE_1, SAMPLE_COORDINATE_2];
 
 const SAMPLE_COORDINATES_LIST_3 = [
     SAMPLE_COORDINATE_1,
@@ -49,14 +44,13 @@ const SAMPLE_COORDINATES_LIST_3 = [
     SAMPLE_INVALID_COORDINATE_1
 ];
 
-beforeEach(function() {
+beforeEach(function () {
     l = new LocalizationSystem();
 });
 
-describe('Simple Localization System', function() {
-
-    describe('#getCoordinates()', function() {
-        it('should return the coordinates list', function() {
+describe('Simple Localization System', function () {
+    describe('#getCoordinates()', function () {
+        it('should return the coordinates list', function () {
             l.add(new Coordinate(1, 0, 0, -1));
             l.add(new Coordinate(2, 1, 1, -1));
             l.add(new Coordinate(3, -1, 0, -1));
@@ -65,8 +59,8 @@ describe('Simple Localization System', function() {
         });
     });
 
-    describe('#getIds()', function() {
-        it('should return the ids list', function() {
+    describe('#getIds()', function () {
+        it('should return the ids list', function () {
             l.add(new Coordinate(1, 0, 0, -1));
             l.add(new Coordinate(2, 1, 1, -1));
             l.add(new Coordinate(3, -1, 0, -1));
@@ -75,8 +69,8 @@ describe('Simple Localization System', function() {
         });
     });
 
-    describe('#idExists()', function() {
-        it('should return whether an id exists in the list or not', function() {
+    describe('#idExists()', function () {
+        it('should return whether an id exists in the list or not', function () {
             l.add(new Coordinate(1, 1, 0, 0));
             l.add(new Coordinate(2, 1, 0, 0));
             l.add(new Coordinate(3, 1, 0, 0));
@@ -84,20 +78,20 @@ describe('Simple Localization System', function() {
             expect(l.idExists(2)).to.be.a('boolean').to.equal(true);
             expect(l.idExists(3)).to.be.a('boolean').to.equal(true);
             expect(l.idExists(4)).to.be.a('boolean').to.equal(false);
-            expect(l.idExists("3")).to.be.a('boolean').to.equal(false);
+            expect(l.idExists('3')).to.be.a('boolean').to.equal(false);
         });
     });
 
-    describe('#size()', function() {
-        it('should return the size of the list', function() {
+    describe('#size()', function () {
+        it('should return the size of the list', function () {
             expect(l.size()).to.be.a('number').to.equal(0);
             l.add(new Coordinate(1, 1, 0, 0));
             expect(l.size()).to.be.a('number').to.equal(1);
         });
     });
 
-    describe('#add()', function() {
-        it('should add a coordinate to the list', function() {
+    describe('#add()', function () {
+        it('should add a coordinate to the list', function () {
             l.add(new Coordinate(1, 1, 0, 0));
             expect(l.size()).to.be.a('number');
             l.add(SAMPLE_COORDINATE_1);
@@ -106,10 +100,12 @@ describe('Simple Localization System', function() {
         });
     });
 
-    describe('#update()', function() {
-        it('should update a coordinate already in the list or add to the list', function() {
+    describe('#update()', function () {
+        it('should update a coordinate already in the list or add to the list', function () {
             l.add(SAMPLE_COORDINATE_1);
-            expect(l.update(new Coordinate(1, 1, 0, 0))).to.be.a('boolean').to.equal(true);
+            expect(l.update(new Coordinate(1, 1, 0, 0)))
+                .to.be.a('boolean')
+                .to.equal(true);
             expect(l.update(SAMPLE_COORDINATE_1)).to.be.a('boolean').to.equal(true);
             expect(l.update(SAMPLE_COORDINATES_LIST_1)).to.be.a('boolean').to.equal(true);
             expect(l.update(SAMPLE_COORDINATES_LIST_2)).to.be.a('boolean').to.equal(true);
@@ -117,5 +113,4 @@ describe('Simple Localization System', function() {
             expect(l.update(SAMPLE_INVALID_COORDINATE_1)).to.be.a('number').to.equal(-1);
         });
     });
-
 });

@@ -1,5 +1,4 @@
 class Mode {
-
     constructor(setup, flow, interval, name) {
         this.setup = setup;
         this.flow = flow;
@@ -15,8 +14,7 @@ class Mode {
         setInterval(() => {
             this.flow();
         }, this.interval);
-    }
-
+    };
 }
 
 module.exports = Mode;

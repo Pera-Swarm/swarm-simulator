@@ -11,7 +11,7 @@ var mode;
  * @param {name} mode_name
  */
 const defineBaseMode = (setup, flow, interval, name) => {
-    if(name === undefined) {
+    if (name === undefined) {
         name = 'base-mode';
     }
     mode = new Mode(setup, flow, interval, name);
@@ -28,12 +28,12 @@ const defineBaseMode = (setup, flow, interval, name) => {
  * @param {name} mode_name
  */
 const start = (setup, flow, interval, name) => {
-    if(interval === undefined) {
+    if (interval === undefined) {
         interval = 100;
     }
-    if(name === undefined) {
+    if (name === undefined) {
         name = 'base mode';
-    };
+    }
     mode = new Mode(setup, flow, interval, name);
     mode.start();
 };
@@ -41,4 +41,4 @@ const start = (setup, flow, interval, name) => {
 module.exports = {
     defineBaseMode,
     start
-}
+};

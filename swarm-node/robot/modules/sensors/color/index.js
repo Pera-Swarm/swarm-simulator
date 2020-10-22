@@ -1,7 +1,5 @@
 const logger = require('../../../../logger/winston');
 
-class ColorSensor {
-
-}
+class ColorSensor {}
 
 module.exports = ColorSensor;

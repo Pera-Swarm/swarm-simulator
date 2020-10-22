@@ -1,7 +1,5 @@
-const publish = () => {
-
-};
+const publish = () => {};
 
 module.exports = {
-    publish,
-}
+    publish
+};

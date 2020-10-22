@@ -1,7 +1,5 @@
 const logger = require('../../../../logger/winston');
 
-class CompassSensor {
-
-}
+class CompassSensor {}
 
 module.exports = CompassSensor;

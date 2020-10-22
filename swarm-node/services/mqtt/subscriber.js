@@ -1,7 +1,5 @@
-const subscribe = () => {
-
-};
+const subscribe = () => {};
 
 module.exports = {
-    subscribe,
-}
+    subscribe
+};
