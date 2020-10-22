@@ -1,9 +1,8 @@
 // TODO: Add an option to add new subscription / remove subscriptions to the route list even after init
 
 class MQTTRouter {
-    constructor(mqttConnection, onError, routes, options, setup) {
+    constructor(mqttConnection, routes, options, setup, onError) {
         this.mqttClient = mqttConnection;
-        this.errorHandler = onError;
         if (Array.isArray(routes)) {
             this.routes = routes;
         } else {
@@ -26,6 +25,13 @@ class MQTTRouter {
             this.setup = setup;
         } else {
             this.setup = null;
+        }
+        if (onError !== undefined) {
+            this.errorHandler = onError;
+        } else {
+            this.errorHandler = (err) => {
+                console.log('mqtt.error: ', err);
+            };
         }
     }
 

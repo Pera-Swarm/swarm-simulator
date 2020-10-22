@@ -6,12 +6,6 @@ const { MQTTRouter } = require('./');
 
 var router;
 
-// Sample MQTT Error handler function
-const SAMPLE_ON_ERROR_FN = (err) => {
-    console.log('error: mqtt');
-    console.log(err);
-};
-
 // Sample dynamic route list with handler functions
 const SAMPLE_ROUTES = [
     {
@@ -38,11 +32,17 @@ const SAMPLE_SETUP_FN = () => {
     console.log('sample setup fn');
 };
 
+// Sample MQTT Error handler function
+const SAMPLE_ON_ERROR_FN = (err) => {
+    console.log('error: mqtt');
+    console.log(err);
+};
+
 router = new MQTTRouter(
     mqtt,
-    SAMPLE_ON_ERROR_FN,
     SAMPLE_ROUTES,
     SAMPLE_OPTIONS,
-    SAMPLE_SETUP_FN
+    SAMPLE_SETUP_FN,
+    SAMPLE_ON_ERROR_FN
 );
 router.start();
