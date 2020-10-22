@@ -1,11 +1,12 @@
 build
-**/*.svg
 **/public/assets
 **/node_modules/**
+
 docker
 Dockerfile*
 LICENSE
 package.json
+
 *.lock.json
 *.png
 *.toml
@@ -15,6 +16,7 @@ package.json
 *.md
 *.sql
 *.min.css
+**/*.svg
 
 .DS_Store
 .dockerignore
