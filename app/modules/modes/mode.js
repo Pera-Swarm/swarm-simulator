@@ -1,4 +1,5 @@
 class Mode {
+
     constructor(setup, flow, interval, name) {
         this.setup = setup;
         this.flow = flow;
@@ -7,7 +8,7 @@ class Mode {
     }
 
     /**
-     * method start
+     * method for starting the mode
      */
     start = () => {
         this.setup();
@@ -15,6 +16,7 @@ class Mode {
             this.flow();
         }, this.interval);
     }
+
 }
 
 module.exports = Mode;

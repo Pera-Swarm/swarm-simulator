@@ -11,8 +11,8 @@ var mode;
  * @param {name} mode_name
  */
 const defineBaseMode = (setup, flow, interval, name) => {
-    if(!name) {
-        name = 'base mode';
+    if(name === undefined) {
+        name = 'base-mode';
     }
     mode = new Mode(setup, flow, interval, name);
     console.log(mode);
@@ -28,10 +28,10 @@ const defineBaseMode = (setup, flow, interval, name) => {
  * @param {name} mode_name
  */
 const start = (setup, flow, interval, name) => {
-    if(!interval) {
+    if(interval === undefined) {
         interval = 100;
     }
-    if(!name) {
+    if(name === undefined) {
         name = 'base mode';
     };
     mode = new Mode(setup, flow, interval, name);
