@@ -1,5 +1,8 @@
 const MQTTRouter = require('./router');
+const { publishToTopic, subscribeToTopic } = require('./topic');
 
 module.exports = {
-    MQTTRouter
+    MQTTRouter,
+    publishToTopic,
+    subscribeToTopic
 };
