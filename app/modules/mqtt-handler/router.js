@@ -9,7 +9,7 @@ class MQTTRouter {
             this.routes = [
                 {
                     topic: 'v1/',
-                    subscriber: (mqtt, topic, msg) => {
+                    handler: (mqtt, topic, msg) => {
                         data = JSON.parse(msg);
                         console.log('Default Subscriber picked up the topic', data);
                     }
