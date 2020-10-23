@@ -1,7 +1,11 @@
 class DistanceSensor {
     constructor(id, value) {
         this.id = id;
-        this.value = value;
+        if (value !== undefined) {
+            this.value = value;
+        } else {
+            this.value = 0;
+        }
         this.updated = new Date();
     }
 

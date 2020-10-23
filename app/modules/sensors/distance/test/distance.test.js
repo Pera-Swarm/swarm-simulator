@@ -8,21 +8,12 @@ var s;
 var updated;
 
 const SAMPLE_ID = 1;
+const INITIAL_VALUE = 0;
 const SAMPLE_VALUE_1 = 123;
 const SAMPLE_VALUE_2 = 126;
 
-const SAMPLE_SENSOR_READING = {
-    id: 1,
-    value: 122
-};
-
-const EXPECTED_SENSOR_READING_1 = {
-    id: 1,
-    value: 122
-};
-
 beforeEach(function () {
-    s = new DistanceSensor(SAMPLE_ID, SAMPLE_VALUE_1);
+    s = new DistanceSensor(SAMPLE_ID);
     updated = s.getReading().updated;
 });
 
@@ -44,8 +35,13 @@ describe('Distance Sensor', function () {
 
     describe('#setReading()', function () {
         it('should set the sensor value', function () {
-            s.setReading(SAMPLE_VALUE_1 + 3);
-            assert.notEqual(s.getReading().value, SAMPLE_VALUE_1);
+            assert.equal(s.getReading().value, INITIAL_VALUE);
+            s.setReading(SAMPLE_VALUE_1);
+            assert.notEqual(s.getReading().value, INITIAL_VALUE);
+            assert.equal(s.getReading().value, SAMPLE_VALUE_1);
+            assert.notEqual(s.getReading().updated, updated);
+            s.setReading(SAMPLE_VALUE_2);
+            assert.notEqual(s.getReading().value, INITIAL_VALUE);
             assert.equal(s.getReading().value, SAMPLE_VALUE_2);
             assert.notEqual(s.getReading().updated, updated);
         });
