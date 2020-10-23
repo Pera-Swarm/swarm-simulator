@@ -8,7 +8,7 @@ var s;
 var updated;
 
 const SAMPLE_ID = 1;
-const INITIAL_VALUE = [0,0,0];
+const INITIAL_VALUE = [0, 0, 0];
 const SAMPLE_VALUE_1 = [123, 231, 19];
 const SAMPLE_VALUE_2 = [1, 150, 121];
 
@@ -37,12 +37,10 @@ describe('Color Sensor', function () {
         it('should set the sensor value', function () {
             assert.deepEqual(s.getReading().value, INITIAL_VALUE);
             s.setReading(SAMPLE_VALUE_1);
-            console.log(s);
             assert.notEqual(s.getReading().value, INITIAL_VALUE);
             assert.deepEqual(s.getReading().value, SAMPLE_VALUE_1);
             assert.notEqual(s.getReading().updated, updated);
             s.setReading(SAMPLE_VALUE_2);
-            console.log(s);
             assert.notEqual(s.getReading().value, INITIAL_VALUE);
             assert.deepEqual(s.getReading().value, SAMPLE_VALUE_2);
             assert.notEqual(s.getReading().updated, updated);
