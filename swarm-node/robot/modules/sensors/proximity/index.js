@@ -1,7 +1,5 @@
 const logger = require('../../../../logger/winston');
 
-class ProximitySensor {
-
-}
+class ProximitySensor {}
 
 module.exports = ProximitySensor;

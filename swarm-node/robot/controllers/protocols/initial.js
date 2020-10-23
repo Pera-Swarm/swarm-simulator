@@ -6,8 +6,8 @@ const logger = require('../../../logger/winston');
  */
 const initial = () => {
     logger.log('debug', 'robot.controllers.protocols.initial.initial: ');
-}
+};
 
 module.exports = {
     initial
-}
+};

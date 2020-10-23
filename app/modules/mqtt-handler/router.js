@@ -1,16 +1,17 @@
+// TODO: Add an option to add new subscription / remove subscriptions to the route list even after init
+
 class MQTTRouter {
-    constructor(mqttConnection, onError, routes, options, setup) {
+    constructor(mqttConnection, routes, options, setup, onError) {
         this.mqttClient = mqttConnection;
-        this.errorHandler = onError;
         if (Array.isArray(routes)) {
             this.routes = routes;
         } else {
             this.routes = [
                 {
                     topic: 'v1/',
-                    subscriber: (mqtt, topic, msg) => {
+                    handler: (mqtt, topic, msg) => {
                         data = JSON.parse(msg);
-                        console.log("Default Subscriber picked up the topic", data);
+                        console.log('Default Subscriber picked up the topic', data);
                     }
                 }
             ];
@@ -25,7 +26,13 @@ class MQTTRouter {
         } else {
             this.setup = null;
         }
-
+        if (onError !== undefined) {
+            this.errorHandler = onError;
+        } else {
+            this.errorHandler = (err) => {
+                console.log('mqtt.error: ', err);
+            };
+        }
     }
 
     /**
@@ -39,7 +46,6 @@ class MQTTRouter {
             if (this.setup !== null) {
                 this.setup();
             }
-
         });
 
         this.mqttClient.on('error', (err) => {
@@ -53,14 +59,13 @@ class MQTTRouter {
             if (packet.retain === false) {
                 console.log('new msg');
                 this.retainFalseLogic(topic, msg, packet);
-            }else{
+            } else {
                 // Also accept older messages
                 console.log('older msg');
                 this.retainTrueLogic(topic, msg, packet);
             }
         });
-
-    }
+    };
 
     /**
      * method for handling the subscriptions for the topics in the routes list.
@@ -71,7 +76,7 @@ class MQTTRouter {
             this.mqttClient.subscribe(this.routes[i].topic, this.options);
             console.log('Subscribed to', this.routes[i].topic);
         }
-    }
+    };
 
     /**
      * method for handling messages on retain false subscription.
@@ -82,14 +87,14 @@ class MQTTRouter {
                 this.routes[i].handler(this.mqttClient, topic, message);
             }
         }
-    }
+    };
 
     /**
      * method for handling messages on retain true subscription.
      */
     retainTrueLogic = (topic, message, packet) => {
         console.log('older message handling', message);
-    }
+    };
 }
 
 module.exports = MQTTRouter;

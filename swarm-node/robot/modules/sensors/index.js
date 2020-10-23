@@ -5,12 +5,10 @@ const DistanceSensor = require('./distance/');
 const logger = require('../../../logger/winston');
 
 class Sensors {
-
-    constructor(){
+    constructor() {
         this.distanceSensor = new DistanceSensor();
         logger.log('debug', 'robot.modules.sensors: Initial Sensor');
     }
-    
 }
 
 module.exports = Sensors;

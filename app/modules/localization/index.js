@@ -4,4 +4,4 @@ const SimpleLocalizationSystem = require('./simple');
 module.exports = {
     Localization,
     SimpleLocalizationSystem
-}
+};

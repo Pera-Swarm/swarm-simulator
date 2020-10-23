@@ -1,29 +1,31 @@
-const publishOptions = { qos: 1, retain: false };  // https://www.npmjs.com/package/mqtt#publish
+const publishOptions = { qos: 1, retain: false }; // https://www.npmjs.com/package/mqtt#publish
 const subscribeOptions = { qos: 2, rap: true, rh: true }; // https://www.npmjs.com/package/mqtt#subscribe
 
 exports.subscribe = (mqtt) => {
     mqtt.subscribe('v1/sensor/distance', subscribeOptions);
-    console.log("subscribed to v1/sensor/distance");
-}
+    console.log('subscribed to v1/sensor/distance');
+};
 
 exports.handleTopic = (mqtt, topic, msg) => {
-
-    console.log("DistanceSensorHandler picked up the topic");
+    console.log('Distance Sensor Handle the topic');
     data = JSON.parse(msg);
-    console.log(msg);
 
-    if ((data.id !== undefined) && (data.value !== undefined)) {
+    if (data.id != undefined && data.value != undefined) {
         // Just echo back to the robot since no implementation yet
-        console.log('echo back');
         this.publishToRobot(mqtt, data.id, data.value);
-    }else{
+    } else {
         // Invalid message format
     }
-}
+};
 
-exports.publishToRobot = (mqtt, robotId, value) => {
-    mqtt.publish('v1/sensor/distance/' + robotId.toString(), value.toString(), publishOptions, () => {
-        // callback
-        console.log("published: ROBOT(" + robotId + ") > " + value);
-    });
-}
+exports.publishToRobot = (mqtt, robotId, reading) => {
+    mqtt.publish(
+        'v1/sensor/distance/' + robotId.toString(),
+        reading.toString(),
+        publishOptions,
+        () => {
+            // callback
+            console.log('published: robot_' + robotId + ' > ' + reading);
+        }
+    );
+};

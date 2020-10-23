@@ -8,4 +8,4 @@ module.exports = {
     motorController,
     patternController,
     protocolController
-}
+};
