@@ -1,5 +1,4 @@
 const mqttClient = require('mqtt');
-
 const mqttConfig = require('../config/mqtt.config');
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 

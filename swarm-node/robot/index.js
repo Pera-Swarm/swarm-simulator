@@ -11,12 +11,15 @@ class Robot {
         this.coordinates = new Localization();
         this.sensors = new Sensors();
         this.ledstrip = new Ledstrip();
+        this.epoch = Date.now();
+        this.timestamp = new Date();
         logger.log(
             'debug',
-            'Initiated ROBOT instance with id:%s uuid:(%s) coordinates: %s',
+            'Initiated ROBOT instance with id:%s uuid:(%s) coordinates: %s on %s',
             this.id,
             this.uuid,
-            this.coordinates.getCoordinates()
+            this.coordinates.getCoordinates(),
+            this.timestamp
         );
     }
 
