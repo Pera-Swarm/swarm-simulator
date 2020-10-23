@@ -10,6 +10,8 @@ class Robot {
         this.updated = Date.now();
         this.timestamp = Date.now();
     }
+
+    // TODO: add robot specific functionalities here
 }
 
 module.exports = { Robot };

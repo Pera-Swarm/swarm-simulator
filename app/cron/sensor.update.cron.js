@@ -13,6 +13,8 @@ var cron = require('node-cron');
 
 */
 
+// TODO: rearrange maybe??
+
 module.exports.update = (mqtt, id, time) => {
     const interval = '*/10 * * * * *'; // every 10 seconds
 

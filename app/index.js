@@ -6,6 +6,7 @@ const express = require('./services/express');
 
 const { Swarm } = require('./swarm/');
 
+// starting the swarm
 const swarm = new Swarm();
 
 express.start();

@@ -1,3 +1,6 @@
+// TODO: define every sensor handlers here
+// 'robots' argument will be added via wrapper
+
 const routes = [
     {
         topic: 'v1/sensor/distance',
