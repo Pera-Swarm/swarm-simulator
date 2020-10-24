@@ -1,6 +1,7 @@
 class DistanceSensor {
     constructor(id, value) {
         this.id = id;
+
         if (value !== undefined) {
             this.value = value;
         } else {
@@ -8,6 +9,25 @@ class DistanceSensor {
         }
         this.updated = new Date();
     }
+
+    /*
+     * method for publish to relevent topic
+     */
+    publishToRobot = (mqtt, callback) => {
+        mqtt.publish(
+            'v1/sensor/distance/' + this.id.toString(),
+            this.value.toString(),
+            () => {
+                // callback
+
+                if (callback != undefined) {
+                    callback();
+                } else {
+                    console.log('published: robot_' + this.id + ' > ' + this.value);
+                }
+            }
+        );
+    };
 
     /**
      * method for getting sensor readings

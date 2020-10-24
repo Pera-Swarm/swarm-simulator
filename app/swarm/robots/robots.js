@@ -11,8 +11,22 @@ class Robots {
      * @param {id} id
      */
     addRobot = (id) => {
-        this.list.push(new Robot(id));
+        this.list[id] = new Robot(id);
+        //console.log(this.list);
     };
+
+    // TODO: add swarm functionality here
+    // updateRobot
+    // findRobotById
+    // getSensorReadings
+    // getCoordinates
+    // removeRobot
+    // checkAlive
+    // invalidateRobot
+    // registerRobot
+    // stopRobot
+    // resetRobot
+    // Note: add any other functions
 }
 
 const initRobots = () => {

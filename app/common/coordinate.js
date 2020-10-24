@@ -1,3 +1,5 @@
+// TODO: rearrange maybe??
+
 class Coordinate {
     constructor(id, heading, x, y, z) {
         this.id = id;
