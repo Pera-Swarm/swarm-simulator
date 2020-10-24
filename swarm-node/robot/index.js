@@ -11,7 +11,16 @@ class Robot {
         this.coordinates = new Localization();
         this.sensors = new Sensors();
         this.ledstrip = new Ledstrip();
-        logger.log('debug', 'Initiated ROBOT instance with id:%s uuid:(%s) coordinates: %s', this.id, this.uuid, this.coordinates.getCoordinates());
+        this.epoch = Date.now();
+        this.timestamp = new Date();
+        logger.log(
+            'debug',
+            'Initiated ROBOT instance with id:%s uuid:(%s) coordinates: %s on %s',
+            this.id,
+            this.uuid,
+            this.coordinates.getCoordinates(),
+            this.timestamp
+        );
     }
 
     /**
@@ -20,7 +29,7 @@ class Robot {
     getId = () => {
         logger.log('debug', 'robot: getId()');
         return this.id;
-    }
+    };
 
     /**
      * Set id
@@ -29,7 +38,7 @@ class Robot {
     setId = (id) => {
         logger.log('debug', 'robot: setId(%s)', id);
         this.id = id;
-    }
+    };
 
     /**
      * Get coordinates
@@ -37,7 +46,7 @@ class Robot {
     getCoordinates = () => {
         logger.log('debug', 'robot: getCoordinates()');
         return this.coordinates;
-    }
+    };
 
     /**
      * Set coordinates
@@ -46,7 +55,7 @@ class Robot {
     setCoordinates = (coordinates) => {
         logger.log('debug', 'robot: setCoordinates(%s)', coordinates);
         this.coordinates = coordinates;
-    }
+    };
 
     /**
      * Get sensors
@@ -54,7 +63,7 @@ class Robot {
     getSensors = () => {
         logger.log('debug', 'robot: getSensors()');
         return this.sensors;
-    }
+    };
 
     /**
      * Set sensors
@@ -63,7 +72,7 @@ class Robot {
     setSensors = (sensors) => {
         logger.log('debug', 'robot: setSensors(%s)', sensors);
         this.sensors = sensors;
-    }
+    };
 
     /**
      * Get ledstrip
@@ -71,7 +80,7 @@ class Robot {
     getLedstrip = () => {
         logger.log('debug', 'robot: getLedstrip()');
         return this.ledstrip;
-    }
+    };
 
     /**
      * Set ledstrip
@@ -80,7 +89,7 @@ class Robot {
     setLedstrip = (ledstrip) => {
         logger.log('debug', 'robot: setLedstrip(%s)', ledstrip);
         this.ledstrip = ledstrip;
-    }
+    };
 }
 
 module.exports = Robot;

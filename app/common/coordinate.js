@@ -1,11 +1,12 @@
-class Coordinate {
+// TODO: rearrange maybe??
 
+class Coordinate {
     constructor(id, heading, x, y, z) {
         this.id = id;
         this.heading = heading;
         this.x = x;
         this.y = y;
-        if(z !== undefined) {
+        if (z !== undefined) {
             this.z = z;
         }
     }
@@ -21,23 +22,23 @@ class Coordinate {
         this.heading = heading;
         this.x = x;
         this.y = y;
-        if(z !== undefined) {
+        if (z !== undefined) {
             this.z = z;
         }
-    }
+    };
 
     /**
      * method for getting id
      */
     getId = () => {
         return this.id;
-    }
+    };
 
     /**
      * method for getting coordinates
      */
     getCoordinates = () => {
-        if(this.z !== undefined){
+        if (this.z !== undefined) {
             return {
                 id: this.id,
                 heading: this.heading,
@@ -52,7 +53,7 @@ class Coordinate {
             x: this.x,
             y: this.y
         };
-    }
+    };
 
     /**
      * method for getting extended coordinates
@@ -63,8 +64,8 @@ class Coordinate {
             x: this.x,
             y: this.y,
             z: this.z
-        }
-    }
+        };
+    };
 
     /**
      * method for resetting coordinates
@@ -73,10 +74,10 @@ class Coordinate {
         this.heading = 0;
         this.x = 0;
         this.y = 0;
-        if(this.z){
+        if (this.z) {
             this.z = 0;
         }
-    }
+    };
 }
 
 /**
@@ -85,7 +86,8 @@ class Coordinate {
  * @param {coordinate} coordinate
  */
 const validateCoordinate = (coordinate) => {
-    var validity = -1, i = 0;
+    var validity = -1,
+        i = 0;
     if (Object.prototype.hasOwnProperty.call(coordinate, 'id')) {
         i += 1;
     }
@@ -102,7 +104,7 @@ const validateCoordinate = (coordinate) => {
         validity = true;
     }
     return validity;
-}
+};
 
 module.exports = {
     Coordinate,

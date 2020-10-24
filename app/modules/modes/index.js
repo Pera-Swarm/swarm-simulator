@@ -1,5 +1,8 @@
-const simpleSwarmServer = require('./simple');
+const Mode = require('./mode');
+const { defineBaseMode, start } = require('./simple');
 
 module.exports = {
-    simpleSwarmServer
-}
+    Mode,
+    defineBaseMode,
+    start
+};

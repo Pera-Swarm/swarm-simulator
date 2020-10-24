@@ -7,14 +7,14 @@ class Mode {
     }
 
     /**
-     * method start
+     * method for starting the mode
      */
     start = () => {
         this.setup();
         setInterval(() => {
             this.flow();
         }, this.interval);
-    }
+    };
 }
 
 module.exports = Mode;

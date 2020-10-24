@@ -1,10 +1,11 @@
-class Id {
+// TODO: rearrange maybe??
 
+class Id {
     constructor(id, timestamp) {
         this.id = id;
-        if(timestamp){
+        if (timestamp) {
             this.timestamp = timestamp;
-        }else{
+        } else {
             this.timestamp = Date.now();
         }
     }
@@ -14,14 +15,14 @@ class Id {
      */
     getId = () => {
         return this.id;
-    }
+    };
 
     /**
      * method for getting timestamp
      */
     getTimestamp = () => {
         return this.timestamp;
-    }
+    };
 
     /**
      * method for getting id and timestamp
@@ -31,8 +32,7 @@ class Id {
             id: this.id,
             timestamp: this.timestamp
         };
-    }
-
+    };
 }
 
 module.exports = Id;

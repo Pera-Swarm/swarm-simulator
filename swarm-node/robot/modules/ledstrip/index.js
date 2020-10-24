@@ -1,7 +1,6 @@
 const logger = require('../../../logger/winston');
 
 class Ledstrip {
-    
     constructor() {
         this.led0 = 0;
         this.led1 = 0;
@@ -17,16 +16,15 @@ class Ledstrip {
             led0: this.led0,
             led1: this.led1,
             led2: this.led2
-        }
-    }
+        };
+    };
 
     /**
      * Light Up All Leds
      */
     lightenAll = () => {
         logger.log('debug', 'robot.modules.ledstrip.lightenAll: ');
-    }
+    };
 }
-
 
 module.exports = Ledstrip;

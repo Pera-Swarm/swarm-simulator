@@ -6,20 +6,19 @@ const Robot = require('./robot');
 var robot = new Robot();
 
 setInterval(() => {
-    if(robot.getId() === undefined){
+    if (robot.getId() === undefined) {
         logger.log('debug', 'main: ROBOT ID Registration initial');
         setup.registerId((success, id) => {
-            if(success){
+            if (success) {
                 robot.setId(id);
                 logger.log('info', 'main: ROBOT ID Registration success (%s)', id);
                 setup.startMQTT();
-            }else{
+            } else {
                 logger.log('warn', 'main: ROBOT ID Registration failed (%s)', id);
             }
         });
-    }else{
+    } else {
         // coordinates = move(coordinates);
         // logger.info('main: Executing ROBOT(%s) instance with coordinates: %s', robotId, coordinates);
     }
-
 }, 100);

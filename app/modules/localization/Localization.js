@@ -1,7 +1,6 @@
 const { validateCoordinate, Coordinate } = require('../../common/coordinate');
 
 class Localization {
-
     constructor() {
         this.list = [];
         this.updated = Date.now();
@@ -15,14 +14,15 @@ class Localization {
      * @param {id} id
      */
     findIndexById = (id) => {
-        var found = -1, i = 0;
+        var found = -1,
+            i = 0;
         for (var i = 0; i < this.list.length; i += 1) {
             if (this.list[i]['id'] === id) {
                 return i;
             }
         }
         return found;
-    }
+    };
 
     /**
      * method fot getting the coordinates list.
@@ -33,14 +33,14 @@ class Localization {
             coordinates.push(item.getCoordinates());
         });
         return coordinates;
-    }
+    };
 
     /**
      * method for finding the size of the coordinates list.
      */
     size = () => {
         return this.list.length;
-    }
+    };
 
     /**
      * method for validating a coordinate.
@@ -59,7 +59,14 @@ class Localization {
         if (this.validate(coordinate) === true) {
             if (this.findIndexById(coordinate.id) === -1) {
                 // push, if the coordinate is not in list
-                status = this.list.push(new Coordinate(coordinate.id, coordinate.heading, coordinate.x, coordinate.y));
+                status = this.list.push(
+                    new Coordinate(
+                        coordinate.id,
+                        coordinate.heading,
+                        coordinate.x,
+                        coordinate.y
+                    )
+                );
                 this.updated = Date.now();
             } else {
                 // update the list by calling #updateOne()
@@ -86,7 +93,7 @@ class Localization {
             // invalid
             return -1;
         }
-    }
+    };
 
     /**
      * method for updating the coordinates list.
@@ -98,7 +105,7 @@ class Localization {
         // use only #updateByIndex() to update the coordinate values,
         // to ensure all are valid coordinate object instances.
         return this.updateByIndex(this.findIndexById(coordinate.id), coordinate);
-    }
+    };
 
     /**
      * method for updating the coordinates list.
@@ -113,7 +120,7 @@ class Localization {
                 if (this.findIndexById(coordinates[i]['id']) === -1) {
                     // add to list
                     status = this.add(coordinates[i]);
-                    if (status !== -1 ) {
+                    if (status !== -1) {
                         status = true;
                     }
                 } else {
@@ -123,7 +130,7 @@ class Localization {
             }
         }
         return status;
-    }
+    };
 
     /**
      * method for updating a coordinate in the list by id.
@@ -136,18 +143,21 @@ class Localization {
         // neglect if the index is invalid or doesn't equal to {coordinate.id}
         if (index >= this.size() || index < 0) {
             return -1;
-        } else if(this.list[index]['id'] !== coordinate.id) {
+        } else if (this.list[index]['id'] !== coordinate.id) {
             return -1;
         } else {
-            if(this.validate(coordinate) === true){
+            if (this.validate(coordinate) === true) {
                 // update the particular coordinate by calling #setCoordinates() method
-                this.list[index].setCoordinates(coordinate.heading, coordinate.x, coordinate.y);
+                this.list[index].setCoordinates(
+                    coordinate.heading,
+                    coordinate.x,
+                    coordinate.y
+                );
                 this.updated = Date.now();
                 return true;
             }
         }
-    }
-
+    };
 }
 
 module.exports = Localization;
