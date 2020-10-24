@@ -1,15 +1,15 @@
 {
-   "env": {
-      "DB_HOST": "localhost",
-      "DB_USER": "root",
-      "DB_PASS": "",
-      "DB_DATABASE": "swarm_server",
-      "MQTT_HOST": "mqtt://68.183.188.135",
-      "MQTT_USER": "swarm_user",
-      "MQTT_PASS": "swarm_usere15",
-      "MQTT_CLIENT": "mqtt_swarm_server",
-      "HTTP_HOST": "localhost",
-      "HTTP_PORT": 8080,
-      "PORT": 8080
-   }
+    "env": {
+        "DB_HOST": "localhost",
+        "DB_USER": "root",
+        "DB_PASS": "",
+        "DB_DATABASE": "swarm_server",
+        "MQTT_HOST": "mqtt://68.183.188.135",
+        "MQTT_USER": "swarm_user",
+        "MQTT_PASS": "swarm_usere15",
+        "MQTT_CLIENT": "mqtt_swarm_server",
+        "HTTP_HOST": "localhost",
+        "HTTP_PORT": 8080,
+        "PORT": 8080
+    }
 }

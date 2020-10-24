@@ -5,9 +5,9 @@ const logger = require('../../../logger/winston');
  * @param none
  */
 const initial = () => {
-    logger.info('robot.controllers.protocols.initial.initial: ');
-}
+    logger.log('debug', 'robot.controllers.protocols.initial.initial: ');
+};
 
 module.exports = {
     initial
-}
+};
