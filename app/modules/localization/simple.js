@@ -14,7 +14,7 @@ class SimpleLocalizationSystem {
      * method fot getting the coordinates list.
      */
     getCoordinates = () => {
-        return this.localization.getCoordinates;
+        return this.localization.getCoordinates();
     };
 
     /**
