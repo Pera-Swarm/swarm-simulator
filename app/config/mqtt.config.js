@@ -8,7 +8,9 @@ module.exports = {
         username: process.env.MQTT_USER || '',
         password: process.env.MQTT_PASS || ''
     },
-    mqttOptions:{
-      qos: 2, rap: true, rh: true
-   }
+    mqttOptions: {
+        qos: 2,
+        rap: true,
+        rh: true
+    }
 };

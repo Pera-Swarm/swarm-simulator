@@ -14,7 +14,7 @@ const SAMPLE_ROUTES = [
             data = JSON.parse(msg);
             console.log('Localization info picked up the topic', data);
         },
-        allowRetained: true,
+        allowRetained: true
     },
     {
         topic: 'v1/robot/msg/broadcast',
