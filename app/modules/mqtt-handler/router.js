@@ -10,7 +10,7 @@ class MQTTRouter {
             this.routes = [
                 {
                     topic: 'v1/',
-                    handler: (mqtt, topic, msg) => {
+                    handler: (topic, msg) => {
                         try {
                             var data = JSON.parse(msg);
                             console.log('Default Subscriber picked up the topic', data);
@@ -97,7 +97,7 @@ class MQTTRouter {
 
         for (var i = 0; i < this.routes.length; i += 1) {
             if (this.routes[i].topic === topic) {
-                this.routes[i].handler(this.mqttClient, topic, message);
+                this.routes[i].handler(message);
             }
         }
     };
@@ -111,7 +111,7 @@ class MQTTRouter {
         for (var i = 0; i < this.routes.length; i += 1) {
             if (this.routes[i].topic === topic) {
                 if (this.routes[i].allowRetained == true) {
-                    this.routes[i].handler(this.mqttClient, topic, message);
+                    this.routes[i].handler(message);
                 } else {
                     // Retained messages were not accepted
                 }
