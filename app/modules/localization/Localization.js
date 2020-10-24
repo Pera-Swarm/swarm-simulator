@@ -11,7 +11,7 @@ class Localization {
      * method for finding the index of a coordinate in the list by id.
      * this method will return the index of the coordinate if the id exists,
      * if not return -1.
-     * @param {id} id
+     * @param {number} id robot id
      */
     findIndexById = (id) => {
         var found = -1,
@@ -44,7 +44,7 @@ class Localization {
 
     /**
      * method for validating a coordinate.
-     * @param {coordinate} coordinate
+     * @param {Coordinate} coordinate coordinate instance
      */
     validate = (coordinate) => {
         return validateCoordinate(coordinate);
@@ -52,7 +52,7 @@ class Localization {
 
     /**
      * method for adding a coordinate to the coordinates list.
-     * @param {coordinate} coordinate
+     * @param {Coordinate} coordinate coordinate instance
      */
     add = (coordinate) => {
         var status = -1;
@@ -80,7 +80,7 @@ class Localization {
      * method for updating the coordinates list.
      * this method will return true if the update is successful,
      * if not return -1.
-     * @param {coordinates} coordinates
+     * @param {Coordinate[]} coordinates
      */
     update = (coordinates) => {
         if (Array.isArray(coordinates)) {
@@ -99,7 +99,7 @@ class Localization {
      * method for updating the coordinates list.
      * this method will return true if the update is successful,
      * if not return -1.
-     * @param {coordinate} coordinate
+     * @param {Coordinate} coordinate coordinate instance
      */
     updateOne = (coordinate) => {
         // use only #updateByIndex() to update the coordinate values,
@@ -110,7 +110,7 @@ class Localization {
     /**
      * method for updating the coordinates list.
      * this method will recursively update the coordinates list.
-     * @param {coordinates} coordinates
+     * @param {Coordinate[]} coordinates array of coordinates
      */
     updateMany = (coordinates) => {
         var status = -1;
@@ -136,8 +136,8 @@ class Localization {
      * method for updating a coordinate in the list by id.
      * this method will return true if the update is successful,
      * if not return -1.
-     * @param {id} id
-     * @param {coordinate} coordinate
+     * @param {number} index index of coordinate list
+     * @param {Coordinate} coordinate coordinate instance
      */
     updateByIndex = (index, coordinate) => {
         // neglect if the index is invalid or doesn't equal to {coordinate.id}
@@ -157,6 +157,7 @@ class Localization {
                 return true;
             }
         }
+        // this.
     };
 }
 

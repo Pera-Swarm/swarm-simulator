@@ -1,16 +1,20 @@
 const Localization = require('./Localization');
+const { Coordinate } = require('../../common/coordinate');
 
 class SimpleLocalizationSystem {
+    /**
+     * simple localization system constructor
+     */
     constructor() {
-        this.localization = new Localization();
         this.ids = [];
+        this.localization = new Localization();
     }
 
     /**
      * method fot getting the coordinates list.
      */
     getCoordinates = () => {
-        return this.localization.getCoordinates();
+        return this.localization.getCoordinates;
     };
 
     /**
@@ -21,7 +25,9 @@ class SimpleLocalizationSystem {
     };
 
     /**
+     *
      * method for checking a given id exists in the ids list.
+     * @param {number} id robot id
      */
     idExists = (id) => {
         var findNaN = id !== id;
@@ -55,7 +61,7 @@ class SimpleLocalizationSystem {
 
     /**
      * method for adding a coordinate to the coordinates list.
-     * @param {coordinate} coordinate
+     * @param {Coordinate} coordinate coordinate instance
      */
     add = (coordinate) => {
         if (coordinate && coordinate.id) {
@@ -67,7 +73,7 @@ class SimpleLocalizationSystem {
     /**
      * method for updating the coordinates list.
      * this method will add/update the given coordinates to the localization list.
-     * @param {coordinates} coordinates
+     * @param {Coordinate[]} coordinates
      * supported coordinates types : array, valid_coordinate_object
      */
     update = (coordinates) => {
