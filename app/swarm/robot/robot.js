@@ -1,10 +1,18 @@
 const { Coordinate } = require('../../common/coordinate');
 const sensors = require('../../modules/sensors');
 
+// Class for representing the specific robot level functionality
 class Robot {
-    constructor(id) {
+    constructor(id, x, y, heading) {
         this.id = id;
-        this.coordinate = new Coordinate(id, 0, 0, 0);
+
+        x = x == undefined ? 0 : x;
+        y = y == undefined ? 0 : y;
+        heading = heading == undefined ? 0 : heading;
+
+        console.log('Created > id:', id, 'x:', x, 'y:', y, 'heading', heading);
+
+        this.coordinate = new Coordinate(id, x, y, heading);
         this.sensors = sensors(id);
         this.created = new Date();
         this.updated = Date.now();

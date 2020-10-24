@@ -4,52 +4,72 @@ const { Robot } = require('./robot');
 // MQTT
 const mqttClient = require('mqtt');
 const mqttConfig = require('../config/mqtt.config');
-const { options } = require('../config/mqtt.config');
+const { mqttOptions } = require('../config/mqtt.config');
+const { MQTTRouter, publishToTopic } = require('../modules/mqtt-handler');
+
+// MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
-const { MQTTRouter } = require('../modules/mqtt-handler');
 
 // Localization System
 const { SimpleLocalizationSystem } = require('../modules/localization');
 
-// cron
-const cron = require('../services/cron.js');
+// cron - currently not implemented
+// const cron = require('../services/cron.js');
 
-// controllers
+// Controllers
 const { localizationRoutes, sensorRoutes, wrapper } = require('./controllers/mqtt/');
 const { initRobots } = require('./robots/robots');
 
 const SAMPLE_ROUTES = [
     {
         topic: 'v1/localization/info',
-        handler: (mqtt, topic, msg) => {
+        allowRetained: true,
+        handler: (topic, msg) => {
             data = JSON.parse(msg);
             console.log('Localization info picked up the topic', data);
         }
     },
     {
         topic: 'v1/robot/msg/broadcast',
-        handler: (mqtt, topic, msg) => {
+        allowRetained: true,
+        handler: (topic, msg) => {
             data = JSON.parse(msg);
             console.log('Broadcast picked up the topic', data);
         }
     },
     {
         topic: 'v1/sensor/distance',
-        handler: (mqtt, topic, msg) => {
+        allowRetained: true,
+        handler: (topic, msg) => {
             data = JSON.parse(msg);
             console.log('Sensor picked up the topic', data);
         }
     }
 ];
 
+// Class for representing the swarm level functionality
 class Swarm {
     constructor(setup) {
+        const myRoutes = [
+            {
+                topic: 'v1/gui/create',
+                allowRetained: true,
+                handler: (topic, msg) => {
+                    //console.log('Creating > id:',msg.id,'x:',msg.x,'y:',msg.y);
+                    this.robots.addRobot(msg.id);
+                }
+            }
+        ];
+
+        //console.log(wrapper(myRoutes, this.robots));
+
         this.loc_system = new SimpleLocalizationSystem();
         this.robots = initRobots();
         this.mqttRouter = new MQTTRouter(
             mqtt,
-            wrapper(SAMPLE_ROUTES, this.robots),
-            options,
+            //myRoutes,
+            wrapper([...localizationRoutes, ...sensorRoutes], this),
+            mqttOptions,
             setup
         );
         this.mqttRouter.start();
@@ -60,10 +80,10 @@ class Swarm {
      * method for initializing the swarm
      */
     init = () => {
-        cron.begin(mqtt);
+        //cron.begin(mqtt);
         // const robot = new Robot(1);
         // this.robots.push(robot);
-        console.log(this);
+        //console.log(this);
     };
 
     /**
@@ -73,6 +93,17 @@ class Swarm {
      */
     addRobot = (id, created) => {
         const robot = new Robot(id);
+    };
+
+    /**
+     * method for publishing a message to a given topic
+     * @param {topic} mqtt_topic
+     * @param {message} message
+     */
+    publish = (topic, message) => {
+        publishToTopic(mqtt, topic, message, mqttOptions, () => {
+            console.log(`publish message > ${message} to topic ${topic}`);
+        });
     };
 }
 

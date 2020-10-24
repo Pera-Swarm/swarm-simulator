@@ -1,9 +1,15 @@
-const wrapper = (routes, robots) => {
-    const wrappedRoutes = routes.forEach((item) => {
-        // TODO: add the robots property to the handler function in each of the routes via arguments
-        console.log(item, robots);
-        return item;
+// add 'swarm' property to the handler function in each route
+const wrapper = (routes, swarm) => {
+    let wrappedRoutes = [];
+
+    routes.map((item) => {
+        wrappedRoutes.push({
+            ...item,
+            handler: (msg) => item.handler(msg, swarm)
+        });
     });
+
+    return wrappedRoutes;
 };
 
 module.exports = wrapper;

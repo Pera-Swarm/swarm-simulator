@@ -11,11 +11,12 @@ const subscribeToTopic = (mqtt, topic, options) => {
 /**
  * method for publishing a message to a given topic with options and a callback funtion
  * @param {mqtt} mqtt_connection
+ * @param {topic} topic
  * @param {message} message
  * @param {options} mqtt_message_options
  * @param {callback} callback_function
  */
-const publishToTopic = (mqtt, message, options, callback) => {
+const publishToTopic = (mqtt, topic, message, options, callback) => {
     mqtt.publish(topic, message, options, () => {
         if (callback !== undefined) {
             callback();
