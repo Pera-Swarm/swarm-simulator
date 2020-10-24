@@ -1,6 +1,6 @@
 class Mode {
     /**
-     *
+     * Mode constructor
      * @param {function} setup a function that runs at start
      * @param {function} flow a function that runs periodically
      * @param {number} interval the time interval of the flow function runs on

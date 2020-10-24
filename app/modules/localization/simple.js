@@ -3,7 +3,7 @@ const { Coordinate } = require('../../common/coordinate');
 
 class SimpleLocalizationSystem {
     /**
-     * simple localization system constructor
+     * SimplelocalizationSystem constructor
      */
     constructor() {
         this.ids = [];

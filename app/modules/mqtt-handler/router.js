@@ -1,15 +1,24 @@
 // TODO: Add an option to add new subscription / remove subscriptions to the route list even after init
+const { MqttClient } = require('mqtt');
 
 class MQTTRouter {
+    /**
+     * MQTTRouter constructor
+     * @param {MqttClient} mqttConnection mqtt connection
+     * @param {[]} routes routes with mqtt topic, handler and allowRetained properties
+     * @param {object} options mqtt message options
+     * @param {function} setup setup function that runs on connection success
+     * @param {function} onError error handler function
+     */
     constructor(mqttConnection, routes, options, setup, onError) {
         this.mqttClient = mqttConnection;
-
         if (Array.isArray(routes)) {
             this.routes = routes;
         } else {
             this.routes = [
                 {
                     topic: 'v1/',
+                    allowRetained: true,
                     handler: (topic, msg) => {
                         try {
                             var data = JSON.parse(msg);
@@ -18,8 +27,7 @@ class MQTTRouter {
                             // TODO: use errorHandler
                             this.errorHandler(err);
                         }
-                    },
-                    allowRetained: true
+                    }
                 }
             ];
         }
@@ -90,7 +98,10 @@ class MQTTRouter {
     };
 
     /**
-     * method for handling messages on retain false subscription.
+     * method for filtering retain false handling logic
+     * @param {string} topic mqtt topic
+     * @param {object} message mqtt message object
+     * @param {object} packet mqtt packet object
      */
     retainFalseLogic = (topic, message, packet) => {
         console.log('Fresh msg: ', topic, '>', message);
@@ -103,7 +114,10 @@ class MQTTRouter {
     };
 
     /**
-     * method for handling messages on retain true subscription.
+     * method for filtering retain true handling logic
+     * @param {string} topic mqtt topic
+     * @param {object} message mqtt message object
+     * @param {object} packet mqtt packet object
      */
     retainTrueLogic = (topic, message, packet) => {
         console.log('Retained msg: ', topic, '>', message);

@@ -1,6 +1,9 @@
 const { validateCoordinate, Coordinate } = require('../../common/coordinate');
 
 class Localization {
+    /**
+     * Localization constructor
+     */
     constructor() {
         this.list = [];
         this.updated = Date.now();
