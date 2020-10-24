@@ -1,5 +1,6 @@
 const { Robot } = require('../robot');
 
+// Class for representing the robots level functionality
 class Robots {
     constructor() {
         this.list = [];

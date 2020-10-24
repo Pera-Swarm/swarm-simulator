@@ -1,6 +1,7 @@
 const { Coordinate } = require('../../common/coordinate');
 const sensors = require('../../modules/sensors');
 
+// Class for representing the specific robot level functionality
 class Robot {
     constructor(id, x, y, heading) {
         this.id = id;

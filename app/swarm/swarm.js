@@ -103,8 +103,8 @@ class Swarm {
     publish = (topic, message) => {
         publishToTopic(mqtt, topic, message, mqttOptions, () => {
             console.log(`publish message > ${message} to topic ${topic}`);
-        })
-    }
+        });
+    };
 }
 
 module.exports = { Swarm };

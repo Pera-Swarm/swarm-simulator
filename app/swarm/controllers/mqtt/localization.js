@@ -9,7 +9,7 @@ const routes = [
             console.log('localization handler', msg);
             console.log(msg);
             // console.log(swarm);
-            
+
             // TODO: swarm.updateLocalization(msg.id, 'distance');
 
             swarm.publish('v1/robot/live', 'sample msg loc');

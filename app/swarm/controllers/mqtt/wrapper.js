@@ -4,7 +4,7 @@ const wrapper = (routes, swarm) => {
 
     routes.map((item) => {
         wrappedRoutes.push({
-            ...item, 
+            ...item,
             handler: (msg) => item.handler(msg, swarm)
         });
     });
