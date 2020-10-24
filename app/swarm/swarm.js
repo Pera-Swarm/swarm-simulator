@@ -49,6 +49,10 @@ const SAMPLE_ROUTES = [
 
 // Class for representing the swarm level functionality
 class Swarm {
+    /**
+     * Swarm constructor
+     * @param {function} setup a fuction to run when the swarm object created
+     */
     constructor(setup) {
         const myRoutes = [
             {
@@ -88,8 +92,8 @@ class Swarm {
 
     /**
      * method for adding a new Robot to the swarm
-     * @param {id} robot_id
-     * @param {created} created_time
+     * @param {number} id robot id
+     * @param {Date} created created time
      */
     addRobot = (id, created) => {
         const robot = new Robot(id);
@@ -97,8 +101,8 @@ class Swarm {
 
     /**
      * method for publishing a message to a given topic
-     * @param {topic} mqtt_topic
-     * @param {message} message
+     * @param {string} topic mqtt topic
+     * @param {string} message mqtt message object
      */
     publish = (topic, message) => {
         publishToTopic(mqtt, topic, message, mqttOptions, () => {

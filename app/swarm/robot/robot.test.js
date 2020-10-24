@@ -95,12 +95,9 @@ describe('Robot', function () {
         it('should return the sensor readings of the robot instance', function () {
             const sensorReadings = r.getSensorReadings();
             assert.typeOf(sensorReadings, 'object');
-            // color
-            expect(sensorReadings).to.haveOwnProperty('color');
-            assert.typeOf(sensorReadings.color, 'object');
-            // distance
-            expect(sensorReadings).to.haveOwnProperty('distance');
-            assert.typeOf(sensorReadings.distance, 'object');
+            sensorTypes.map((type) => {
+                expect(sensorReadings).to.haveOwnProperty(type);
+            });
         });
     });
 
