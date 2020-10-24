@@ -13,7 +13,8 @@ const SAMPLE_ROUTES = [
         handler: (mqtt, topic, msg) => {
             data = JSON.parse(msg);
             console.log('Localization info picked up the topic', data);
-        }
+        },
+        allowRetained: true,
     },
     {
         topic: 'v1/robot/msg/broadcast',

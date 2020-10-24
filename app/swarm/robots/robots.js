@@ -11,7 +11,8 @@ class Robots {
      * @param {id} id
      */
     addRobot = (id) => {
-        this.list.push(new Robot(id));
+        this.list[id] = new Robot(id);
+        //console.log(this.list);
     };
 
     // TODO: add swarm functionality here
