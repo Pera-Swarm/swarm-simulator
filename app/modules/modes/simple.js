@@ -15,7 +15,7 @@ const defineBaseMode = (setup, flow, interval, name) => {
         name = 'base-mode';
     }
     mode = new Mode(setup, flow, interval, name);
-    console.log(mode);
+    console.log(`${name} initiated`);
     mode.start();
 };
 
