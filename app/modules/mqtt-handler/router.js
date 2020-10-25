@@ -58,7 +58,7 @@ class MQTTRouter {
         this.mqttClient.on('connect', () => {
             console.log('connect fn');
             this.handleRouteSubscriptions();
-            if (this.setup !== null) {
+            if (this.setup !== null && this.setup !== undefined) {
                 this.setup();
             }
         });
