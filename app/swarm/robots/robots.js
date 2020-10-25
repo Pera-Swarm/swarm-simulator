@@ -1,5 +1,5 @@
-const robot = require('../robot/robot');
-const { Robot } = require('../robot/robot');
+const robot = require('../../modules/robot/');
+const { Robot } = require('../../modules/robot/');
 
 // Class for representing the robots level functionality
 class Robots {

@@ -1,5 +1,5 @@
 // Base Models
-const { Robot } = require('./robot');
+// const { Robot } = require('./robot');
 
 // MQTT
 const mqttClient = require('mqtt');
@@ -95,9 +95,9 @@ class Swarm {
      * @param {number} id robot id
      * @param {Date} created created time
      */
-    addRobot = (id, created) => {
-        const robot = new Robot(id);
-    };
+    // addRobot = (id, created) => {
+    //     const robot = new Robot(id);
+    // };
 
     /**
      * method for publishing a message to a given topic
