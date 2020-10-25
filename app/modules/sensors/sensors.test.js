@@ -11,9 +11,9 @@ var updated;
 
 const SAMPLE_ID = 1;
 
-const INITIAL_COLOR_SENSOR_VALUE = [0, 0, 0];
-const SAMPLE_COLOR_SENSOR_VALUE_1 = [123, 231, 19];
-const SAMPLE_COLOR_SENSOR_VALUE_2 = [1, 150, 121];
+const INITIAL_COLOR_SENSOR_VALUES = [0, 0, 0];
+const SAMPLE_COLOR_SENSOR_VALUES_1 = [123, 231, 19];
+const SAMPLE_COLOR_SENSOR_VALUES_2 = [1, 150, 121];
 
 const INITIAL_DISTANCE_SENSOR_VALUE = 0;
 const SAMPLE_DISTANCE_SENSOR_VALUE_1 = 123;
@@ -38,7 +38,7 @@ describe('Sensors', function () {
             expect(s.color).to.be.instanceOf(ColorSensor.ColorSensor);
             assert.typeOf(s.color, 'object');
             expect(s.color.id).to.equal(SAMPLE_ID);
-            expect(s.color.value).to.deep.equal(INITIAL_COLOR_SENSOR_VALUE);
+            expect(s.color.values).to.deep.equal(INITIAL_COLOR_SENSOR_VALUES);
 
             // distance
             expect(s).to.haveOwnProperty('distance');
