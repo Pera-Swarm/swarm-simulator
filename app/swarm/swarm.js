@@ -5,7 +5,7 @@
 const mqttClient = require('mqtt');
 const mqttConfig = require('../config/mqtt.config');
 const { mqttOptions } = require('../config/mqtt.config');
-const { MQTTRouter, publishToTopic } = require('../modules/mqtt-handler');
+const { MQTTRouter, publishToTopic, wrapper } = require('../modules/mqtt-handler');
 
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
@@ -17,7 +17,7 @@ const { SimpleLocalizationSystem } = require('../modules/localization');
 // const cron = require('../services/cron.js');
 
 // Controllers
-const { localizationRoutes, sensorRoutes, wrapper } = require('./controllers/mqtt/');
+const { localizationRoutes, sensorRoutes } = require('./controllers/mqtt/');
 const { initRobots } = require('./robots/robots');
 
 const SAMPLE_ROUTES = [
