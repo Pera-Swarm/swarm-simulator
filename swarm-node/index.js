@@ -12,6 +12,7 @@ const { defineBaseMode } = require('../app/modules/modes/');
 // Internal modules
 // const { move, moveSpecific, stop, reset } = require('./robot/controllers/index');
 const { setup } = require('./robot/services/protocols');
+const { circular } = require('./robot/controllers/patterns/');
 const { robotRoutes } = require('./robot/controllers/mqtt/');
 
 var robot;
@@ -43,6 +44,7 @@ loop = () => {
             }
         });
     } else {
+        circular(robot);
         // console.log(robot);
         // coordinates = move(coordinates);
         // logger.info('main: Executing ROBOT(%s) instance with coordinates: %s', robotId, coordinates);
