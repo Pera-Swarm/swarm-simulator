@@ -64,7 +64,7 @@ class Robots {
     */
     existsRobot = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
-        return this.robotList[id] != undefined;
+        return (this.list[id] != undefined);
     };
 
     /**
