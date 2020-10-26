@@ -11,7 +11,7 @@ const routes = [
             // TODO: write this function
             swarm.robots.locationUpdate(msg);
         },
-        subscribe: true,
+        subscribe: true
     },
     {
         topic: 'v1/robot/create',
@@ -20,7 +20,7 @@ const routes = [
             //console.log('Creating > id:',msg.id,'x:',msg.x,'y:',msg.y);
             swarm.robots.addRobot(msg.id, msg.x, msg.y, msg.heading);
         },
-        subscribe: true,
+        subscribe: true
     }
 ];
 

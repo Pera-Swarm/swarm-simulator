@@ -3,13 +3,13 @@ const { MqttClient } = require('mqtt');
 
 class MQTTRouter {
     /**
-    * MQTTRouter constructor
-    * @param {MqttClient} mqttConnection mqtt connection
-    * @param {[]} routes routes with mqtt topic, handler and allowRetained properties
-    * @param {object} options mqtt message options
-    * @param {function} setup setup function that runs on connection success
-    * @param {function} onError error handler function
-    */
+     * MQTTRouter constructor
+     * @param {MqttClient} mqttConnection mqtt connection
+     * @param {[]} routes routes with mqtt topic, handler and allowRetained properties
+     * @param {object} options mqtt message options
+     * @param {function} setup setup function that runs on connection success
+     * @param {function} onError error handler function
+     */
     constructor(mqttConnection, routes, options, setup, onError) {
         this.mqttClient = mqttConnection;
         if (Array.isArray(routes)) {
@@ -22,12 +22,15 @@ class MQTTRouter {
                     handler: (topic, msg) => {
                         try {
                             var data = JSON.parse(msg);
-                            console.log('MQTT_Default Subscriber picked up the topic', data);
+                            console.log(
+                                'MQTT_Default Subscriber picked up the topic',
+                                data
+                            );
                         } catch (err) {
                             // TODO: use errorHandler
                             this.errorHandler(err);
                         }
-                    },
+                    }
                 }
             ];
         }
@@ -52,8 +55,8 @@ class MQTTRouter {
     }
 
     /**
-    * method for starting the mqtt handler
-    */
+     * method for starting the mqtt handler
+     */
     start = () => {
         console.log('start fn');
         this.mqttClient.on('connect', () => {
@@ -78,7 +81,10 @@ class MQTTRouter {
 
                     // TODO: update this if there more better method than following
                     try {
-                        msg = (this.routes[i].type=='String') ? message.toString() : JSON.parse(message);
+                        msg =
+                            this.routes[i].type == 'String'
+                                ? message.toString()
+                                : JSON.parse(message);
 
                         if (packet.retain === false) {
                             // Rresh messages
@@ -87,7 +93,6 @@ class MQTTRouter {
                             // Also accept older messages
                             this.retainTrueLogic(topic, msg, this.routes[i]);
                         }
-
                     } catch (err) {
                         // TODO: use errorHandler
                         this.errorHandler(err);
@@ -98,41 +103,39 @@ class MQTTRouter {
     };
 
     /**
-    * method for handling the subscriptions for the topics in the routes list.
-    */
+     * method for handling the subscriptions for the topics in the routes list.
+     */
     handleRouteSubscriptions = () => {
         for (var i = 0; i < this.routes.length; i++) {
-            if(this.routes[i].subscribe != false){
+            if (this.routes[i].subscribe != false) {
                 // subscribe at the beginning unless it is avoided by setting 'subscribe:false'
                 this.mqttClient.subscribe(this.routes[i].topic, this.options);
                 console.log('MQTT_Subscribed: ', this.routes[i].topic);
-
-            }else{
+            } else {
                 // No subscription required for this topic
                 console.log('MQTT_NotSubscribed: ', this.routes[i].topic);
-
             }
         }
         console.log('');
     };
 
     /**
-    * method for filtering retain false handling logic
-    * @param {string} topic mqtt topic
-    * @param {object} message mqtt message object
-    * @param {object} process entry in the route definition
-    */
+     * method for filtering retain false handling logic
+     * @param {string} topic mqtt topic
+     * @param {object} message mqtt message object
+     * @param {object} process entry in the route definition
+     */
     retainFalseLogic = (topic, message, task) => {
         console.log('MQTT_Msg_Fresh: ', topic, '>', message);
         task.handler(message);
     };
 
     /**
-    * method for filtering retain true handling logic
-    * @param {string} topic mqtt topic
-    * @param {object} message mqtt message object
-    * @param {object} process entry in the route definition
-    */
+     * method for filtering retain true handling logic
+     * @param {string} topic mqtt topic
+     * @param {object} message mqtt message object
+     * @param {object} process entry in the route definition
+     */
     retainTrueLogic = (topic, message, task) => {
         console.log('MQTT_Msg_Retained: ', topic, '>', message);
         task.handler(message);

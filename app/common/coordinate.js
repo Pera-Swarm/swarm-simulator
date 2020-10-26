@@ -1,7 +1,7 @@
 // TODO: rearrange maybe??
 
 class Coordinate {
-    constructor(id,x,y,heading,z) {
+    constructor(id, x, y, heading, z) {
         this.id = id;
         this.x = x;
         this.y = y;
@@ -13,12 +13,12 @@ class Coordinate {
     }
 
     /**
-    * method for setting coordinates
-    * @param {heading} heading_value
-    * @param {x} x_value
-    * @param {y} y_value
-    * @param {z} z_value
-    */
+     * method for setting coordinates
+     * @param {heading} heading_value
+     * @param {x} x_value
+     * @param {y} y_value
+     * @param {z} z_value
+     */
     setCoordinates = (x, y, heading, z) => {
         this.heading = heading;
         this.x = x;
@@ -29,15 +29,15 @@ class Coordinate {
     };
 
     /**
-    * method for getting id
-    */
+     * method for getting id
+     */
     getId = () => {
         return this.id;
     };
 
     /**
-    * method for getting coordinates
-    */
+     * method for getting coordinates
+     */
     getCoordinates = () => {
         if (this.z !== undefined) {
             return {
@@ -52,13 +52,13 @@ class Coordinate {
             id: this.id,
             x: this.x,
             y: this.y,
-            heading: this.heading,
+            heading: this.heading
         };
     };
 
     /**
-    * method for getting extended coordinates
-    */
+     * method for getting extended coordinates
+     */
     getCoordinatesEx = () => {
         return {
             heading: this.heading,
@@ -69,8 +69,8 @@ class Coordinate {
     };
 
     /**
-    * method for resetting coordinates
-    */
+     * method for resetting coordinates
+     */
     reset = () => {
         this.heading = 0;
         this.x = 0;
@@ -82,13 +82,13 @@ class Coordinate {
 }
 
 /**
-* method for validating a coordinate object.
-* returns true if valid or -1 if not.
-* @param {coordinate} coordinate
-*/
+ * method for validating a coordinate object.
+ * returns true if valid or -1 if not.
+ * @param {coordinate} coordinate
+ */
 const validateCoordinate = (coordinate) => {
     var validity = -1,
-    i = 0;
+        i = 0;
     if (Object.prototype.hasOwnProperty.call(coordinate, 'id')) {
         i += 1;
     }

@@ -17,7 +17,11 @@ const { SimpleLocalizationSystem } = require('../modules/localization');
 // const cron = require('../services/cron.js');
 
 // Controllers
-const { localizationRoutes, sensorRoutes, controlRoutes } = require('./controllers/mqtt/');
+const {
+    localizationRoutes,
+    sensorRoutes,
+    controlRoutes
+} = require('./controllers/mqtt/');
 const { initRobots } = require('./robots/robots');
 
 const SAMPLE_ROUTES = [

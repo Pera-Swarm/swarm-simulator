@@ -9,14 +9,14 @@ const routes = [
             //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
             var robot = swarm.robots.findRobotById(msg.id);
 
-            if(robot != undefined){
+            if (robot != undefined) {
                 const heartbeat = robot.updateHeartbeat();
                 console.log('Heatbeat of the robot', msg.id, 'is updated to', heartbeat);
-            }else{
+            } else {
                 // No robot found.
             }
         },
-        subscribe: true,
+        subscribe: true
     },
     {
         topic: 'v1/robot/create',
@@ -25,9 +25,8 @@ const routes = [
             //console.log('Creating > id:',msg.id,'x:',msg.x,'y:',msg.y);
             swarm.robots.addRobot(msg.id, msg.x, msg.y, msg.heading);
         },
-        subscribe: true,
-    },
-
+        subscribe: true
+    }
 ];
 
 module.exports = routes;

@@ -5,15 +5,14 @@ const sensorTypes = ['color', 'distance'];
 
 // Class for representing the specific robot level functionality
 class Robot {
-
     /**
-    * Robot constructor
-    * @param {string} id robot id
-    * @param {number} heading heading coordinate
-    * @param {number} x x coordinate
-    * @param {number} y y coordinate
-    * @param {number} z z coordinate
-    */
+     * Robot constructor
+     * @param {string} id robot id
+     * @param {number} heading heading coordinate
+     * @param {number} x x coordinate
+     * @param {number} y y coordinate
+     * @param {number} z z coordinate
+     */
     constructor(id, heading, x, y, z) {
         this.id = id;
 
@@ -34,8 +33,8 @@ class Robot {
     }
 
     /**
-    * method for getting coordinates
-    */
+     * method for getting coordinates
+     */
     getCoordinates = () => {
         // if z coordinates are declared, return the extended cooridnates
         if (this.z !== undefined) {
@@ -51,8 +50,8 @@ class Robot {
     };
 
     /**
-    * method for getting all the sensor readings
-    */
+     * method for getting all the sensor readings
+     */
     getSensorReadings = () => {
         var result = {};
 
@@ -68,23 +67,22 @@ class Robot {
     };
 
     /**
-    * method for getting the sensor readings by the given sensor type
-    * @param {string} type sensor type
-    */
+     * method for getting the sensor readings by the given sensor type
+     * @param {string} type sensor type
+     */
     getReadingsBySensor = (type) => {
         return this.sensors[type].getReading();
     };
 
     /**
-    * method for updating the heartbeat of the robot
-    */
+     * method for updating the heartbeat of the robot
+     */
     updateHeartbeat = () => {
         //console.log('Heartbeat updated')
 
         this.updated = new Date();
         return this.updated;
-    }
-
+    };
 }
 
 module.exports = { Robot, sensorTypes };
