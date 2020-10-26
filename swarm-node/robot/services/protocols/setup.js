@@ -1,6 +1,5 @@
 const { client: httpClient } = require('../http/');
-const { client: mqttClient } = require('../mqtt/');
-const logger = require('../../logger/winston');
+const logger = require('../../../logger/winston');
 
 const registerId = (callback) => {
     let ids;

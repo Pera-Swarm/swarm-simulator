@@ -1,11 +1,11 @@
 // Base Models
-const { Robot } = require('./robot');
+// const { Robot } = require('./robot');
 
 // MQTT
 const mqttClient = require('mqtt');
 const mqttConfig = require('../config/mqtt.config');
 const { mqttOptions } = require('../config/mqtt.config');
-const { MQTTRouter } = require('../modules/mqtt-handler');
+const { MQTTRouter, publishToTopic, wrapper } = require('../modules/mqtt-handler');
 
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
@@ -17,57 +17,51 @@ const { SimpleLocalizationSystem } = require('../modules/localization');
 // const cron = require('../services/cron.js');
 
 // Controllers
-const { localizationRoutes, sensorRoutes, wrapper } = require('./controllers/mqtt/');
+const { localizationRoutes, sensorRoutes } = require('./controllers/mqtt/');
 const { initRobots } = require('./robots/robots');
 
 const SAMPLE_ROUTES = [
     {
         topic: 'v1/localization/info',
-        handler: (mqtt, topic, msg) => {
+        allowRetained: true,
+        handler: (topic, msg) => {
             data = JSON.parse(msg);
             console.log('Localization info picked up the topic', data);
         }
     },
     {
         topic: 'v1/robot/msg/broadcast',
-        handler: (mqtt, topic, msg) => {
+        allowRetained: true,
+        handler: (topic, msg) => {
             data = JSON.parse(msg);
             console.log('Broadcast picked up the topic', data);
         }
     },
     {
         topic: 'v1/sensor/distance',
-        handler: (mqtt, topic, msg) => {
+        allowRetained: true,
+        handler: (topic, msg) => {
             data = JSON.parse(msg);
             console.log('Sensor picked up the topic', data);
         }
     }
 ];
 
+// Class for representing the swarm level functionality
 class Swarm {
+    /**
+     * Swarm constructor
+     * @param {function} setup a fuction to run when the swarm object created
+     */
     constructor(setup) {
         const myRoutes = [
             {
-                topic: 'v1/sensor/distance',
-                handler: (mqtt, topic, msg) => {
-                    var sensor = this.robots.list[msg.id].sensors.distance;
-
-                    sensor.setReading(msg.distance);
-                    console.log(sensor.value);
-
-                    sensor.publishToRobot(mqtt, () => {
-                        console.log('Echo back is success for distance sensor');
-                    });
-                },
-                allowRetained: true
-            },
-            {
                 topic: 'v1/gui/create',
-                handler: (mqtt, topic, msg) => {
+                allowRetained: true,
+                handler: (topic, msg) => {
                     //console.log('Creating > id:',msg.id,'x:',msg.x,'y:',msg.y);
                     this.robots.addRobot(msg.id);
-                },
-                allowRetained: true
+                }
             }
         ];
 
@@ -77,7 +71,8 @@ class Swarm {
         this.robots = initRobots();
         this.mqttRouter = new MQTTRouter(
             mqtt,
-            myRoutes /*wrapper(myRoutes, this.robots),*/,
+            //myRoutes,
+            wrapper([...localizationRoutes, ...sensorRoutes], this),
             mqttOptions,
             setup
         );
@@ -97,11 +92,22 @@ class Swarm {
 
     /**
      * method for adding a new Robot to the swarm
-     * @param {id} robot_id
-     * @param {created} created_time
+     * @param {number} id robot id
+     * @param {Date} created created time
      */
-    addRobot = (id, created) => {
-        const robot = new Robot(id);
+    // addRobot = (id, created) => {
+    //     const robot = new Robot(id);
+    // };
+
+    /**
+     * method for publishing a message to a given topic
+     * @param {string} topic mqtt topic
+     * @param {string} message mqtt message object
+     */
+    publish = (topic, message) => {
+        publishToTopic(mqtt, topic, message, mqttOptions, () => {
+            console.log(`publish message > ${message} to topic ${topic}`);
+        });
     };
 }
 

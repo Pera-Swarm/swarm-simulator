@@ -1,12 +1,19 @@
-// TODO: define every sensor handlers here
-// 'robots' argument will be added via wrapper
+// sensor routes and handlers
+// Note: 'swarm' argument will be added via wrapper
 
 const routes = [
     {
         topic: 'v1/sensor/distance',
-        handler: (mqtt, topic, msg, robots) => {
-            data = JSON.parse(msg);
-            console.log('Sensor picked up the topic', data, robots);
+        allowRetained: true,
+        handler: (msg, swarm) => {
+            console.log('sensor handler', msg);
+            console.log(msg);
+            // console.log(swarm);
+
+            // TODO: swarm.updateSensor(msg.id, 'distance');
+            // var sensor = this.robots.list[msg.id].sensors.distance;
+
+            swarm.publish('v1/robot/live', 'sample msg sen');
         }
     }
 ];

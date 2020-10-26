@@ -1,31 +1,36 @@
 class ColorSensor {
-    constructor(id, value) {
+    /**
+     * ColorSensor constructor
+     * @param {number} id robot id
+     * @param {number[]} values color sensor values
+     */
+    constructor(id, values) {
         this.id = id;
-        if (value !== undefined) {
-            this.value = value;
+        if (values !== undefined) {
+            this.values = values;
         } else {
-            this.value = [0, 0, 0];
+            this.values = [0, 0, 0];
         }
         this.updated = new Date();
     }
 
     /**
-     * method for getting sensor readings
+     * method for getting color sensor readings
      */
     getReading = () => {
         return {
             id: this.id,
-            value: this.value,
+            values: this.values,
             updated: this.updated
         };
     };
 
     /**
-     * method for setting the sensor data
-     * @param {value} sensor_value
+     * method for setting the color sensor data
+     * @param {number[]} values color sensor values
      */
-    setReading = (value) => {
-        this.value = value;
+    setReading = (values) => {
+        this.values = values;
         this.updated = new Date();
     };
 }

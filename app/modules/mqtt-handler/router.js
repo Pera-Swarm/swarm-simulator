@@ -1,16 +1,25 @@
 // TODO: Add an option to add new subscription / remove subscriptions to the route list even after init
+const { MqttClient } = require('mqtt');
 
 class MQTTRouter {
+    /**
+     * MQTTRouter constructor
+     * @param {MqttClient} mqttConnection mqtt connection
+     * @param {[]} routes routes with mqtt topic, handler and allowRetained properties
+     * @param {object} options mqtt message options
+     * @param {function} setup setup function that runs on connection success
+     * @param {function} onError error handler function
+     */
     constructor(mqttConnection, routes, options, setup, onError) {
         this.mqttClient = mqttConnection;
-
         if (Array.isArray(routes)) {
             this.routes = routes;
         } else {
             this.routes = [
                 {
                     topic: 'v1/',
-                    handler: (mqtt, topic, msg) => {
+                    allowRetained: true,
+                    handler: (topic, msg) => {
                         try {
                             var data = JSON.parse(msg);
                             console.log('Default Subscriber picked up the topic', data);
@@ -18,8 +27,7 @@ class MQTTRouter {
                             // TODO: use errorHandler
                             this.errorHandler(err);
                         }
-                    },
-                    allowRetained: true
+                    }
                 }
             ];
         }
@@ -50,7 +58,7 @@ class MQTTRouter {
         this.mqttClient.on('connect', () => {
             console.log('connect fn');
             this.handleRouteSubscriptions();
-            if (this.setup !== null) {
+            if (this.setup !== null && this.setup !== undefined) {
                 this.setup();
             }
         });
@@ -90,20 +98,26 @@ class MQTTRouter {
     };
 
     /**
-     * method for handling messages on retain false subscription.
+     * method for filtering retain false handling logic
+     * @param {string} topic mqtt topic
+     * @param {object} message mqtt message object
+     * @param {object} packet mqtt packet object
      */
     retainFalseLogic = (topic, message, packet) => {
         console.log('Fresh msg: ', topic, '>', message);
 
         for (var i = 0; i < this.routes.length; i += 1) {
             if (this.routes[i].topic === topic) {
-                this.routes[i].handler(this.mqttClient, topic, message);
+                this.routes[i].handler(message);
             }
         }
     };
 
     /**
-     * method for handling messages on retain true subscription.
+     * method for filtering retain true handling logic
+     * @param {string} topic mqtt topic
+     * @param {object} message mqtt message object
+     * @param {object} packet mqtt packet object
      */
     retainTrueLogic = (topic, message, packet) => {
         console.log('Retained msg: ', topic, '>', message);
@@ -111,7 +125,7 @@ class MQTTRouter {
         for (var i = 0; i < this.routes.length; i += 1) {
             if (this.routes[i].topic === topic) {
                 if (this.routes[i].allowRetained == true) {
-                    this.routes[i].handler(this.mqttClient, topic, message);
+                    this.routes[i].handler(message);
                 } else {
                     // Retained messages were not accepted
                 }
