@@ -19,13 +19,13 @@ const circular = (robot, callback) => {
     logger.log('debug', 'controllers.patterns.circular: ', robot.getCoordinates());
 
     //heading = 180 - a;
-    heading = this.normalizedAngle(180 - a); // Need to test this
+    heading = normalizedAngle(180 - a); // Need to test this
     x = R * Math.cos((a * Math.PI) / 180);
     y = R * Math.sin((a * Math.PI) / 180);
 
     robot.setCoordinates(heading, x, y);
     a = a + delta;
-    
+
     callback();
     logger.log('debug', 'controllers.patterns.circular: ', robot.getCoordinates());
 };
