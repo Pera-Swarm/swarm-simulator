@@ -13,7 +13,7 @@ class Robot {
      * @param {number} y y coordinate
      * @param {number} z z coordinate
      */
-    constructor(id, heading, x, y, z) {
+    constructor(id, x, y, heading, z) {
         this.id = id;
 
         heading = heading == undefined ? 0 : heading;
@@ -25,7 +25,7 @@ class Robot {
 
         // console.log('Robot_Created > id:', id, 'x:', x, 'y:', y, 'heading', heading);
 
-        this.coordinate = new Coordinate(id, heading, x, y);
+        this.coordinate = new Coordinate(id, x, y, heading);
         this.sensors = sensors(id);
         this.created = new Date();
         this.updated = new Date();
@@ -58,11 +58,11 @@ class Robot {
      * @param {number} y y coordinate
      * @param {number} z z coordinate
      */
-    setCoordinates = (heading, x, y, z) => {
+    setCoordinates = (x, y, heading, z) => {
         if (this.coordinate.z !== undefined && z !== undefined) {
-            this.coordinate.setCoordinates(heading, x, y, z);
+            this.coordinate.setCoordinates(x, y, heading, z);
         } else {
-            this.coordinate.setCoordinates(heading, x, y);
+            this.coordinate.setCoordinates(x, y, heading);
         }
     };
 
