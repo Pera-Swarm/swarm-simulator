@@ -4,7 +4,7 @@
 const routes = [
     {
         topic: 'v1/robot/live',
-        allowRetained: false,,
+        allowRetained: false,
         subscribe: true,
         handler: (msg, swarm) => {
             //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
@@ -20,7 +20,7 @@ const routes = [
     },
     {
         topic: 'v1/robot/create',
-        allowRetained: true,,
+        allowRetained: true,
         subscribe: true,
         handler: (msg, swarm) => {
             //console.log('Creating > id:',msg.id,'x:',msg.x,'y:',msg.y);
