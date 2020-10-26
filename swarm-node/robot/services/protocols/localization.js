@@ -6,9 +6,9 @@ const { Robot } = require('../../../../app/modules/robot');
 
 /**
  * method for sending the localization info
- * @param {Robot} robot
- * @param {MqttClient} mqtt
- * @param {object} mqttOptions
+ * @param {Robot} robot robot instance
+ * @param {MqttClient} mqtt mqtt connection
+ * @param {object} mqttOptions mqtt options object
  */
 const localizationInfoUpdate = (robot, mqtt, mqttOptions) => {
     const message = {

@@ -12,10 +12,11 @@ const { defineBaseMode } = require('../app/modules/modes/');
 
 // Internal modules
 const {
-    setup,
     generateId,
     heartbeat,
-    localizationInfoUpdate
+    initial,
+    localizationInfoUpdate,
+    setup
 } = require('./robot/services/protocols');
 const { circular } = require('./robot/controllers/patterns/');
 const { robotRoutes } = require('./robot/controllers/mqtt/');
@@ -26,15 +27,15 @@ var robotId = generateId();
 var uuid = uuidv4();
 
 initiate = () => {
-    robot = new Robot(robotId, 0, 50, 0);
+    robot = new Robot(robotId, 0, 0, 0);
     mqttRouter = new MQTTRouter(
         mqtt,
         //myRoutes,
         wrapper([...robotRoutes], robot),
         mqttOptions
-        // setup
     );
     mqttRouter.start();
+    initial(robot, mqtt, mqttOptions);
 };
 
 loop = () => {
