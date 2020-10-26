@@ -2,10 +2,8 @@ var assert = require('chai').assert;
 var chai = require('chai');
 var expect = chai.expect;
 
-const { Robot } = require('../robot');
+const { Robot } = require('../../modules/robot/');
 const { Robots, initRobots } = require('./robots');
-
-console.log(Robot);
 
 var r;
 var updated;
@@ -24,16 +22,65 @@ describe('Robots', function () {
             // addRobot
             expect(r).to.haveOwnProperty('addRobot');
             assert.typeOf(r.addRobot, 'function');
-
             // updated
             expect(r).to.haveOwnProperty('updated');
             assert.typeOf(r.updated, 'number');
             expect(r.updated).to.equal(updated);
-
             // list
-            expect(r).to.haveOwnProperty('list');
-            assert.typeOf(r.list, 'array');
-            expect(r.list).to.deep.equal([]);
+            expect(r).to.haveOwnProperty('robotList');
+            assert.typeOf(r.robotList, 'object');
+            expect(r.robotList).to.deep.equal({});
+        });
+    });
+
+    describe('#getSize()', function () {
+        it('should return the size of the robot list', function () {
+            var size = r.getSize();
+            assert.typeOf(size, 'number');
+            expect(size).to.equal(0);
+            r.addRobot(1);
+            r.addRobot(2);
+            r.addRobot(1);
+            size = r.getSize();
+            assert.typeOf(size, 'number');
+            expect(size).to.equal(2);
+        });
+    });
+
+    describe('#addRobot()', function () {
+        it('should add a robot', function () {
+            expect(r.addRobot).to.throw(TypeError);
+            r.addRobot(1);
+            r.addRobot(1);
+            expect(r.getSize()).to.equal(1);
+        });
+    });
+
+    describe('#findRobotById()', function () {
+        it('should return a robot by id or undefined', function () {
+            var robot = r.findRobotById(SAMPLE_ID_1);
+            // empty
+            assert.isUndefined(robot);
+            expect(robot).to.equal(undefined);
+
+            r.addRobot(SAMPLE_ID_1);
+            r.addRobot(SAMPLE_ID_2);
+            // populated
+            robot = r.findRobotById(SAMPLE_ID_1);
+
+            assert.typeOf(robot, 'object');
+            expect(robot).to.haveOwnProperty('id');
+            expect(robot.id).to.equal(SAMPLE_ID_1);
+
+            robot = r.findRobotById(SAMPLE_ID_2);
+            assert.typeOf(robot, 'object');
+            expect(robot).to.haveOwnProperty('id');
+            expect(robot.id).to.equal(SAMPLE_ID_2);
+
+            // not existing
+            robot = r.findRobotById(10);
+            assert.isUndefined(robot);
+            expect(robot).to.equal(undefined);
         });
     });
 });

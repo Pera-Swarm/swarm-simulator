@@ -1,7 +1,11 @@
 class DistanceSensor {
+    /**
+     * DistanceSensor constructor
+     * @param {number} id robot id
+     * @param {number} value distance sensor reading
+     */
     constructor(id, value) {
         this.id = id;
-
         if (value !== undefined) {
             this.value = value;
         } else {
@@ -9,25 +13,6 @@ class DistanceSensor {
         }
         this.updated = new Date();
     }
-
-    /*
-     * method for publish to relevent topic
-     */
-    publishToRobot = (mqtt, callback) => {
-        mqtt.publish(
-            'v1/sensor/distance/' + this.id.toString(),
-            this.value.toString(),
-            () => {
-                // callback
-
-                if (callback != undefined) {
-                    callback();
-                } else {
-                    console.log('published: robot_' + this.id + ' > ' + this.value);
-                }
-            }
-        );
-    };
 
     /**
      * method for getting sensor readings
@@ -41,12 +26,25 @@ class DistanceSensor {
     };
 
     /**
-     * method for setting the sensor data
-     * @param {value} sensor_value
+     * method for setting the distance sensor data
+     * @param {number} value distance sensor value
      */
     setReading = (value) => {
         this.value = value;
         this.updated = new Date();
+    };
+
+    /**
+     * method for setting the distance sensor data and get back the updated data
+     * @param {number} value distance sensor value
+     */
+    syncReading = (value) => {
+        this.value = value;
+        this.updated = new Date();
+
+        // TODO: did some process to sync the value with virtual robots
+        // Currently just echo back the readings
+        return value;
     };
 }
 

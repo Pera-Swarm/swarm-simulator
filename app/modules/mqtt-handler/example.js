@@ -10,14 +10,15 @@ var router;
 const SAMPLE_ROUTES = [
     {
         topic: 'v1/localization/info',
+        allowRetained: true,
         handler: (mqtt, topic, msg) => {
             data = JSON.parse(msg);
             console.log('Localization info picked up the topic', data);
-        },
-        allowRetained: true
+        }
     },
     {
         topic: 'v1/robot/msg/broadcast',
+        allowRetained: false,
         handler: (mqtt, topic, msg) => {
             data = JSON.parse(msg);
             console.log('Broadcast picked up the topic', data);

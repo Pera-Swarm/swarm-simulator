@@ -1,5 +1,5 @@
 const axios = require('axios');
-const logger = require('../../logger/winston');
+const logger = require('../../../logger/winston');
 
 var serverUrl = 'http://' + process.env.HTTP_HOST + ':' + process.env.HTTP_PORT;
 

@@ -11,13 +11,12 @@ const routes = [
             var robot = swarm.robots.findRobotById(msg.id);
 
             if (robot != undefined) {
-                var sensor = robot.sensors.distance;
-                var returnValue = sensor.syncReading(msg.distance);
+                var returnValue = robot.sensors.distance.syncReading(msg.distance);
                 swarm.publish('v1/sensor/distance/' + robot.id, returnValue);
             } else {
-                // No robot found. Just echo the message
+                // No robot found. Just echo the message, because this is a blocking call for the robot
                 // TODO: register the robot into system
-                // swarm.publish('v1/sensor/distance/' + msg.id, msg.distance);
+                swarm.publish('v1/sensor/distance/' + msg.id, msg.distance);
             }
         },
         subscribe: true

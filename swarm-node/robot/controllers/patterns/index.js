@@ -1,3 +1,6 @@
 const logger = require('../../../logger/winston');
+const { circular } = require('./circular');
 
-module.exports = {};
+module.exports = {
+    circular
+};
