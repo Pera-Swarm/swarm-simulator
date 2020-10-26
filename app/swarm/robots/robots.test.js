@@ -27,9 +27,9 @@ describe('Robots', function () {
             assert.typeOf(r.updated, 'number');
             expect(r.updated).to.equal(updated);
             // list
-            expect(r).to.haveOwnProperty('robotList');
-            assert.typeOf(r.robotList, 'object');
-            expect(r.robotList).to.deep.equal({});
+            expect(r).to.haveOwnProperty('list');
+            assert.typeOf(r.list, 'object');
+            expect(r.list).to.deep.equal({});
         });
     });
 
@@ -57,30 +57,26 @@ describe('Robots', function () {
     });
 
     describe('#findRobotById()', function () {
-        it('should return a robot by id or undefined', function () {
+        it('should return a robot by id or -1', function () {
             var robot = r.findRobotById(SAMPLE_ID_1);
             // empty
-            assert.isUndefined(robot);
-            expect(robot).to.equal(undefined);
-
+            assert.typeOf(robot, 'number');
+            expect(robot).to.equal(-1);
             r.addRobot(SAMPLE_ID_1);
             r.addRobot(SAMPLE_ID_2);
             // populated
             robot = r.findRobotById(SAMPLE_ID_1);
-
             assert.typeOf(robot, 'object');
             expect(robot).to.haveOwnProperty('id');
             expect(robot.id).to.equal(SAMPLE_ID_1);
-
             robot = r.findRobotById(SAMPLE_ID_2);
             assert.typeOf(robot, 'object');
             expect(robot).to.haveOwnProperty('id');
             expect(robot.id).to.equal(SAMPLE_ID_2);
-
             // not existing
             robot = r.findRobotById(10);
-            assert.isUndefined(robot);
-            expect(robot).to.equal(undefined);
+            assert.typeOf(robot, 'number');
+            expect(robot).to.equal(-1);
         });
     });
 });
