@@ -49,9 +49,9 @@ class Coordinate {
         }
         return {
             id: this.id,
-            heading: this.heading
+            heading: this.heading,
             x: this.x,
-            y: this.y,
+            y: this.y
         };
     };
 
