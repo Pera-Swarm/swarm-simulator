@@ -54,17 +54,6 @@ class Swarm {
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-        const myRoutes = [
-            {
-                topic: 'v1/gui/create',
-                allowRetained: true,
-                handler: (topic, msg) => {
-                    //console.log('Creating > id:',msg.id,'x:',msg.x,'y:',msg.y);
-                    this.robots.addRobot(msg.id);
-                }
-            }
-        ];
-
         //console.log(wrapper(myRoutes, this.robots));
 
         this.loc_system = new SimpleLocalizationSystem();
@@ -105,8 +94,8 @@ class Swarm {
      * @param {string} message mqtt message object
      */
     publish = (topic, message) => {
-        publishToTopic(mqtt, topic, message, mqttOptions, () => {
-            console.log(`publish message > ${message} to topic ${topic}`);
+        publishToTopic(mqtt, topic, message.toString(), mqttOptions, () => {
+            console.log(`MQTT_Publish > ${message} to topic ${topic}`);
         });
     };
 }

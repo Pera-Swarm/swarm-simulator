@@ -43,6 +43,11 @@ class Robot {
         return this.coordinate.getCoordinates();
     };
 
+    setCoordinates = (x, y, heading) => {
+        // if z coordinates are declared, return the extended cooridnates
+        this.coordinate.setCoordinates(x, y, heading);
+        return true;
+    };
     /**
      * method for getting all the sensor readings
      */

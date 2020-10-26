@@ -22,7 +22,7 @@ class MQTTRouter {
                     handler: (topic, msg) => {
                         try {
                             var data = JSON.parse(msg);
-                            console.log('Default Subscriber picked up the topic', data);
+                            console.log('MQTT_Default Subscriber picked up the topic', data);
                         } catch (err) {
                             // TODO: use errorHandler
                             this.errorHandler(err);
@@ -45,7 +45,7 @@ class MQTTRouter {
             this.errorHandler = onError;
         } else {
             this.errorHandler = (err) => {
-                console.log('mqtt.error: ', err);
+                console.log('MQTT_Error: ', err);
             };
         }
     }
@@ -56,7 +56,7 @@ class MQTTRouter {
     start = () => {
         console.log('start fn');
         this.mqttClient.on('connect', () => {
-            console.log('connect fn');
+            console.log('MQTT_Connecting...');
             this.handleRouteSubscriptions();
             if (this.setup !== null && this.setup !== undefined) {
                 this.setup();
@@ -64,7 +64,7 @@ class MQTTRouter {
         });
 
         this.mqttClient.on('error', (err) => {
-            console.log('error fn');
+            console.log('MQTT_Error fn');
             this.errorHandler(err);
         });
 
@@ -91,9 +91,14 @@ class MQTTRouter {
      */
     handleRouteSubscriptions = () => {
         for (var i = 0; i < this.routes.length; i++) {
-            //console.log(this.routes[i]);
-            this.mqttClient.subscribe(this.routes[i].topic, this.options);
-            console.log('Subscribed to', this.routes[i].topic);
+            if(this.routes[i].subscribe != false){
+                // subscribe at the beginning unless it is avoided by setting 'subscribe:false'
+                this.mqttClient.subscribe(this.routes[i].topic, this.options);
+                console.log('MQTT_Subscribed: ', this.routes[i].topic);
+            }else{
+                console.log('MQTT_NotSubscribed: ', this.routes[i].topic);
+            }
+
         }
     };
 
@@ -104,7 +109,7 @@ class MQTTRouter {
      * @param {object} packet mqtt packet object
      */
     retainFalseLogic = (topic, message, packet) => {
-        console.log('Fresh msg: ', topic, '>', message);
+        console.log('MQTT_Msg_Fresh: ', topic, '>', message);
 
         for (var i = 0; i < this.routes.length; i += 1) {
             if (this.routes[i].topic === topic) {
@@ -120,7 +125,7 @@ class MQTTRouter {
      * @param {object} packet mqtt packet object
      */
     retainTrueLogic = (topic, message, packet) => {
-        console.log('Retained msg: ', topic, '>', message);
+        console.log('MQTT_Msg_Retained: ', topic, '>', message);
 
         for (var i = 0; i < this.routes.length; i += 1) {
             if (this.routes[i].topic === topic) {
