@@ -1,12 +1,11 @@
 // TODO: rearrange maybe??
 
 class Coordinate {
-    constructor(id, x, y, heading, z) {
+    constructor(id, heading, x, y, z) {
         this.id = id;
+        this.heading = heading;
         this.x = x;
         this.y = y;
-        this.heading = heading;
-
         if (z !== undefined) {
             this.z = z;
         }
@@ -14,12 +13,12 @@ class Coordinate {
 
     /**
      * method for setting coordinates
-     * @param {heading} heading_value
-     * @param {x} x_value
-     * @param {y} y_value
-     * @param {z} z_value
+     * @param {number} heading heading coordinate
+     * @param {number} x x coordinate
+     * @param {number} y y coordinate
+     * @param {number} z z coordinate
      */
-    setCoordinates = (x, y, heading, z) => {
+    setCoordinates = (heading, x, y, z) => {
         this.heading = heading;
         this.x = x;
         this.y = y;
@@ -42,17 +41,17 @@ class Coordinate {
         if (this.z !== undefined) {
             return {
                 id: this.id,
+                heading: this.heading,
                 x: this.x,
                 y: this.y,
-                heading: this.heading,
                 z: this.z
             };
         }
         return {
             id: this.id,
+            heading: this.heading,
             x: this.x,
-            y: this.y,
-            heading: this.heading
+            y: this.y
         };
     };
 
