@@ -45,7 +45,7 @@ class MQTTRouter {
             this.errorHandler = onError;
         } else {
             this.errorHandler = (err) => {
-                console.log('mqtt.error: ', err);
+                console.error('mqtt.error: ', err);
             };
         }
     }
@@ -54,9 +54,7 @@ class MQTTRouter {
      * method for starting the mqtt handler
      */
     start = () => {
-        console.log('start fn');
         this.mqttClient.on('connect', () => {
-            console.log('connect fn');
             this.handleRouteSubscriptions();
             if (this.setup !== null && this.setup !== undefined) {
                 this.setup();
@@ -64,7 +62,6 @@ class MQTTRouter {
         });
 
         this.mqttClient.on('error', (err) => {
-            console.log('error fn');
             this.errorHandler(err);
         });
 
