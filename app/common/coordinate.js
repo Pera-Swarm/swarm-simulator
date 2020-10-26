@@ -1,24 +1,25 @@
 // TODO: rearrange maybe??
 
 class Coordinate {
-    constructor(id, heading, x, y, z) {
+    constructor(id,x,y,heading,z) {
         this.id = id;
-        this.heading = heading;
         this.x = x;
         this.y = y;
+        this.heading = heading;
+
         if (z !== undefined) {
             this.z = z;
         }
     }
 
     /**
-     * method for setting coordinates
-     * @param {heading} heading_value
-     * @param {x} x_value
-     * @param {y} y_value
-     * @param {z} z_value
-     */
-    setCoordinates = (heading, x, y, z) => {
+    * method for setting coordinates
+    * @param {heading} heading_value
+    * @param {x} x_value
+    * @param {y} y_value
+    * @param {z} z_value
+    */
+    setCoordinates = (x, y, heading, z) => {
         this.heading = heading;
         this.x = x;
         this.y = y;
@@ -28,36 +29,36 @@ class Coordinate {
     };
 
     /**
-     * method for getting id
-     */
+    * method for getting id
+    */
     getId = () => {
         return this.id;
     };
 
     /**
-     * method for getting coordinates
-     */
+    * method for getting coordinates
+    */
     getCoordinates = () => {
         if (this.z !== undefined) {
             return {
                 id: this.id,
-                heading: this.heading,
                 x: this.x,
                 y: this.y,
+                heading: this.heading,
                 z: this.z
             };
         }
         return {
             id: this.id,
-            heading: this.heading,
             x: this.x,
-            y: this.y
+            y: this.y,
+            heading: this.heading,
         };
     };
 
     /**
-     * method for getting extended coordinates
-     */
+    * method for getting extended coordinates
+    */
     getCoordinatesEx = () => {
         return {
             heading: this.heading,
@@ -68,8 +69,8 @@ class Coordinate {
     };
 
     /**
-     * method for resetting coordinates
-     */
+    * method for resetting coordinates
+    */
     reset = () => {
         this.heading = 0;
         this.x = 0;
@@ -81,13 +82,13 @@ class Coordinate {
 }
 
 /**
- * method for validating a coordinate object.
- * returns true if valid or -1 if not.
- * @param {coordinate} coordinate
- */
+* method for validating a coordinate object.
+* returns true if valid or -1 if not.
+* @param {coordinate} coordinate
+*/
 const validateCoordinate = (coordinate) => {
     var validity = -1,
-        i = 0;
+    i = 0;
     if (Object.prototype.hasOwnProperty.call(coordinate, 'id')) {
         i += 1;
     }
