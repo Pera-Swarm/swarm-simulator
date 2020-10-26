@@ -10,7 +10,7 @@ const logger = winston.createLogger({
         winston.format.splat(),
         winston.format.json()
     ),
-    defaultMeta: { service: 'swarm-robotics-uop' },
+    defaultMeta: { service: 'swarm-robotics-uop:swarm-node' },
     transports: [
         new winston.transports.File({ filename: 'error.log', level: 'error' }),
         new winston.transports.File({ filename: 'output.log' })
