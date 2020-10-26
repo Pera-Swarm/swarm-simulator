@@ -44,6 +44,23 @@ class Robot {
     };
 
     /**
+     * method for setting coordinates
+     * if z is given, the z coordinate is updated only if the z coordinate is assigned to an initial value at the instance creation only.
+     * if not, only the other coordinates are updated accordingly
+     * @param {number} heading heading coordinate
+     * @param {number} x x coordinate
+     * @param {number} y y coordinate
+     * @param {number} z z coordinate
+     */
+    setCoordinates = (heading, x, y, z) => {
+        if (this.coordinate.z !== undefined && z !== undefined) {
+            this.coordinate.setCoordinates(heading, x, y, z);
+        } else {
+            this.coordinate.setCoordinates(heading, x, y);
+        }
+    };
+
+    /**
      * method for getting all the sensor readings
      */
     getSensorReadings = () => {
