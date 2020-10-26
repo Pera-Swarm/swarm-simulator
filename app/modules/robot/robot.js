@@ -25,7 +25,7 @@ class Robot {
 
         // console.log('Robot_Created > id:', id, 'x:', x, 'y:', y, 'heading', heading);
 
-        this.coordinate = new Coordinate(id, x, y, heading);
+        this.coordinate = new Coordinate(id, heading, x, y);
         this.sensors = sensors(id);
         this.created = new Date();
         this.updated = new Date();
@@ -43,12 +43,6 @@ class Robot {
         return this.coordinate.getCoordinates();
     };
 
-    setCoordinates = (x, y, heading) => {
-        // if z coordinates are declared, return the extended cooridnates
-        this.coordinate.setCoordinates(x, y, heading);
-        return true;
-    };
-
     /**
      * method for setting coordinates
      * if z is given, the z coordinate is updated only if the z coordinate is assigned to an initial value at the instance creation only.
@@ -60,9 +54,9 @@ class Robot {
      */
     setCoordinates = (x, y, heading, z) => {
         if (this.coordinate.z !== undefined && z !== undefined) {
-            this.coordinate.setCoordinates(x, y, heading, z);
+            this.coordinate.setCoordinates(heading, x, y, z);
         } else {
-            this.coordinate.setCoordinates(x, y, heading);
+            this.coordinate.setCoordinates(heading, x, y);
         }
     };
 

@@ -5,6 +5,7 @@ const routes = [
     {
         topic: 'v1/robot/live',
         allowRetained: false,
+        subscribe: true,
         handler: (msg, swarm) => {
             //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
             var robot = swarm.robots.findRobotById(msg.id);
@@ -15,17 +16,16 @@ const routes = [
             } else {
                 // No robot found.
             }
-        },
-        subscribe: true
+        }
     },
     {
         topic: 'v1/robot/create',
         allowRetained: true,
+        subscribe: true,
         handler: (msg, swarm) => {
             //console.log('Creating > id:',msg.id,'x:',msg.x,'y:',msg.y);
             swarm.robots.addRobot(msg.id, msg.x, msg.y, msg.heading);
-        },
-        subscribe: true
+        }
     }
 ];
 
