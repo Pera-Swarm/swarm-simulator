@@ -1,12 +1,11 @@
 // TODO: rearrange maybe??
 
 class Coordinate {
-    constructor(id, x, y, heading, z) {
+    constructor(id, heading, x, y, z) {
         this.id = id;
-        this.x = x;
-        this.y = y;
         this.heading = heading;
-
+        this.x = x;
+        this.y = y;        
         if (z !== undefined) {
             this.z = z;
         }
