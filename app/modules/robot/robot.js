@@ -23,7 +23,7 @@ class Robot {
             this.z = z;
         }
 
-        // console.log('Created:ROBOT > id:', id, 'x:', x, 'y:', y, 'heading', heading);
+        // console.log('Robot_Created > id:', id, 'x:', x, 'y:', y, 'heading', heading);
 
         this.coordinate = new Coordinate(id, heading, x, y);
         this.sensors = sensors(id);
@@ -41,6 +41,12 @@ class Robot {
             return this.coordinate.getCoordinatesEx();
         }
         return this.coordinate.getCoordinates();
+    };
+
+    setCoordinates = (x, y, heading) => {
+        // if z coordinates are declared, return the extended cooridnates
+        this.coordinate.setCoordinates(x, y, heading);
+        return true;
     };
 
     /**
@@ -85,7 +91,15 @@ class Robot {
         return this.sensors[type].getReading();
     };
 
-    // TODO: add robot specific functionalities here
+    /**
+     * method for updating the heartbeat of the robot
+     */
+    updateHeartbeat = () => {
+        //console.log('Heartbeat updated')
+
+        this.updated = new Date();
+        return this.updated;
+    };
 }
 
 module.exports = { Robot, sensorTypes };
