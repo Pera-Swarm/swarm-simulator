@@ -33,6 +33,19 @@ class ColorSensor {
         this.values = values;
         this.updated = new Date();
     };
+
+    /**
+     * method for setting the solor sensor data and get back the updated data
+     * @param {number} value color sensor value
+     */
+    syncReading = (value) => {
+        this.value = value;
+        this.updated = new Date();
+
+        // TODO: did some process to sync the value with virtual robots
+        // Currently just echo back the readings
+        return value;
+    };
 }
 
 module.exports = { ColorSensor };
