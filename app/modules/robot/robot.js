@@ -43,12 +43,6 @@ class Robot {
         return this.coordinate.getCoordinates();
     };
 
-    setCoordinates = (x, y, heading) => {
-        // if z coordinates are declared, return the extended cooridnates
-        this.coordinate.setCoordinates(x, y, heading);
-        return true;
-    };
-
     /**
      * method for setting coordinates
      * if z is given, the z coordinate is updated only if the z coordinate is assigned to an initial value at the instance creation only.
