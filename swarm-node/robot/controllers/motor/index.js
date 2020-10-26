@@ -4,15 +4,9 @@ const logger = require('../../../logger/winston');
  * method move with increment by one for each axis
  * @param coordinates
  */
-const move = (coordinates) => {
-    var { head, x, y } = coordinates;
+const move = (robot, heading, x, y) => {
     logger.log('debug', 'robot.controllers.motor.move: coordinates(%s)', coordinates);
-    coordinates = {
-        head: head + 1,
-        x: x + 1,
-        y: y + 1
-    };
-    return coordinates;
+    robot.setCoordinates(heading, x, y);
 };
 
 /**

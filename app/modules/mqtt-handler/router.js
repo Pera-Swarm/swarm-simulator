@@ -5,7 +5,7 @@ class MQTTRouter {
     /**
      * MQTTRouter constructor
      * @param {MqttClient} mqttConnection mqtt connection
-     * @param {[]} routes routes with mqtt topic, handler and allowRetained properties
+     * @param {object[]} routes routes with mqtt topic, handler and allowRetained properties
      * @param {object} options mqtt message options
      * @param {function} setup setup function that runs on connection success
      * @param {function} onError error handler function
@@ -22,10 +22,7 @@ class MQTTRouter {
                     handler: (topic, msg) => {
                         try {
                             var data = JSON.parse(msg);
-                            console.log(
-                                'MQTT_Default Subscriber picked up the topic',
-                                data
-                            );
+                            console.log('Default Subscriber picked up the topic', data);
                         } catch (err) {
                             // TODO: use errorHandler
                             this.errorHandler(err);
@@ -49,7 +46,7 @@ class MQTTRouter {
             this.errorHandler = onError;
         } else {
             this.errorHandler = (err) => {
-                console.log('MQTT_Error: ', err);
+                console.error('MQTT_Error: ', err);
             };
         }
     }
@@ -58,7 +55,6 @@ class MQTTRouter {
      * method for starting the mqtt handler
      */
     start = () => {
-        console.log('start fn');
         this.mqttClient.on('connect', () => {
             console.log('MQTT_Connecting...\n');
             this.handleRouteSubscriptions();

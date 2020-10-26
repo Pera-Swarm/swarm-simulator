@@ -7,34 +7,41 @@ class Robots {
     * Robots constructor
     */
     constructor() {
-        this.robotList = {};
+        this.list = {};
         this.size = 0;
         this.updated = Date.now();
     }
 
-    /**
-    * method for adding a robot to the list
-    * @param {number} id robot id
-    * @param {number} x x coordinate
-    * @param {number} y y coordinate
-    * @param {number} heading heading coordinate
-    * @param {number} z z coordinate, optional
-    */
-    addRobot = (id, x, y, heading, z) => {
-        if (id === undefined) throw new TypeError('id unspecified');
-
-        if(this.existsRobot(id)==false){
+/**
+     * method for adding a robot to the list
+     * @param {number} id robot id
+     * @param {number} heading heading coordinate
+     * @param {number} x x coordinate
+     * @param {number} y y coordinate
+     * @param {number} z z coordinate
+     */
+    addRobot = (id, heading, x, y, z) => {
+        if (id === undefined) {
+            throw new TypeError('id unspecified');
+        }
+        //if(this.existsRobot(id)==false){
+        if (this.findRobotById(id) === -1) {
+            // id not found
             if (heading === undefined) {
-                this.robotList[id] = new Robot(id);
+                this.list[id] = new Robot(id);
             }
             if (z === undefined) {
-                this.robotList[id] = new Robot(id, heading, x, y);
+                this.list[id] = new Robot(id, heading, x, y);
             } else if (z !== undefined) {
-                this.robotList[id] = new Robot(id, heading, x, y, z);
+                this.list[id] = new Robot(id, heading, x, y, z);
             }
             this.size += 1;
+            return;
+        } else {
+            // id found
+            // TODO: neglecting adding a new robot with an existing id for now
+            return;
         }
-        return;
     };
 
     /**
@@ -47,7 +54,7 @@ class Robots {
         if (id === undefined) throw new TypeError('id unspecified');
 
         if (this.existsRobot(id)) {
-            this.robotList[id] = undefined;
+            this.list[id] = undefined;
             this.size -= 1;
         }
     };
@@ -60,7 +67,7 @@ class Robots {
     */
     existsRobot = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
-        return (this.robotList[id] != undefined);
+        return (this.list[id] != undefined);
     };
 
     /**
@@ -70,14 +77,24 @@ class Robots {
     * @param {number} id robot id
     */
     findRobotById = (id) => {
-        if (id === undefined) throw new TypeError('id unspecified');
-        var result = this.robotList[id];
+//         if (id === undefined) throw new TypeError('id unspecified');
+//         var result = this.list[id];
 
-        if (result != undefined) {
-            return result;
-        } else {
-            // TODO: Any better option than this ?
-            return undefined;
+//         if (result != undefined) {
+//             return result;
+//         } else {
+//             // TODO: Any better option than this ?
+//             return undefined;
+//         }
+//         return result;
+        var result = -1;
+        for (const key in this.list) {
+            if (
+                Object.prototype.hasOwnProperty.call(this.list, key) &&
+                key === id.toString()
+            ) {
+                result = this.list[key];
+            }
         }
         return result;
     };
@@ -88,7 +105,6 @@ class Robots {
     */
     locationUpdate = (data) => {
         console.log('Robot_locationUpdate:');
-
         data.forEach((robot, i) => {
             const robotInst = this.findRobotById(robot.id);
 
@@ -127,8 +143,8 @@ class Robots {
     */
     getCoordinatesAll = () => {
         var resp = [];
-        for (const key in this.robotList) {
-            resp.push(this.robotList[key].getCoordinates());
+        for (const key in this.list) {
+            resp.push(this.list[key].getCoordinates());
         }
         return resp;
     };
