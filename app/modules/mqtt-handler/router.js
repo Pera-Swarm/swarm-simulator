@@ -5,7 +5,7 @@ class MQTTRouter {
     /**
      * MQTTRouter constructor
      * @param {MqttClient} mqttConnection mqtt connection
-     * @param {[]} routes routes with mqtt topic, handler and allowRetained properties
+     * @param {object[]} routes routes with mqtt topic, handler and allowRetained properties
      * @param {object} options mqtt message options
      * @param {function} setup setup function that runs on connection success
      * @param {function} onError error handler function
