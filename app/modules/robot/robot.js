@@ -15,16 +15,12 @@ class Robot {
      */
     constructor(id, heading, x, y, z) {
         this.id = id;
-
-        heading = heading == undefined ? 0 : heading;
-        x = x == undefined ? 0 : x;
-        y = y == undefined ? 0 : y;
+        heading = heading === undefined ? 0 : heading;
+        x = x === undefined ? 0 : x;
+        y = y === undefined ? 0 : y;
         if (z !== undefined) {
             this.z = z;
         }
-
-        // console.log('Robot_Created > id:', id, 'x:', x, 'y:', y, 'heading', heading);
-
         this.coordinate = new Coordinate(id, heading, x, y);
         this.sensors = sensors(id);
         this.created = new Date();
@@ -34,6 +30,7 @@ class Robot {
 
     /**
      * method for getting coordinates
+     * @returns coordinate object : if z coordinates exists, extended coordinates are returned
      */
     getCoordinates = () => {
         // if z coordinates are declared, return the extended cooridnates
@@ -62,10 +59,10 @@ class Robot {
 
     /**
      * method for getting all the sensor readings
+     * @returns {object} all sensor readings with sensor type as the key and readings as the value
      */
     getSensorReadings = () => {
         var result = {};
-
         for (const key in this.sensors) {
             if (this.sensors.hasOwnProperty(key)) {
                 if (sensorTypes.includes(key)) {
@@ -73,13 +70,13 @@ class Robot {
                 }
             }
         }
-
         return result;
     };
 
     /**
      * method for getting the sensor readings by the given sensor type
      * @param {string} type sensor type
+     * @returns {object} sensor reading object
      */
     getReadingsBySensor = (type) => {
         return this.sensors[type].getReading();
@@ -87,10 +84,9 @@ class Robot {
 
     /**
      * method for updating the heartbeat of the robot
+     * @returns {timestamp} updated datetime value
      */
     updateHeartbeat = () => {
-        //console.log('Heartbeat updated')
-
         this.updated = new Date();
         return this.updated;
     };
