@@ -9,7 +9,7 @@ const routes = [
         handler: (msg, swarm) => {
             console.log('MQTT_Sensor: Distance_Handler: ', msg);
             var robot = swarm.robots.findRobotById(msg.id);
-            if (robot !== undefined) {
+            if (robot !== -1) {
                 var sensor = robot.sensors.distance;
                 var returnValue = sensor.syncReading(msg.distance);
                 swarm.publish('v1/sensor/distance/' + robot.id, returnValue);
