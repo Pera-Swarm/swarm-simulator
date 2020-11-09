@@ -3,7 +3,10 @@ const sensors = require('../../modules/sensors');
 
 const sensorTypes = ['color', 'distance'];
 
-// Class for representing the specific robot level functionality
+/**
+ * @class Robot Representation
+ * @classdesc representing the specific robot level functionality
+ */
 class Robot {
     /**
      * Robot constructor
@@ -24,7 +27,7 @@ class Robot {
         this.coordinate = new Coordinate(id, heading, x, y);
         this.sensors = sensors(id);
         this.created = new Date();
-        this.updated = new Date();
+        this.updated = Date.now();
         this.timestamp = Date.now();
     }
 
@@ -79,15 +82,19 @@ class Robot {
      * @returns {object} sensor reading object
      */
     getReadingsBySensor = (type) => {
-        return this.sensors[type].getReading();
+        if (typeof type === 'string') {
+            return this.sensors[type].getReading();
+        } else {
+            throw new TypeError('invalid sensor type');
+        }
     };
 
     /**
      * method for updating the heartbeat of the robot
-     * @returns {timestamp} updated datetime value
+     * @returns {Date} updated datetime value
      */
     updateHeartbeat = () => {
-        this.updated = new Date();
+        this.updated = Date.now();
         return this.updated;
     };
 }
