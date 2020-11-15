@@ -77,20 +77,16 @@ class MQTTRouter {
 
                     // TODO: update this if there more better method than following
                     try {
-                        msg =
-                            this.routes[i].type == 'String'
-                                ? message.toString()
-                                : JSON.parse(message);
+                        msg = this.routes[i].type == 'String' ? message.toString() : JSON.parse(message);
 
                         if (packet.retain === false) {
-                            // Rresh messages
+                            // Fresh messages
                             this.retainFalseLogic(topic, msg, this.routes[i]);
                         } else {
                             // Also accept older messages
                             this.retainTrueLogic(topic, msg, this.routes[i]);
                         }
                     } catch (err) {
-                        // TODO: use errorHandler
                         this.errorHandler(err);
                     }
                 }
@@ -107,9 +103,11 @@ class MQTTRouter {
                 // subscribe at the beginning unless it is avoided by setting 'subscribe:false'
                 this.mqttClient.subscribe(this.routes[i].topic, this.options);
                 console.log('MQTT_Subscribed: ', this.routes[i].topic);
+
             } else {
                 // No subscription required for this topic
                 console.log('MQTT_NotSubscribed: ', this.routes[i].topic);
+                
             }
         }
         console.log('');
