@@ -77,7 +77,10 @@ class MQTTRouter {
 
                     // TODO: update this if there more better method than following
                     try {
-                        msg = this.routes[i].type == 'String' ? message.toString() : JSON.parse(message);
+                        msg =
+                            this.routes[i].type == 'String'
+                                ? message.toString()
+                                : JSON.parse(message);
 
                         if (packet.retain === false) {
                             // Fresh messages
@@ -103,11 +106,9 @@ class MQTTRouter {
                 // subscribe at the beginning unless it is avoided by setting 'subscribe:false'
                 this.mqttClient.subscribe(this.routes[i].topic, this.options);
                 console.log('MQTT_Subscribed: ', this.routes[i].topic);
-
             } else {
                 // No subscription required for this topic
                 console.log('MQTT_NotSubscribed: ', this.routes[i].topic);
-                
             }
         }
         console.log('');
