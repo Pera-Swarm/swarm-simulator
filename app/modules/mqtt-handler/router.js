@@ -24,7 +24,6 @@ class MQTTRouter {
                             var data = JSON.parse(msg);
                             console.log('Default Subscriber picked up the topic', data);
                         } catch (err) {
-                            // TODO: use errorHandler
                             this.errorHandler(err);
                         }
                     }
@@ -83,14 +82,13 @@ class MQTTRouter {
                                 : JSON.parse(message);
 
                         if (packet.retain === false) {
-                            // Rresh messages
+                            // Fresh messages
                             this.retainFalseLogic(topic, msg, this.routes[i]);
                         } else {
                             // Also accept older messages
                             this.retainTrueLogic(topic, msg, this.routes[i]);
                         }
                     } catch (err) {
-                        // TODO: use errorHandler
                         this.errorHandler(err);
                     }
                 }
