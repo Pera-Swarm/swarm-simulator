@@ -123,6 +123,27 @@ class Robots {
     };
 
     /**
+     * method for getting the robot coordinate string by id
+     * @param {number} id robot id
+     * @returns {String|number} the robot coordinate string if it exists
+     * @returns -1 if it doesn't exist
+     */
+    getCoordinateStringById = (id) => {
+        if (id === undefined) {
+            throw new TypeError('id unspecified');
+        } else {
+            var result = -1;
+            if (this.existsRobot(id) === false) {
+                return result;
+            } else {
+                const { x, y, heading } = this.findRobotById(id).getCoordinates();
+                result = `${x} ${y} ${heading}`;
+                return result;
+            }
+        }
+    };
+
+    /**
      * method for getting the coordinates of all robots
      * @returns {Coordinate[]} return the current robot coordinates that are existing in the list
      */

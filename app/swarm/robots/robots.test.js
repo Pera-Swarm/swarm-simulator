@@ -27,6 +27,9 @@ const SAMPLE_X_2 = 11;
 const SAMPLE_Y_2 = 12;
 const SAMPLE_Z_2 = 13;
 
+const SAMPLE_COORDINATE_STRING_1 = '0 0 0';
+const SAMPLE_COORDINATE_STRING_2 = `${SAMPLE_X_2} ${SAMPLE_Y_2} ${SAMPLE_HEADING_2}`;
+
 beforeEach(function () {
     r.removeRobot(SAMPLE_ID_1);
     r.removeRobot(SAMPLE_ID_2);
@@ -157,6 +160,23 @@ describe('Robots', function () {
             expect(coordinates).to.haveOwnProperty('heading').and.equal(SAMPLE_HEADING_2);
             expect(coordinates).to.haveOwnProperty('x').and.equal(SAMPLE_X_2);
             expect(coordinates).to.haveOwnProperty('y').and.equal(SAMPLE_Y_2);
+        });
+    });
+
+    describe('#getCoordinateStringById()', function () {
+        it('should return coordinates of a robot by id if exists', function () {
+            expect(r.getCoordinateStringById).to.throw(TypeError);
+            // ROBOT 0
+            expect(r.getCoordinateStringById(0)).to.equal(-1);
+            // ROBOT 1
+            var coordinateString = r.getCoordinateStringById(SAMPLE_ID_1);
+            assert.typeOf(coordinateString, 'string');
+            expect(coordinateString).to.equal(SAMPLE_COORDINATE_STRING_1);
+            // ROBOT 2
+            r.addRobot(SAMPLE_ID_2, SAMPLE_HEADING_2, SAMPLE_X_2, SAMPLE_Y_2);
+            coordinateString = r.getCoordinateStringById(SAMPLE_ID_2);
+            assert.typeOf(coordinateString, 'string');
+            expect(coordinateString).to.equal(SAMPLE_COORDINATE_STRING_2);
         });
     });
 
