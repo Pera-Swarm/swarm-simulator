@@ -16,6 +16,7 @@ const routes = [
                 console.log('Heatbeat of the robot', msg.id, 'is updated to', heartbeat);
             } else {
                 // No robot found.
+                // TODO: create robot if not already exists
             }
         }
     },
@@ -27,6 +28,27 @@ const routes = [
             // Only create fresh robot units
             const { id, heading, x, y } = msg;
             swarm.robots.addRobot(id, heading, x, y);
+        }
+    },
+    {
+        topic: 'v1/robot/msg/broadcast',
+        allowRetained: false,
+        subscribe: false,
+        handler: (msg, swarm) => {
+            // This is called by the server at the beginning
+            // with the value of 'ID? -1'
+            // and the robots will send their heartbeat pules to the server
+
+            /*
+            Message Types
+            ---------------
+            ID? -1
+            MODE 1
+            START -1
+            STOP -1
+            RESET -1
+
+            */
         }
     }
 ];

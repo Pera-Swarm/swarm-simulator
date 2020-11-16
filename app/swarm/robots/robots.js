@@ -19,7 +19,7 @@ class Robots {
      * @param {number} heading heading coordinate
      * @param {number} x x coordinate
      * @param {number} y y coordinate
-     * @param {number} z z coordinate
+     * @param {number} z z coordinate, optional
      */
     addRobot = (id, heading, x, y, z) => {
         if (id === undefined) {
