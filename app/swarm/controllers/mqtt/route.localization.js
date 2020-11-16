@@ -5,25 +5,25 @@ const routes = [
     {
         topic: 'v1/localization/info',
         allowRetained: true,
+        subscribe: true,
         handler: (msg, swarm) => {
             //console.log('MQTT_Localization:Info_Handler', msg);
-
             // This will be called by Localization System and the virtual robots
             swarm.robots.locationUpdate(msg);
-        },
-        subscribe: true
+        }
     },
     {
         topic: 'v1/localization/update',
         allowRetained: false,
+        subscribe: false,
         handler: (msg, swarm) => {
             // This will request coordinate updates from the Localization System, and virtual robots
-        },
-        subscribe: false
+        }
     },
     {
         topic: 'v1/localization/',
         allowRetained: false,
+        subscribe: true,
         handler: (msg, swarm) => {
             // Robot will call this method to get it's own localization values; x,y,heading
 
@@ -41,20 +41,18 @@ const routes = [
                 const returnMsg = '0 0 0';
                 swarm.publish('v1/localization/' + robot.id, returnMsg);
             }
-        },
-        subscribe: true
+        }
     },
     {
         topic: 'v1/localization/?',
         allowRetained: false,
+        type: 'String',
+        subscribe: true,
         handler: (msg, swarm) => {
             // This will print all available localization detail
-
             var coordinates = JSON.stringify(swarm.robots.getCoordinatesAll());
             swarm.publish('v1/localization/print', coordinates);
-        },
-        type: 'String',
-        subscribe: true
+        }
     }
 ];
 
