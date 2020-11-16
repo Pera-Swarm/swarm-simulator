@@ -16,9 +16,9 @@ class Robots {
     /**
      * method for adding a robot to the robotList
      * @param {number} id robot id
+     * @param {number} heading heading coordinate
      * @param {number} x x coordinate
      * @param {number} y y coordinate
-     * @param {number} heading heading coordinate
      * @param {number} z z coordinate, optional
      */
     addRobot = (id, heading, x, y, z) => {
