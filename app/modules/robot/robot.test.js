@@ -55,7 +55,7 @@ describe('Robot', function () {
             expect(r.created).to.equal(created);
             // updated
             expect(r).to.haveOwnProperty('updated');
-            assert.typeOf(r.updated, 'date');
+            assert.typeOf(r.updated, 'number');
             expect(r.updated).to.equal(updated);
             // timestamp
             expect(r).to.haveOwnProperty('timestamp');
@@ -91,26 +91,6 @@ describe('Robot', function () {
         });
     });
 
-    describe('#getSensorReadings()', function () {
-        it('should return the sensor readings of the robot instance', function () {
-            const sensorReadings = r.getSensorReadings();
-            assert.typeOf(sensorReadings, 'object');
-            sensorTypes.map((type) => {
-                expect(sensorReadings).to.haveOwnProperty(type);
-            });
-        });
-    });
-
-    describe('#getReadingsBySensor()', function () {
-        it('should return the sensor readings of the robot instance by the sensor type', function () {
-            sensorTypes.map((type) => {
-                const sensorReading = r.getReadingsBySensor(type);
-                expect(sensorReading).to.haveOwnProperty('id');
-                assert.typeOf(sensorReading, 'object');
-            });
-        });
-    });
-
     describe('#setCoordinates()', function () {
         it('should set the coordinates of the robot instance', function () {
             r.setCoordinates(SAMPLE_X_1, SAMPLE_Y_1, SAMPLE_HEADING_1);
@@ -136,6 +116,35 @@ describe('Robot', function () {
             expect(coordinates).to.not.haveOwnProperty('z');
             assert.typeOf(coordinates.z, 'undefined');
             expect(coordinates.z).to.be.equal(INITIAL_Z);
+        });
+    });
+
+    describe('#getSensorReadings()', function () {
+        it('should return the sensor readings of the robot instance', function () {
+            const sensorReadings = r.getSensorReadings();
+            assert.typeOf(sensorReadings, 'object');
+            sensorTypes.map((type) => {
+                expect(sensorReadings).to.haveOwnProperty(type);
+            });
+        });
+    });
+
+    describe('#getReadingsBySensor()', function () {
+        it('should return the sensor readings of the robot instance by the sensor type', function () {
+            expect(r.getReadingsBySensor).to.throw(TypeError);
+            sensorTypes.map((type) => {
+                const sensorReading = r.getReadingsBySensor(type);
+                expect(sensorReading).to.haveOwnProperty('id');
+                assert.typeOf(sensorReading, 'object');
+            });
+        });
+    });
+
+    describe('#updateHeartbeat()', function () {
+        it('should update and return the updated timestamp of the robot instance', function () {
+            const heartbeat = r.updateHeartbeat();
+            assert.typeOf(heartbeat, 'number');
+            expect(heartbeat).gte(timestamp);
         });
     });
 });

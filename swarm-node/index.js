@@ -8,7 +8,7 @@ const { mqttOptions } = require('./config/mqtt');
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 const { MQTTRouter, wrapper } = require('../app/modules/mqtt-handler/');
 const { Robot } = require('../app/modules/robot/');
-const { defineBaseMode } = require('../app/modules/modes/');
+const { defineBaseMode } = require('@pera-swarm/modes/');
 
 // Internal modules
 const {

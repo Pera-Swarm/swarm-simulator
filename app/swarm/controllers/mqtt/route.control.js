@@ -8,9 +8,10 @@ const routes = [
         subscribe: true,
         handler: (msg, swarm) => {
             //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
-            var robot = swarm.robots.findRobotById(msg.id);
+            const { id } = msg;
+            var robot = swarm.robots.findRobotById(id);
 
-            if (robot != undefined) {
+            if (robot !== -1) {
                 const heartbeat = robot.updateHeartbeat();
                 console.log('Heatbeat of the robot', msg.id, 'is updated to', heartbeat);
             } else {
@@ -21,17 +22,18 @@ const routes = [
     },
     {
         topic: 'v1/robot/create',
-        allowRetained: true,
+        allowRetained: false,
         subscribe: true,
         handler: (msg, swarm) => {
-            //console.log('Creating > id:',msg.id,'x:',msg.x,'y:',msg.y);
-            swarm.robots.addRobot(msg.id, msg.x, msg.y, msg.heading);
-        },
-        subscribe: true
+            // Only create fresh robot units
+            const { id, heading, x, y } = msg;
+            swarm.robots.addRobot(id, heading, x, y);
+        }
     },
     {
         topic: 'v1/robot/msg/broadcast',
         allowRetained: false,
+        subscribe: false,
         handler: (msg, swarm) => {
             // This is called by the server at the beginning
             // with the value of 'ID? -1'
@@ -47,8 +49,7 @@ const routes = [
             RESET -1
 
             */
-        },
-        subscribe: false
+        }
     }
 ];
 
