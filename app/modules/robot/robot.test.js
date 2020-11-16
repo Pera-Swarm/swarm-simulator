@@ -93,21 +93,21 @@ describe('Robot', function () {
 
     describe('#setCoordinates()', function () {
         it('should set the coordinates of the robot instance', function () {
-            r.setCoordinates(SAMPLE_X_1, SAMPLE_Y_1, SAMPLE_HEADING_1);
+            r.setCoordinates(SAMPLE_HEADING_1, SAMPLE_X_1, SAMPLE_Y_1);
             const coordinates = r.getCoordinates();
             assert.typeOf(coordinates, 'object');
             // id
-            /*expect(coordinates).to.haveOwnProperty('id');
+            expect(coordinates).to.haveOwnProperty('id');
             assert.typeOf(coordinates.id, 'number');
             expect(coordinates.id).to.be.equal(SAMPLE_ID_1);
             // heading
-            /*expect(coordinates).to.haveOwnProperty('heading');
+            expect(coordinates).to.haveOwnProperty('heading');
             assert.typeOf(coordinates.heading, 'number');
             expect(coordinates.heading).to.be.equal(SAMPLE_HEADING_1);
             // x
             expect(coordinates).to.haveOwnProperty('x');
             assert.typeOf(coordinates.x, 'number');
-            expect(coordinates.x).to.be.equal(SAMPLE_X_1);*/
+            expect(coordinates.x).to.be.equal(SAMPLE_X_1);
             // y
             expect(coordinates).to.haveOwnProperty('y');
             assert.typeOf(coordinates.y, 'number');
