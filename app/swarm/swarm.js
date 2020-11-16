@@ -66,7 +66,7 @@ class Swarm {
         this.mqttRouter = new MQTTRouter(
             mqtt,
             //myRoutes,
-            wrapper([...localizationRoutes, ...sensorRoutes, ...controlRoutes], this),
+            wrapper([...controlRoutes, ...localizationRoutes, ...sensorRoutes], this),
             mqttOptions,
             setup
         );

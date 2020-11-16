@@ -155,25 +155,24 @@ class Robots {
         return result;
     };
 
-    // /**
-    //  * method for updating the coordinates of the given robots coordinates data
-    //  * @param {Coordinate[]} data coordinate data
-    //  */
-    // locationUpdate = (data) => {
-    //     console.log('Robot_locationUpdate:');
-    //     data.forEach((robot, i) => {
-    //         const robotInst = this.findRobotById(robot.id);
-    //         if (robotInst != undefined) {
-    //             // Update the existing robot
-    //             robotInst.setCoordinates(robot.x, robot.y, robot.heading);
-    //             console.log('  updated: ', robot);
-    //         } else {
-    //             // Create a new robot, if not exists
-    //             this.addRobot(robot.id, robot.x, robot.y, robot.heading);
-    //             console.log('  created: ', robot);
-    //         }
-    //     });
-    // };
+    /**
+     * method for updating the coordinates of the given robots coordinates data
+     * @param {Coordinate[]} coordinates coordinate data
+     */
+    updateCoordinates = (coordinates) => {
+        // console.log('before', this.getCoordinatesAll());
+        // TODO: Array validate, coordinate object validate
+        coordinates.forEach((item, i) => {
+            const { id, x, y, heading } = item;
+            if (this.existsRobot(id)) {
+                this.findRobotById(id).setCoordinates(heading, x, y);
+                // console.log('  updated: ', this.getCoordinatesAll());
+            } else {
+                this.addRobot(id, heading, x, y);
+                // console.log('  created: ', this.getCoordinatesAll());
+            }
+        });
+    };
 
     // TODO: add swarm functionality here
     // getSensorReadings

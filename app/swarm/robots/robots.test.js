@@ -206,4 +206,11 @@ describe('Robots', function () {
             expect(coordinates[1]).to.haveOwnProperty('y').and.equal(SAMPLE_Y_2);
         });
     });
+
+    describe('#updateCoordinates()', function () {
+        it('should update the coordinates of all the existing robots', function () {
+            // 1 item
+            // TODO: update and validate
+        });
+    });
 });

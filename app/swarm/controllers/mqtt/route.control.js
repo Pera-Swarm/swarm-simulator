@@ -21,7 +21,7 @@ const routes = [
     },
     {
         topic: 'v1/robot/create',
-        allowRetained: true,
+        allowRetained: false,
         subscribe: true,
         handler: (msg, swarm) => {
             // Only create fresh robot units
