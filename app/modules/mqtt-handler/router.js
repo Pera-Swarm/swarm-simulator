@@ -80,13 +80,17 @@ class MQTTRouter {
                             this.routes[i].type == 'String'
                                 ? message.toString()
                                 : JSON.parse(message);
-
-                        if (packet.retain === false) {
-                            // Fresh messages
-                            this.retainFalseLogic(topic, msg, this.routes[i]);
-                        } else {
-                            // Also accept older messages
+                        if (packet.retain && this.routes[i].allowRetained) {
+                            // Older messages
+                            // Note: Accept and handle 'retained true logic' only if both the packet is retained and the route allows retained packets
                             this.retainTrueLogic(topic, msg, this.routes[i]);
+                        } else if (packet.retain) {
+                            // The route does not allow retained packets
+                            console.log('MQTT_Retain_Not_Allowed:', this.routes[i].topic);
+                        } else {
+                            // Fresh messages
+                            // Note: Accept and handle 'retained false logic' if both the packet is not retained and the route doesn't allow retained packets
+                            this.retainFalseLogic(topic, msg, this.routes[i]);
                         }
                     } catch (err) {
                         this.errorHandler(err);
