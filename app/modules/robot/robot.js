@@ -16,7 +16,7 @@ class Robot {
      * @param {number} y y coordinate
      * @param {number} z z coordinate
      */
-    constructor(id, x, y, heading, z) {
+    constructor(id, heading, x, y, z) {
         this.id = id;
         heading = heading === undefined ? 0 : heading;
         x = x === undefined ? 0 : x;
@@ -52,7 +52,7 @@ class Robot {
      * @param {number} y y coordinate
      * @param {number} z z coordinate
      */
-    setCoordinates = (x, y, heading, z) => {
+    setCoordinates = (heading, x, y, z) => {
         if (this.coordinate.z !== undefined && z !== undefined) {
             this.coordinate.setCoordinates(heading, x, y, z);
         } else {
