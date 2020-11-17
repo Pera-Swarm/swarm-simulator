@@ -55,7 +55,7 @@ describe('Robot', function () {
             expect(r.created).to.equal(created);
             // updated
             expect(r).to.haveOwnProperty('updated');
-            assert.typeOf(r.updated, 'date');
+            assert.typeOf(r.updated, 'number');
             expect(r.updated).to.equal(updated);
             // timestamp
             expect(r).to.haveOwnProperty('timestamp');
@@ -91,6 +91,34 @@ describe('Robot', function () {
         });
     });
 
+    describe('#setCoordinates()', function () {
+        it('should set the coordinates of the robot instance', function () {
+            r.setCoordinates(SAMPLE_HEADING_1, SAMPLE_X_1, SAMPLE_Y_1);
+            const coordinates = r.getCoordinates();
+            assert.typeOf(coordinates, 'object');
+            // id
+            expect(coordinates).to.haveOwnProperty('id');
+            assert.typeOf(coordinates.id, 'number');
+            expect(coordinates.id).to.be.equal(SAMPLE_ID_1);
+            // heading
+            expect(coordinates).to.haveOwnProperty('heading');
+            assert.typeOf(coordinates.heading, 'number');
+            expect(coordinates.heading).to.be.equal(SAMPLE_HEADING_1);
+            // x
+            expect(coordinates).to.haveOwnProperty('x');
+            assert.typeOf(coordinates.x, 'number');
+            expect(coordinates.x).to.be.equal(SAMPLE_X_1);
+            // y
+            expect(coordinates).to.haveOwnProperty('y');
+            assert.typeOf(coordinates.y, 'number');
+            expect(coordinates.y).to.be.equal(SAMPLE_Y_1);
+            // z
+            expect(coordinates).to.not.haveOwnProperty('z');
+            assert.typeOf(coordinates.z, 'undefined');
+            expect(coordinates.z).to.be.equal(INITIAL_Z);
+        });
+    });
+
     describe('#getSensorReadings()', function () {
         it('should return the sensor readings of the robot instance', function () {
             const sensorReadings = r.getSensorReadings();
@@ -103,6 +131,7 @@ describe('Robot', function () {
 
     describe('#getReadingsBySensor()', function () {
         it('should return the sensor readings of the robot instance by the sensor type', function () {
+            expect(r.getReadingsBySensor).to.throw(TypeError);
             sensorTypes.map((type) => {
                 const sensorReading = r.getReadingsBySensor(type);
                 expect(sensorReading).to.haveOwnProperty('id');
@@ -111,31 +140,11 @@ describe('Robot', function () {
         });
     });
 
-    describe('#setCoordinates()', function () {
-        it('should set the coordinates of the robot instance', function () {
-            r.setCoordinates(SAMPLE_X_1, SAMPLE_Y_1, SAMPLE_HEADING_1);
-            const coordinates = r.getCoordinates();
-            assert.typeOf(coordinates, 'object');
-            // id
-            /*expect(coordinates).to.haveOwnProperty('id');
-            assert.typeOf(coordinates.id, 'number');
-            expect(coordinates.id).to.be.equal(SAMPLE_ID_1);
-            // heading
-            /*expect(coordinates).to.haveOwnProperty('heading');
-            assert.typeOf(coordinates.heading, 'number');
-            expect(coordinates.heading).to.be.equal(SAMPLE_HEADING_1);
-            // x
-            expect(coordinates).to.haveOwnProperty('x');
-            assert.typeOf(coordinates.x, 'number');
-            expect(coordinates.x).to.be.equal(SAMPLE_X_1);*/
-            // y
-            expect(coordinates).to.haveOwnProperty('y');
-            assert.typeOf(coordinates.y, 'number');
-            expect(coordinates.y).to.be.equal(SAMPLE_Y_1);
-            // z
-            expect(coordinates).to.not.haveOwnProperty('z');
-            assert.typeOf(coordinates.z, 'undefined');
-            expect(coordinates.z).to.be.equal(INITIAL_Z);
+    describe('#updateHeartbeat()', function () {
+        it('should update and return the updated timestamp of the robot instance', function () {
+            const heartbeat = r.updateHeartbeat();
+            assert.typeOf(heartbeat, 'number');
+            expect(heartbeat).gte(timestamp);
         });
     });
 });

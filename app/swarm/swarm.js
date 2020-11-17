@@ -51,21 +51,22 @@ const SAMPLE_ROUTES = [
     }
 ];
 
-// Class for representing the swarm level functionality
+/**
+ * @class Swarm Representation
+ * @classdesc representing the customized swarm level functionality
+ */
 class Swarm {
     /**
-     * Swarm constructor
+     * @constructor Swarm constructor
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-        //console.log(wrapper(myRoutes, this.robots));
-
         this.loc_system = new SimpleLocalizationSystem();
         this.robots = initRobots();
         this.mqttRouter = new MQTTRouter(
             mqtt,
             //myRoutes,
-            wrapper([...localizationRoutes, ...sensorRoutes, ...controlRoutes], this),
+            wrapper([...controlRoutes, ...localizationRoutes, ...sensorRoutes], this),
             mqttOptions,
             setup
         );
@@ -82,15 +83,6 @@ class Swarm {
         // this.robots.push(robot);
         //console.log(this);
     };
-
-    /**
-     * method for adding a new Robot to the swarm
-     * @param {number} id robot id
-     * @param {Date} created created time
-     */
-    // addRobot = (id, created) => {
-    //     const robot = new Robot(id);
-    // };
 
     /**
      * method for publishing a message to a given topic

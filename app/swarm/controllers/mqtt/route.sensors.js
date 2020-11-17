@@ -5,11 +5,10 @@ const routes = [
     {
         topic: 'v1/sensor/distance',
         allowRetained: true,
+        subscribe: true,
         handler: (msg, swarm) => {
             console.log('MQTT_Sensor:Distance_Handler: ', msg);
-
             var robot = swarm.robots.findRobotById(msg.id);
-
             if (robot != undefined) {
                 var returnValue = robot.sensors.distance.syncReading(msg.distance);
                 swarm.publish('v1/sensor/distance/' + robot.id, returnValue);
@@ -18,12 +17,12 @@ const routes = [
                 // TODO: register the robot into system
                 swarm.publish('v1/sensor/distance/' + msg.id, msg.distance);
             }
-        },
-        subscribe: true
+        }
     },
     {
         topic: 'v1/sensor/color',
         allowRetained: true,
+        subscribe: true,
         handler: (msg, swarm) => {
             console.log('MQTT_Sensor:Color_Handler: ', msg);
 
@@ -37,8 +36,7 @@ const routes = [
                 // TODO: register the robot into system
                 //swarm.publish('v1/sensor/color/' + msg.id, msg.distance);
             }
-        },
-        subscribe: true
+        }
     }
 ];
 
