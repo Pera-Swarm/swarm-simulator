@@ -3,6 +3,7 @@ const { Robot } = require('../../modules/robot/');
 const { Coordinate } = require('../../common/coordinate');
 
 // Class for representing the robots level functionality
+
 class Robots {
     /**
      * Robots constructor
@@ -22,9 +23,8 @@ class Robots {
      * @param {number} z z coordinate, optional
      */
     addRobot = (id, heading, x, y, z) => {
-        if (id === undefined) {
-            throw new TypeError('id unspecified');
-        }
+        if (id === undefined) throw new TypeError('id unspecified');
+
         // only add a robot if the id doesn't exist
         if (this.existsRobot(id) === false) {
             // robot doesn't exists
@@ -37,7 +37,7 @@ class Robots {
                 this.robotList[id] = new Robot(id, heading, x, y, z);
             }
             this.size += 1;
-            return;
+            return id;
         }
     };
 
@@ -56,13 +56,23 @@ class Robots {
      * @returns false : if a robot doesn't exist with the id
      */
     existsRobot = (id) => {
-        if (id === undefined) {
-            throw new TypeError('id unspecified');
-        } else {
-            return this.robotList[id] != undefined;
-        }
+        if (id === undefined) throw new TypeError('id unspecified');
+        return this.robotList[id] != undefined;
     };
 
+    /**
+     * method for finding a robot exists in the robotList or not
+     * @param {number} id robot id
+     * @returns {boolean} true : if robot is alive
+     * @returns false : if a robot doesn't exist with the id
+     */
+    isAliveRobot = (id, interval) => {
+        if (id === undefined) throw new TypeError('id unspecified');
+        if (interval === undefined) throw new TypeError('interval unspecified');
+
+        //console.log(id, this.robotList[id].isAlive(interval));
+        return this.robotList[id].isAlive(interval);
+    };
     /**
      * method for finding the robot by id
      * @param {number} id robot id
@@ -70,20 +80,11 @@ class Robots {
      * @returns -1 if it doesn't exist
      */
     findRobotById = (id) => {
-        if (id === undefined) {
-            throw new TypeError('id unspecified');
-        } else {
-            var result = -1;
-            for (const key in this.robotList) {
-                if (
-                    Object.prototype.hasOwnProperty.call(this.robotList, key) &&
-                    key === id.toString()
-                ) {
-                    result = this.robotList[key];
-                }
-            }
-            return result;
-        }
+        if (id === undefined) throw new TypeError('id unspecified');
+
+        var result = this.robotList[id];
+        if (result == undefined) return -1;
+        return result;
     };
 
     /**
@@ -91,15 +92,20 @@ class Robots {
      * @param {number} id robot id
      */
     removeRobot = (id) => {
-        if (id === undefined) {
-            throw new TypeError('id unspecified');
-        } else {
-            if (this.existsRobot(id)) {
-                // remove the key along with the value.
-                delete this.robotList[id];
-                this.size -= 1;
-            }
+        if (id === undefined) throw new TypeError('id unspecified');
+
+        if (this.existsRobot(id)) {
+            // remove the key along with the value.
+            delete this.robotList[id];
+            this.size -= 1;
+
+            // Request from GUI to remove the robot
+            // TODO: Implement this @Ganindu
+            //swarm.publish('v1/localization/delete',{'id':id});
+
+            return true;
         }
+        return false;
     };
 
     /**
@@ -109,17 +115,10 @@ class Robots {
      * @returns -1 if it doesn't exist
      */
     getCoordinatesById = (id) => {
-        if (id === undefined) {
-            throw new TypeError('id unspecified');
-        } else {
-            var result = -1;
-            if (this.existsRobot(id) === false) {
-                return result;
-            } else {
-                result = this.findRobotById(id).getCoordinates();
-                return result;
-            }
-        }
+        if (id === undefined) throw new TypeError('id unspecified');
+
+        if (this.existsRobot(id) === false) return -1;
+        return this.findRobotById(id).getCoordinates();
     };
 
     /**
@@ -129,18 +128,12 @@ class Robots {
      * @returns -1 if it doesn't exist
      */
     getCoordinateStringById = (id) => {
-        if (id === undefined) {
-            throw new TypeError('id unspecified');
-        } else {
-            var result = -1;
-            if (this.existsRobot(id) === false) {
-                return result;
-            } else {
-                const { x, y, heading } = this.findRobotById(id).getCoordinates();
-                result = `${x} ${y} ${heading}`;
-                return result;
-            }
-        }
+        if (id === undefined) throw new TypeError('id unspecified');
+
+        if (this.existsRobot(id) === false) return -1;
+
+        const { x, y, heading } = this.findRobotById(id).getCoordinates();
+        return `${x} ${y} ${heading}`;
     };
 
     /**
@@ -160,10 +153,13 @@ class Robots {
      * @param {Coordinate[]} coordinates coordinate data
      */
     updateCoordinates = (coordinates) => {
+        if (coordinates === undefined) throw new TypeError('coordinates unspecified');
+
         // console.log('before', this.getCoordinatesAll());
         // TODO: Array validate, coordinate object validate
         coordinates.forEach((item, i) => {
             const { id, x, y, heading } = item;
+
             if (this.existsRobot(id)) {
                 this.findRobotById(id).setCoordinates(heading, x, y);
                 // console.log('  updated: ', this.getCoordinatesAll());
@@ -174,9 +170,21 @@ class Robots {
         });
     };
 
+    /**
+     * method for updating the coordinates of the given robots coordinates data
+     * @param {number} interval the maximum allowed time for update the heartbeat pulse
+     */
+    checkAlive = (interval) => {
+        for (var id in this.robotList) {
+            if (this.isAliveRobot(id, interval) == false) {
+                console.log('Robot_Removed', id);
+                this.removeRobot(id);
+            }
+        }
+    };
+
     // TODO: add swarm functionality here
     // getSensorReadings
-    // checkAlive
     // invalidateRobot
     // registerRobot
     // stopRobot
