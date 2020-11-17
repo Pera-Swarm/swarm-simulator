@@ -8,10 +8,10 @@ function move(x, y, heading) {
     console.log(x, y, heading);
 }
 
-function normalizedAngle(a){
-    b = (a+180)%360
-    if(b<=0) b+= 360
-    b = b-180
+function normalizedAngle(a) {
+    b = (a + 180) % 360;
+    if (b <= 0) b += 360;
+    b = b - 180;
     return b;
 }
 
