@@ -60,3 +60,5 @@ dkms.conf
 nodemon.json
 
 /package-lock.json
+
+.vscode
