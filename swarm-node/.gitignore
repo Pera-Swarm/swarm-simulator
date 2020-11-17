@@ -59,3 +59,5 @@ nodemon.json
 
 # Log files
 *.log
+
+.vscode/*
