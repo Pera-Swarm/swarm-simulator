@@ -80,6 +80,7 @@ class MQTTRouter {
                             this.routes[i].type == 'String'
                                 ? message.toString()
                                 : JSON.parse(message);
+
                         if (packet.retain && this.routes[i].allowRetained) {
                             // Older messages
                             // Note: Accept and handle 'retained true logic' only if both the packet is retained and the route allows retained packets
@@ -107,8 +108,9 @@ class MQTTRouter {
         for (var i = 0; i < this.routes.length; i++) {
             if (this.routes[i].subscribe != false) {
                 // subscribe at the beginning unless it is avoided by setting 'subscribe:false'
-                this.mqttClient.subscribe(this.routes[i].topic, this.options);
                 console.log('MQTT_Subscribed: ', this.routes[i].topic);
+
+                this.mqttClient.subscribe(this.routes[i].topic, this.options);
             } else {
                 // No subscription required for this topic
                 console.log('MQTT_Not_Subscribed: ', this.routes[i].topic);
@@ -124,7 +126,7 @@ class MQTTRouter {
      * @param {object} process entry in the route definition
      */
     retainFalseLogic = (topic, message, task) => {
-        console.log('MQTT_Msg_Fresh: ', topic, '>', message);
+        //console.log('MQTT_Msg_Fresh: ', topic, '>', message);
         task.handler(message);
     };
 
@@ -135,7 +137,7 @@ class MQTTRouter {
      * @param {object} process entry in the route definition
      */
     retainTrueLogic = (topic, message, task) => {
-        console.log('MQTT_Msg_Retained: ', topic, '>', message);
+        //console.log('MQTT_Msg_Retained: ', topic, '>', message);
         task.handler(message);
     };
 }

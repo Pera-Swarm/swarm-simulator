@@ -7,10 +7,12 @@ const routes = [
         allowRetained: true,
         subscribe: true,
         handler: (msg, swarm) => {
-            //console.log('MQTT_Localization:Info_Handler', msg);
             // This will be called by Localization System and the virtual robots
             console.log('MQTT_Localization:RequestUpdateLoc ', msg);
+
             swarm.loc_system.update(msg);
+
+            // Update robots & create, if not exists
             swarm.robots.updateCoordinates(msg);
         }
     },
@@ -18,8 +20,10 @@ const routes = [
         topic: 'v1/localization/update',
         allowRetained: false,
         subscribe: false,
+        publish: true,
         handler: (msg, swarm) => {
             // This will request coordinate updates from the Localization System, and virtual robots
+
             console.log('MQTT_Localization:RequestLocUpdates ', msg);
         }
     },
@@ -29,9 +33,12 @@ const routes = [
         subscribe: true,
         handler: (msg, swarm) => {
             // Robot will call this method to get it's own localization values; x,y,heading
+
             console.log('MQTT_Localization:RequestUnitLoc ', msg);
+
             const { id, x, y, heading } = msg;
             var robotCoordinateString = swarm.robots.getCoordinateStringById(id);
+
             if (robotCoordinateString !== -1) {
                 swarm.publish(`v1/localization/${id}`, robotCoordinateString);
             } else {
@@ -50,8 +57,29 @@ const routes = [
         handler: (msg, swarm) => {
             // This will print all available localization detail
             console.log('MQTT_Localization:RequestPrintLoc ', msg);
+
             var coordinates = JSON.stringify(swarm.robots.getCoordinatesAll());
             swarm.publish('v1/localization/print', coordinates);
+        }
+    },
+    {
+        topic: 'v1/localization/create',
+        allowRetained: false,
+        subscribe: false,
+        publish: true,
+        handler: (msg, swarm) => {
+            // This will instruct GUI to create a robot instance
+            console.log('MQTT_Localization:Create ', msg);
+        }
+    },
+    {
+        topic: 'v1/localization/delete',
+        allowRetained: false,
+        subscribe: false,
+        publish: true,
+        handler: (msg, swarm) => {
+            // This will instruct GUI to delete the robot instance
+            console.log('MQTT_Localization:Delete ', msg);
         }
     }
 ];
