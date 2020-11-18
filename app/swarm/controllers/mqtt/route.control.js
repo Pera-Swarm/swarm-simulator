@@ -38,7 +38,6 @@ const routes = [
             // This is called by the server at the beginning
             // with the value of 'ID? -1'
             // and the robots will send their heartbeat pules to the server
-
             /*
             Message Types
             ---------------

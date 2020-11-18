@@ -1,5 +1,5 @@
 const { Coordinate } = require('../../common/coordinate');
-const sensors = require('../../modules/sensors');
+const { sensors } = require('../../modules/sensors');
 
 const sensorTypes = ['color', 'distance'];
 
