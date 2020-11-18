@@ -112,7 +112,7 @@ describe('Robots', function () {
 
     describe('#isAliveRobot()', function (done) {
         this.timeout(3000);
-        it('should check each and every robot instances and remove them if ', function () {
+        it('should return whether a robot instance is \'alive\' or \'dead\'', function () {
             setTimeout(() => {
                 expect(r.isAliveRobot).to.throw(TypeError);
                 const state = r.isAliveRobot(SAMPLE_ID_1, 3);
@@ -178,7 +178,7 @@ describe('Robots', function () {
     });
 
     describe('#getCoordinateStringById()', function () {
-        it('should return coordinates of a robot by id if exists', function () {
+        it('should return coordinates as a string of a robot by id if exists', function () {
             expect(r.getCoordinateStringById).to.throw(TypeError);
             // ROBOT 0
             expect(r.getCoordinateStringById(0)).to.equal(-1);
@@ -222,7 +222,7 @@ describe('Robots', function () {
     });
 
     describe('#updateCoordinates()', function () {
-        it('should update the coordinates of all the existing robots', function () {
+        it('should update the coordinates of the robot instances for the given coordinate data', function () {
             expect(r.getCoordinatesById).to.throw(TypeError);
             expect(r.getSize()).to.equal(1);
             expect(r.updated).equal(updated);
@@ -248,7 +248,7 @@ describe('Robots', function () {
     });
 
     describe('#prune()', function () {
-        it('should check each and every robot instances and remove inactive instances', function () {
+        it('should check each and every robot instances and remove \'dead\' instances', function () {
             expect(r.prune).to.throw(TypeError);
             expect(r.getSize()).to.equal(1);
             expect(r.updated).equal(updated);

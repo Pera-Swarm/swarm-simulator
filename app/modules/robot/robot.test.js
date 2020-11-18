@@ -152,7 +152,7 @@ describe('Robot', function () {
 
     describe('#isAlive()', function (done) {
         this.timeout(3000);
-        it('should check each and every robot instances and remove them if ', function () {
+        it('should return whether the robot instance is \'alive\' or \'dead\'', function () {
             setTimeout(() => {
                 expect(r.isAlive).to.throw(TypeError);
                 const state = r.isAlive(3);
