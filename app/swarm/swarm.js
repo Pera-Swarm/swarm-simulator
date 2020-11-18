@@ -24,33 +24,6 @@ const {
 } = require('./controllers/mqtt/');
 const { initRobots } = require('./robots/robots');
 
-const SAMPLE_ROUTES = [
-    {
-        topic: 'v1/localization/info',
-        allowRetained: true,
-        handler: (topic, msg) => {
-            data = JSON.parse(msg);
-            console.log('Localization info picked up the topic', data);
-        }
-    },
-    {
-        topic: 'v1/robot/msg/broadcast',
-        allowRetained: true,
-        handler: (topic, msg) => {
-            data = JSON.parse(msg);
-            console.log('Broadcast picked up the topic', data);
-        }
-    },
-    {
-        topic: 'v1/sensor/distance',
-        allowRetained: true,
-        handler: (topic, msg) => {
-            data = JSON.parse(msg);
-            console.log('Sensor picked up the topic', data);
-        }
-    }
-];
-
 /**
  * @class Swarm Representation
  * @classdesc representing the customized swarm level functionality

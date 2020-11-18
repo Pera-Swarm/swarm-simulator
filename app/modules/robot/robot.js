@@ -97,6 +97,15 @@ class Robot {
         this.updated = Date.now();
         return this.updated;
     };
+
+    /**
+     * method for return the live status of the robot
+     * @returns {Boolean} live or dead
+     */
+    isAlive = (interval) => {
+        const seconds = Math.floor((Date.now() - this.updated) / 1000);
+        return seconds <= interval;
+    };
 }
 
 module.exports = { Robot, sensorTypes };

@@ -3,17 +3,30 @@
 
 const routes = [
     {
+        topic: 'v1/test',
+        allowRetained: false,
+        subscribe: true,
+        type: 'String',
+        handler: (msg, swarm) => {
+            //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
+
+            swarm.robots.checkAlive(10);
+        }
+    },
+    {
         topic: 'v1/robot/live',
         allowRetained: false,
         subscribe: true,
+        type: 'String',
         handler: (msg, swarm) => {
             //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
-            const { id } = msg;
+
+            const id = msg;
             var robot = swarm.robots.findRobotById(id);
 
             if (robot !== -1) {
                 const heartbeat = robot.updateHeartbeat();
-                console.log('Heatbeat of the robot', msg.id, 'is updated to', heartbeat);
+                console.log('Heatbeat of the robot', msg, 'is updated to', heartbeat);
             } else {
                 // No robot found.
                 // TODO: create robot if not already exists
@@ -22,18 +35,21 @@ const routes = [
     },
     {
         topic: 'v1/robot/create',
-        allowRetained: false,
+        allowRetained: true, // TODO: only in DEV mode
         subscribe: true,
         handler: (msg, swarm) => {
+            console.log('MQTT_Robot:');
+
             // Only create fresh robot units
             const { id, heading, x, y } = msg;
-            swarm.robots.addRobot(id, heading, x, y);
+            const resp = swarm.robots.addRobot(id, heading, x, y);
         }
     },
     {
         topic: 'v1/robot/msg/broadcast',
         allowRetained: false,
         subscribe: false,
+        publish: true,
         handler: (msg, swarm) => {
             // This is called by the server at the beginning
             // with the value of 'ID? -1'
