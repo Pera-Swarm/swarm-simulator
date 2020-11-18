@@ -15,17 +15,17 @@ const SAMPLE_ID_3 = 3;
 const INITIAL_HEADING = 0;
 const INITIAL_X = 0;
 const INITIAL_Y = 0;
-const INITIAL_Z = undefined;
+// const INITIAL_Z = undefined;
 
 const SAMPLE_HEADING_1 = 5;
 const SAMPLE_X_1 = 6;
 const SAMPLE_Y_1 = 7;
-const SAMPLE_Z_1 = 8;
+// const SAMPLE_Z_1 = 8;
 
 const SAMPLE_HEADING_2 = 10;
 const SAMPLE_X_2 = 11;
 const SAMPLE_Y_2 = 12;
-const SAMPLE_Z_2 = 13;
+// const SAMPLE_Z_2 = 13;
 
 const SAMPLE_COORDINATE_STRING_1 = '0 0 0';
 const SAMPLE_COORDINATE_STRING_2 = `${SAMPLE_X_2} ${SAMPLE_Y_2} ${SAMPLE_HEADING_2}`;
@@ -209,8 +209,27 @@ describe('Robots', function () {
 
     describe('#updateCoordinates()', function () {
         it('should update the coordinates of all the existing robots', function () {
-            // 1 item
-            // TODO: update and validate
+            expect(r.getCoordinatesById).to.throw(TypeError);
+            expect(r.getSize()).to.equal(1);
+            expect(r.updated).equal(updated);
+            const sampleCoordinateArray = [
+                {
+                    id: SAMPLE_ID_1,
+                    heading: SAMPLE_HEADING_1,
+                    x: SAMPLE_X_1,
+                    y: SAMPLE_Y_1
+                },
+                {
+                    id: SAMPLE_ID_2,
+                    heading: SAMPLE_HEADING_2,
+                    x: SAMPLE_X_2,
+                    y: SAMPLE_Y_2
+                }
+            ];
+            r.updateCoordinates(sampleCoordinateArray);
+            expect(r.getSize()).to.equal(2);
+            expect(r.getCoordinatesAll()).to.deep.equal(sampleCoordinateArray);
+            expect(r.updated).gte(updated);
         });
     });
 });

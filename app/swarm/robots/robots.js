@@ -157,16 +157,15 @@ class Robots {
 
         // console.log('before', this.getCoordinatesAll());
         // TODO: Array validate, coordinate object validate
-        coordinates.forEach((item, i) => {
+        coordinates.forEach((item) => {
             const { id, x, y, heading } = item;
 
             if (this.existsRobot(id)) {
                 this.findRobotById(id).setCoordinates(heading, x, y);
-                // console.log('  updated: ', this.getCoordinatesAll());
             } else {
                 this.addRobot(id, heading, x, y);
-                // console.log('  created: ', this.getCoordinatesAll());
             }
+            this.updated = Date.now();
         });
     };
 
