@@ -81,6 +81,7 @@ describe('Robots', function () {
             expect(r.getSize()).to.equal(1);
             r.addRobot(SAMPLE_ID_2);
             expect(r.getSize()).to.equal(2);
+            expect(r.updated).gte(updated);
         });
     });
 
@@ -106,6 +107,18 @@ describe('Robots', function () {
             expect(r.existsRobot(SAMPLE_ID_1)).to.equal(true);
             expect(r.existsRobot(SAMPLE_ID_2)).to.equal(true);
             expect(r.existsRobot(3)).to.equal(false);
+        });
+    });
+
+    describe('#isAliveRobot()', function (done) {
+        this.timeout(3000);
+        it('should check each and every robot instances and remove them if ', function () {
+            setTimeout(() => {
+                expect(r.isAliveRobot).to.throw(TypeError);
+                const state = r.isAliveRobot(SAMPLE_ID_1, 3);
+                assert.typeOf(state, 'boolean');
+                expect(state).equal(true);
+            }, 3000);
         });
     });
 
@@ -140,6 +153,7 @@ describe('Robots', function () {
             r.removeRobot(SAMPLE_ID_2);
             expect(r.getSize()).to.equal(0);
             expect(r.robotList).to.deep.equal({});
+            expect(r.updated).gte(updated);
         });
     });
 
@@ -210,6 +224,32 @@ describe('Robots', function () {
     describe('#updateCoordinates()', function () {
         it('should update the coordinates of all the existing robots', function () {
             expect(r.getCoordinatesById).to.throw(TypeError);
+            expect(r.getSize()).to.equal(1);
+            expect(r.updated).equal(updated);
+            const sampleCoordinateArray = [
+                {
+                    id: SAMPLE_ID_1,
+                    heading: SAMPLE_HEADING_1,
+                    x: SAMPLE_X_1,
+                    y: SAMPLE_Y_1
+                },
+                {
+                    id: SAMPLE_ID_2,
+                    heading: SAMPLE_HEADING_2,
+                    x: SAMPLE_X_2,
+                    y: SAMPLE_Y_2
+                }
+            ];
+            r.updateCoordinates(sampleCoordinateArray);
+            expect(r.getSize()).to.equal(2);
+            expect(r.getCoordinatesAll()).to.deep.equal(sampleCoordinateArray);
+            expect(r.updated).gte(updated);
+        });
+    });
+
+    describe('#prune()', function () {
+        it('should check each and every robot instances and remove inactive instances', function () {
+            expect(r.prune).to.throw(TypeError);
             expect(r.getSize()).to.equal(1);
             expect(r.updated).equal(updated);
             const sampleCoordinateArray = [
