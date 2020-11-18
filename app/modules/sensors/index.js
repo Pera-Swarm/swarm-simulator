@@ -1,16 +1,5 @@
-const { DistanceSensor } = require('./distance/');
-const { ColorSensor } = require('./color/');
+const { DistanceSensor } = require('./lib/distance/');
+const { ColorSensor } = require('./lib/color/');
+const sensors = require('./sensors');
 
-/**
- * method for creating the sensor array
- * @param {number} id robot id
- */
-var sensors = (id) => {
-    return {
-        color: new ColorSensor(id),
-        distance: new DistanceSensor(id),
-        updated: new Date()
-    };
-};
-
-module.exports = sensors;
+module.exports = { DistanceSensor, ColorSensor, sensors };
