@@ -9,11 +9,11 @@ exports.begin = (swarm, routine) => {
     cron.schedule(
         interval,
         () => {
-            console.log(
+            /*console.log(
                 'Cron Scheduler',
                 this.swarm.robots.updated,
                 this.swarm.robots.getSize()
-            );
+            );*/
             routine();
         },
         {
