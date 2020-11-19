@@ -59,10 +59,10 @@ class Swarm {
      * these tasks are scheduled with 'cron'
      */
     routine = () => {
-        console.log('ROUTINE');
+        //console.log('CRON_');
         this.robots.prune(1, (robotId) => {
-            // TODO: publish message for removing robots from simulator
-            console.log('callback with robotId', robotId);
+            //console.log('callback with robotId', robotId);
+            this.publish('v1/robot/delete', { id: robotId });
         });
     };
 
@@ -72,6 +72,9 @@ class Swarm {
      * @param {string} message mqtt message object
      */
     publish = (topic, message) => {
+        // Encode the JSON type messages
+        if (typeof message === 'object') message = JSON.stringify(message);
+
         publishToTopic(mqtt, topic, message.toString(), mqttOptions, () => {
             console.log(`MQTT_Publish > ${message} to topic ${topic}`);
         });
