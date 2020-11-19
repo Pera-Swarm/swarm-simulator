@@ -61,26 +61,6 @@ const routes = [
             var coordinates = JSON.stringify(swarm.robots.getCoordinatesAll());
             swarm.publish('v1/localization/print', coordinates);
         }
-    },
-    {
-        topic: 'v1/localization/create',
-        allowRetained: false,
-        subscribe: false,
-        publish: true,
-        handler: (msg, swarm) => {
-            // This will instruct GUI to create a robot instance
-            console.log('MQTT_Localization:Create ', msg);
-        }
-    },
-    {
-        topic: 'v1/localization/delete',
-        allowRetained: false,
-        subscribe: false,
-        publish: true,
-        handler: (msg, swarm) => {
-            // This will instruct GUI to delete the robot instance
-            console.log('MQTT_Localization:Delete ', msg);
-        }
     }
 ];
 
