@@ -14,7 +14,7 @@ const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 const { SimpleLocalizationSystem } = require('../modules/localization');
 
 // cron - currently not implemented
-// const cron = require('../services/cron.js');
+const cron = require('../services/cron.js');
 
 // Controllers
 const {
@@ -51,10 +51,19 @@ class Swarm {
      * method for initializing the swarm
      */
     init = () => {
-        //cron.begin(mqtt);
-        // const robot = new Robot(1);
-        // this.robots.push(robot);
-        //console.log(this);
+        cron.begin(this, this.routine);
+    };
+
+    /**
+     * method for handling the swarm routine
+     * these tasks are scheduled with 'cron'
+     */
+    routine = () => {
+        console.log('ROUTINE');
+        this.robots.prune(1, (robotId) => {
+            // TODO: publish message for removing robots from simulator
+            console.log('callback with robotId', robotId);
+        });
     };
 
     /**

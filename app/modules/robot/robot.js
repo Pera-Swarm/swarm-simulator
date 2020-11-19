@@ -1,5 +1,5 @@
 const { Coordinate } = require('../../common/coordinate');
-const sensors = require('../../modules/sensors');
+const { sensors } = require('../../modules/sensors');
 
 const sensorTypes = ['color', 'distance'];
 
@@ -58,6 +58,7 @@ class Robot {
         } else {
             this.coordinate.setCoordinates(heading, x, y);
         }
+        this.updated = Date.now();
     };
 
     /**
@@ -100,9 +101,12 @@ class Robot {
 
     /**
      * method for return the live status of the robot
-     * @returns {Boolean} live or dead
+     * @param {number} interval the maximum allowed time in 'seconds' for being counted as 'alive' for a robot unit
+     * @returns {boolean} true : if the robot is counted as 'alive'
+     * @returns false : if the robot is counted as 'dead'
      */
     isAlive = (interval) => {
+        if (interval === undefined) throw new TypeError('interval unspecified');
         const seconds = Math.floor((Date.now() - this.updated) / 1000);
         return seconds <= interval;
     };
