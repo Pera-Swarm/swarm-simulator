@@ -21,6 +21,7 @@ class Robots {
      * @param {number} x x coordinate
      * @param {number} y y coordinate
      * @param {number} z z coordinate, optional
+     * @returns {number} id : if successful
      */
     addRobot = (id, heading, x, y, z) => {
         if (id === undefined) throw new TypeError('id unspecified');
@@ -37,13 +38,14 @@ class Robots {
                 this.robotList[id] = new Robot(id, heading, x, y, z);
             }
             this.size += 1;
+            this.updated = Date.now();
             return id;
         }
     };
 
     /**
      * method for getting the size of the robot robotList
-     * @returns {number} the size of the robot instances are in the list
+     * @returns {number} the size of the robot instances : are in the list
      */
     getSize = () => {
         return this.size;
@@ -70,14 +72,14 @@ class Robots {
         if (id === undefined) throw new TypeError('id unspecified');
         if (interval === undefined) throw new TypeError('interval unspecified');
 
-        //console.log(id, this.robotList[id].isAlive(interval));
         return this.robotList[id].isAlive(interval);
     };
+
     /**
      * method for finding the robot by id
      * @param {number} id robot id
-     * @returns {Robot|number} the robot instance if it exists
-     * @returns -1 if it doesn't exist
+     * @returns {Robot|number} the robot instance : if it exists
+     * @returns -1 : if it doesn't exist
      */
     findRobotById = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
@@ -90,19 +92,21 @@ class Robots {
     /**
      * method for removing the robot by id
      * @param {number} id robot id
+     * @param {function} callback a callback function
+     * @returns {boolean} true : if successful
+     * @returns false : if it fails
      */
-    removeRobot = (id) => {
+    removeRobot = (id, callback) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
         if (this.existsRobot(id)) {
             // remove the key along with the value.
             delete this.robotList[id];
             this.size -= 1;
-
-            // Request from GUI to remove the robot
-            // TODO: Implement this @Ganindu
-            //swarm.publish('v1/localization/delete',{'id':id});
-
+            this.updated = Date.now();
+            if (callback !== undefined) {
+                callback(id);
+            }
             return true;
         }
         return false;
@@ -111,8 +115,8 @@ class Robots {
     /**
      * method for getting the robot coordinates by id
      * @param {number} id robot id
-     * @returns {Coordinate|number} the robot coordinates if it exists
-     * @returns -1 if it doesn't exist
+     * @returns {Coordinate|number} the robot coordinates : if it exists
+     * @returns -1 : if it doesn't exist
      */
     getCoordinatesById = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
@@ -124,8 +128,8 @@ class Robots {
     /**
      * method for getting the robot coordinate string by id
      * @param {number} id robot id
-     * @returns {String|number} the robot coordinate string if it exists
-     * @returns -1 if it doesn't exist
+     * @returns {String|number} the robot coordinate string : if it exists
+     * @returns -1 : if it doesn't exist
      */
     getCoordinateStringById = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
@@ -138,7 +142,7 @@ class Robots {
 
     /**
      * method for getting the coordinates of all robots
-     * @returns {Coordinate[]} return the current robot coordinates that are existing in the list
+     * @returns {Coordinate[]} current robot coordinates : that are existing in the list
      */
     getCoordinatesAll = () => {
         var result = [];
@@ -155,37 +159,34 @@ class Robots {
     updateCoordinates = (coordinates) => {
         if (coordinates === undefined) throw new TypeError('coordinates unspecified');
 
-        // console.log('before', this.getCoordinatesAll());
-        // TODO: Array validate, coordinate object validate
-        coordinates.forEach((item, i) => {
+        coordinates.forEach((item) => {
             const { id, x, y, heading } = item;
-
             if (this.existsRobot(id)) {
                 this.findRobotById(id).setCoordinates(heading, x, y);
-                // console.log('  updated: ', this.getCoordinatesAll());
             } else {
                 this.addRobot(id, heading, x, y);
-                // console.log('  created: ', this.getCoordinatesAll());
             }
+            this.updated = Date.now();
         });
     };
 
     /**
      * method for updating the coordinates of the given robots coordinates data
-     * @param {number} interval the maximum allowed time for update the heartbeat pulse
+     * @param {number} interval the maximum allowed time in 'seconds' for being counted as 'alive' for a robot unit
+     * @param {function} callback a callback function. 'id' will be given as a parameter
      */
-    checkAlive = (interval) => {
+    prune = (interval, callback) => {
+        if (interval === undefined) throw new TypeError('interval unspecified');
         for (var id in this.robotList) {
             if (this.isAliveRobot(id, interval) == false) {
-                console.log('Robot_Removed', id);
-                this.removeRobot(id);
+                // console.log('Robot_Removed', id);
+                this.removeRobot(id, callback);
             }
         }
     };
 
     // TODO: add swarm functionality here
     // getSensorReadings
-    // invalidateRobot
     // registerRobot
     // stopRobot
     // resetRobot

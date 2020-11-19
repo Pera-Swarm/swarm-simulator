@@ -10,7 +10,7 @@ const routes = [
         handler: (msg, swarm) => {
             //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
 
-            swarm.robots.checkAlive(10);
+            swarm.robots.prune(10);
         }
     },
     {
