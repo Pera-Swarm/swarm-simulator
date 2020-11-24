@@ -10,7 +10,7 @@ const routes = [
         handler: (msg, swarm) => {
             //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
 
-            swarm.robots.checkAlive(10);
+            swarm.robots.prune(10);
         }
     },
     {
@@ -37,12 +37,23 @@ const routes = [
         topic: 'v1/robot/create',
         allowRetained: true, // TODO: only in DEV mode
         subscribe: true,
+        publish: false,
         handler: (msg, swarm) => {
-            console.log('MQTT_Robot:');
-
             // Only create fresh robot units
             const { id, heading, x, y } = msg;
             const resp = swarm.robots.addRobot(id, heading, x, y);
+
+            console.log('MQTT_Robot:Create:', id);
+        }
+    },
+    {
+        topic: 'v1/robot/delete',
+        allowRetained: false,
+        subscribe: false,
+        publish: true,
+        handler: (msg, swarm) => {
+            // This will instruct GUI to delete the robot instance
+            console.log('MQTT_Robot:Delete', msg.id);
         }
     },
     {

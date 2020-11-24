@@ -94,6 +94,7 @@ describe('Robot', function () {
     describe('#setCoordinates()', function () {
         it('should set the coordinates of the robot instance', function () {
             r.setCoordinates(SAMPLE_HEADING_1, SAMPLE_X_1, SAMPLE_Y_1);
+            expect(r.updated).gte(updated);
             const coordinates = r.getCoordinates();
             assert.typeOf(coordinates, 'object');
             // id
@@ -145,6 +146,19 @@ describe('Robot', function () {
             const heartbeat = r.updateHeartbeat();
             assert.typeOf(heartbeat, 'number');
             expect(heartbeat).gte(timestamp);
+            expect(r.updated).gte(updated);
+        });
+    });
+
+    describe('#isAlive()', function (done) {
+        this.timeout(3000);
+        it("should return whether the robot instance is 'alive' or 'dead'", function () {
+            setTimeout(() => {
+                expect(r.isAlive).to.throw(TypeError);
+                const state = r.isAlive(3);
+                assert.typeOf(state, 'boolean');
+                expect(state).equal(true);
+            }, 3000);
         });
     });
 });
