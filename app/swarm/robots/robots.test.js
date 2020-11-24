@@ -112,7 +112,7 @@ describe('Robots', function () {
 
     describe('#isAliveRobot()', function (done) {
         this.timeout(3000);
-        it('should return whether a robot instance is \'alive\' or \'dead\'', function () {
+        it("should return whether a robot instance is 'alive' or 'dead'", function () {
             setTimeout(() => {
                 expect(r.isAliveRobot).to.throw(TypeError);
                 const state = r.isAliveRobot(SAMPLE_ID_1, 3);
@@ -248,7 +248,7 @@ describe('Robots', function () {
     });
 
     describe('#prune()', function () {
-        it('should check each and every robot instances and remove \'dead\' instances', function () {
+        it("should check each and every robot instances and remove 'dead' instances", function () {
             expect(r.prune).to.throw(TypeError);
             expect(r.getSize()).to.equal(1);
             expect(r.updated).equal(updated);
