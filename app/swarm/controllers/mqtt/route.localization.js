@@ -8,7 +8,7 @@ const routes = [
         subscribe: true,
         handler: (msg, swarm) => {
             // This will be called by Localization System and the virtual robots
-            console.log('MQTT_Localization:RequestUpdateLoc ', msg);
+            //console.log('MQTT_Localization:RequestUpdateLoc ', msg);
 
             swarm.loc_system.update(msg);
 
@@ -24,6 +24,7 @@ const routes = [
         handler: (msg, swarm) => {
             // This will request coordinate updates from the Localization System, and virtual robots
 
+            swarm.robots.createIfNotExists(msg.id);
             console.log('MQTT_Localization:RequestLocUpdates ', msg);
         }
     },

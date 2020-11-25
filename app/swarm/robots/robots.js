@@ -57,6 +57,14 @@ class Robots {
      * @returns {boolean} true : if it exists with the id
      * @returns false : if a robot doesn't exist with the id
      */
+
+    createIfNotExists = (id) => {
+        if (this.existsRobot(id) == false) {
+            // robot doesn't exists
+            this.robotList[id] = new Robot(id);
+        }
+    };
+
     existsRobot = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
         return this.robotList[id] != undefined;
@@ -191,6 +199,46 @@ class Robots {
     // stopRobot
     // resetRobot
     // Note: add any other functions
+
+    compAngle = (a, b, c) => {
+        return a < b && b <= c;
+    };
+    getDistance = (id, callback) => {
+        if (id === undefined) throw new TypeError('id unspecified');
+
+        const xMin = -150;
+        const xMax = 150;
+        const yMin = -150;
+        const yMax = 150;
+
+        const { x, y, heading } = this.findRobotById(id).getCoordinates();
+
+        var p1 = { x: xMin, y: yMin }; // upper left
+        var p2 = { x: xMax, y: yMax }; // upper right
+        var p3 = { x: xMin, y: yMin }; // lower left
+        var p4 = { x: xMax, y: yMin }; // lower right
+
+        var angle1 = (Math.atan2(p1.y - y, p1.x - x) * 180) / Math.PI;
+        var angle2 = (Math.atan2(p2.y - y, p2.x - x) * 180) / Math.PI;
+        var angle3 = (Math.atan2(p3.y - y, p3.x - x) * 180) / Math.PI;
+        var angle4 = (Math.atan2(p3.y - y, p3.x - x) * 180) / Math.PI;
+
+        console.log('Distance');
+        console.log('Ang:', angle1, angle2, angle3, angle4);
+
+        if (this.compAngle(angle1, heading, 0) || this.compAngle(angle2, heading, 0)) {
+            console.log('line1');
+        } else if (this.compAngle(angle4, heading, angle2)) {
+            console.log('line2');
+        } else if (
+            this.compAngle(angle3, heading, 180) ||
+            this.compAngle(-180, heading, angle4)
+        ) {
+            console.log('line3');
+        } else if (this.compAngle(angle1, heading, angle3)) {
+            console.log('line4');
+        }
+    };
 }
 
 /**
