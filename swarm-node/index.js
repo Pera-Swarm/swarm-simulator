@@ -18,7 +18,8 @@ const {
     localizationInfoUpdate,
     setup
 } = require('./robot/services/protocols');
-const { circular } = require('./robot/controllers/patterns/');
+
+const { circular, linear } = require('./robot/controllers/patterns/');
 const { robotRoutes } = require('./robot/controllers/mqtt/');
 
 var robot;
@@ -27,7 +28,8 @@ var robotId = generateId();
 var uuid = uuidv4();
 
 initiate = () => {
-    robot = new Robot(robotId, 0, 0, 0);
+    robot = new Robot(robotId, 10, 0);
+
     mqttRouter = new MQTTRouter(
         mqtt,
         //myRoutes,
@@ -41,7 +43,7 @@ initiate = () => {
 loop = () => {
     if (robot.id === undefined) {
         logger.log('debug', 'main: ROBOT ID Registration initial');
-        console.log(robot);
+        //console.log(robot);
         setup.registerId((success, id) => {
             if (success) {
                 robot.setId(id);
@@ -52,17 +54,17 @@ loop = () => {
             }
         });
     } else {
-        circular(robot, () => {
+        linear(robot, () => {
             localizationInfoUpdate(robot, mqtt, mqttOptions);
         });
-        logger.log(
-            'info',
-            'main: ROBOT(%s) instance coordinates: %s',
-            robotId,
-            robot.getCoordinates()
-        );
-        heartbeat(robot, mqtt, mqttOptions);
+        /*logger.log(
+        'info',
+        'main: ROBOT(%s) instance coordinates: %s',
+        robotId,
+        robot.getCoordinates()
+    );*/
+        //heartbeat(robot, mqtt, mqttOptions);
     }
 };
 
-defineBaseMode(initiate, loop, 500, 'swarm-node-instance-mode');
+defineBaseMode(initiate, loop, 1000, 'swarm-node-instance-mode');

@@ -113,7 +113,7 @@ class MQTTRouter {
                 this.mqttClient.subscribe(this.routes[i].topic, this.options);
             } else {
                 // No subscription required for this topic
-                console.log('MQTT_Not_Subscribed: ', this.routes[i].topic);
+                //console.log('MQTT_Not_Subscribed: ', this.routes[i].topic);
             }
         }
         console.log('');

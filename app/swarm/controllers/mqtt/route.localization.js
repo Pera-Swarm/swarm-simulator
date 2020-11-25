@@ -8,7 +8,7 @@ const routes = [
         subscribe: true,
         handler: (msg, swarm) => {
             // This will be called by Localization System and the virtual robots
-            console.log('MQTT_Localization:RequestUpdateLoc ', msg);
+            //console.log('MQTT_Localization:RequestUpdateLoc ', msg);
 
             swarm.loc_system.update(msg);
 
@@ -24,6 +24,7 @@ const routes = [
         handler: (msg, swarm) => {
             // This will request coordinate updates from the Localization System, and virtual robots
 
+            swarm.robots.createIfNotExists(msg.id);
             console.log('MQTT_Localization:RequestLocUpdates ', msg);
         }
     },
@@ -60,26 +61,6 @@ const routes = [
 
             var coordinates = JSON.stringify(swarm.robots.getCoordinatesAll());
             swarm.publish('v1/localization/print', coordinates);
-        }
-    },
-    {
-        topic: 'v1/localization/create',
-        allowRetained: false,
-        subscribe: false,
-        publish: true,
-        handler: (msg, swarm) => {
-            // This will instruct GUI to create a robot instance
-            console.log('MQTT_Localization:Create ', msg);
-        }
-    },
-    {
-        topic: 'v1/localization/delete',
-        allowRetained: false,
-        subscribe: false,
-        publish: true,
-        handler: (msg, swarm) => {
-            // This will instruct GUI to delete the robot instance
-            console.log('MQTT_Localization:Delete ', msg);
         }
     }
 ];

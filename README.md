@@ -1,6 +1,6 @@
 # FYP-swarm-robotics
 
-![Node.js CI](https://github.com/NuwanJ/FYP-swarm-robotics/workflows/Node.js%20CI/badge.svg)
+![Node.js CI](https://github.com/Pera-Swarm/e15-fyp-swarm-server/workflows/Node.js%20CI/badge.svg)
 
 Repository for Web UI / Central Server / Virtual nodes of Swarm Robots
 
@@ -41,4 +41,3 @@ npm start
 - [MQTT](https://github.com/mqttjs/MQTT.js)
 - [Cron](https://github.com/merencia/node-cron)
 - [React](https://reactjs.org/)
-- [Kubernetes](https://kubernetes.io/)
