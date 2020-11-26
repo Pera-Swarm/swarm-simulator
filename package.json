@@ -18,9 +18,11 @@
         "sequelize",
         "mysql"
     ],
-    "author": "Nuwan Jaliyagoda",
+    "author": "Pera-Swarm",
     "license": "MIT",
     "dependencies": {
+        "@pera-swarm/mqtt-router": "^1.0.1",
+        "@pera-swarm/types": "^1.0.1",
         "axios": "^0.19.2",
         "body-parser": "^1.19.0",
         "chai": "^4.2.0",
@@ -38,7 +40,10 @@
         "nodemon": "^2.0.4"
     },
     "nodemonConfig": {
-        "ignore": ["test/*", "swarm-node/*"],
+        "ignore": [
+            "test/*",
+            "swarm-node/*"
+        ],
         "delay": "2500"
     }
 }
