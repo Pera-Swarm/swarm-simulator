@@ -1,19 +1,11 @@
 var cron = require('node-cron');
 
-// TODO: add env variable for interval
-const interval = '*/10 * * * * *'; // every 10 seconds
-
-exports.begin = (swarm, routine) => {
-    this.swarm = swarm;
+exports.begin = (interval, routine) => {
+    // initerval in seconds
 
     cron.schedule(
         interval,
         () => {
-            /*console.log(
-                'Cron Scheduler',
-                this.swarm.robots.updated,
-                this.swarm.robots.getSize()
-            );*/
             routine();
         },
         {
@@ -22,3 +14,19 @@ exports.begin = (swarm, routine) => {
         }
     );
 };
+
+/**
+* Generates a cron interval called in given seconds
+* @param {freq} frequency in seconds
+*/
+exports.secondsInterval = (freq) =>{
+    return '*/'+freq+' * * * * *';
+}
+
+/**
+* Generates a cron interval called in given minutes
+* @param {freq} frequency in minutes
+*/
+exports.minutesInterval = (freq) =>{
+    return '*/'+freq+' * * * *';
+}
