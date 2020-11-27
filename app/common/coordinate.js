@@ -20,8 +20,8 @@ class Coordinate {
      */
     setCoordinates = (heading, x, y, z) => {
         this.heading = heading;
-        this.x = x;
-        this.y = y;
+        this.x = x; // (x*1).toFixed(2);
+        this.y = y; // (y*1).toFixed(2);
         if (z !== undefined) {
             this.z = z;
         }

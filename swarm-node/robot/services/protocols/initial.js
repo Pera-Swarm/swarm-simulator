@@ -1,7 +1,7 @@
 const logger = require('../../../logger/winston');
 
 const { MqttClient } = require('mqtt');
-const { publishToTopic } = require('.././../../../app/modules/mqtt-handler');
+const { publishToTopic } =  require('@pera-swarm/mqtt-router');
 const { Robot } = require('../../../../app/modules/robot');
 
 const INITIAL_TASKS = 1;
