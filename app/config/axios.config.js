@@ -6,6 +6,6 @@ module.exports = {
             ':' +
             (process.env.HTTP_PORT || 8080),
         timeout: 1000,
-        headers: { 'X-Custom-Header': 'foobar' }
+        headers: {}
     }
 };

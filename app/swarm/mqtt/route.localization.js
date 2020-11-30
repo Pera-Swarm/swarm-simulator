@@ -9,7 +9,6 @@ const routes = [
         handler: (msg, swarm) => {
             // This will be called by Localization System and the virtual robots
             //console.log('MQTT_Localization:RequestUpdateLoc ', msg);
-
             swarm.loc_system.update(msg);
 
             // Update robots & create, if not exists

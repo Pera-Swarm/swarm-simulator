@@ -10,7 +10,7 @@ module.exports = {
     },
     mqttOptions: {
         qos: 2,
-        rap: true,
+        rap: false,
         rh: true
     }
 };

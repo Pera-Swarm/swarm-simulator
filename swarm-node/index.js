@@ -6,7 +6,10 @@ const mqttClient = require('mqtt');
 const mqttConfig = require('./config/mqtt');
 const { mqttOptions } = require('./config/mqtt');
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
-const { MQTTRouter, wrapper } = require('../app/modules/mqtt-handler/');
+
+const { MQTTRouter, wrapper } = require('@pera-swarm/mqtt-router');
+//const { MQTTRouter, wrapper } = require('../app/modules/mqtt-handler/');
+
 const { Robot } = require('../app/modules/robot/');
 const { defineBaseMode } = require('@pera-swarm/modes/');
 
@@ -28,7 +31,7 @@ var robotId = generateId();
 var uuid = uuidv4();
 
 initiate = () => {
-    robot = new Robot(robotId, 10, 0);
+    robot = new Robot(robotId, 10, 0, 0);
 
     mqttRouter = new MQTTRouter(
         mqtt,
