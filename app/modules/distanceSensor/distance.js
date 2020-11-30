@@ -1,6 +1,21 @@
 const { abs, round, cos, sin } = require('mathjs');
 
 class DistanceSensor {
+
+    /* ------------------------------------------------------
+    Arena coordinate system (top view)
+
+    P1   L4  P2
+       ┍━━━┑
+    L3 ┃   ┃ L1
+       ┕━━━┛
+    P3  L2  P4
+
+    Axises: ↑ Y, → X
+
+    ------------------------------------------------------ */
+
+
     constructor(arena, mqttPublish) {
         this.arena = arena;
         this.publish = mqttPublish;
