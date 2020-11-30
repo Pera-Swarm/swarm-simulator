@@ -2,16 +2,24 @@ const robot = require('../../modules/robot/');
 const { Robot } = require('../../modules/robot/');
 const { Coordinate } = require('../../common/coordinate');
 
+const { DistanceSensor } = require('../../modules/distanceSensor');
+
 // Class for representing the robots level functionality
 
 class Robots {
     /**
      * Robots constructor
      */
-    constructor() {
+    constructor(swarm) {
+        if (swarm === undefined) throw new TypeError('Swarm unspecified');
+
         this.robotList = {};
         this.size = 0;
         this.updated = Date.now();
+        this.swarm = swarm;
+
+        // Attach distance sensor with giving access to arenaConfig data and MQTT publish
+        this.distanceSensor = new DistanceSensor(swarm.arenaConfig, swarm.mqttPublish);
     }
 
     /**
@@ -27,18 +35,16 @@ class Robots {
         if (id === undefined) throw new TypeError('id unspecified');
 
         // only add a robot if the id doesn't exist
-        if (this.existsRobot(id) === false) {
+        if (this.isExistsRobot(id) === false) {
             // robot doesn't exists
-            if (heading === undefined) {
-                this.robotList[id] = new Robot(id);
-            }
+            if (heading === undefined) this.robotList[id] = new Robot(id);
+
             if (z === undefined) {
                 this.robotList[id] = new Robot(id, heading, x, y);
             } else if (z !== undefined) {
                 this.robotList[id] = new Robot(id, heading, x, y, z);
             }
             this.size += 1;
-            this.updated = Date.now();
             return id;
         }
     };
@@ -58,28 +64,32 @@ class Robots {
      * @returns false : if a robot doesn't exist with the id
      */
 
-    createIfNotExists = (id) => {
-        if (this.existsRobot(id) == false) {
-            // robot doesn't exists
-            this.robotList[id] = new Robot(id);
+    createIfNotExists = (id, callback) => {
+        if (id === undefined) throw new TypeError('id unspecified');
+
+        if (this.isExistsRobot(id) == false) {
+            this.addRobot(id); // robot doesn't exists
         }
+
+        if (callback !== undefined) callback();
+        return true;
     };
 
-    existsRobot = (id) => {
+    isExistsRobot = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
         return this.robotList[id] != undefined;
     };
 
     /**
-     * method for finding a robot exists in the robotList or not
+     * method for finding a robot alive or not
      * @param {number} id robot id
+     * @param {number} interval considered time interval
      * @returns {boolean} true : if robot is alive
-     * @returns false : if a robot doesn't exist with the id
+     * @returns false : if a robot doesn't alive
      */
     isAliveRobot = (id, interval) => {
         if (id === undefined) throw new TypeError('id unspecified');
         if (interval === undefined) throw new TypeError('interval unspecified');
-
         return this.robotList[id].isAlive(interval);
     };
 
@@ -93,8 +103,7 @@ class Robots {
         if (id === undefined) throw new TypeError('id unspecified');
 
         var result = this.robotList[id];
-        if (result == undefined) return -1;
-        return result;
+        return result !== undefined ? result : -1;
     };
 
     /**
@@ -107,14 +116,14 @@ class Robots {
     removeRobot = (id, callback) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
-        if (this.existsRobot(id)) {
+        if (this.isExistsRobot(id)) {
             // remove the key along with the value.
             delete this.robotList[id];
-            this.size -= 1;
+            this.size--;
             this.updated = Date.now();
-            if (callback !== undefined) {
-                callback(id);
-            }
+            this.swarm.mqttPublish('v1/robot/delete', { id }, () => {
+                if (callback !== undefined) callback(id);
+            });
             return true;
         }
         return false;
@@ -129,7 +138,7 @@ class Robots {
     getCoordinatesById = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
-        if (this.existsRobot(id) === false) return -1;
+        if (this.isisExistsRobot(id) === false) return -1;
         return this.findRobotById(id).getCoordinates();
     };
 
@@ -142,7 +151,7 @@ class Robots {
     getCoordinateStringById = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
-        if (this.existsRobot(id) === false) return -1;
+        if (this.isExistsRobot(id) === false) return -1;
 
         const { x, y, heading } = this.findRobotById(id).getCoordinates();
         return `${x} ${y} ${heading}`;
@@ -169,7 +178,7 @@ class Robots {
 
         coordinates.forEach((item) => {
             const { id, x, y, heading } = item;
-            if (this.existsRobot(id)) {
+            if (this.isExistsRobot(id)) {
                 this.findRobotById(id).setCoordinates(heading, x, y);
             } else {
                 this.addRobot(id, heading, x, y);
@@ -185,68 +194,35 @@ class Robots {
      */
     prune = (interval, callback) => {
         if (interval === undefined) throw new TypeError('interval unspecified');
+
         for (var id in this.robotList) {
             if (this.isAliveRobot(id, interval) == false) {
-                // console.log('Robot_Removed', id);
                 this.removeRobot(id, callback);
             }
         }
     };
 
+    broadcast = (instType, value, options = {}) => {
+        if (instType === undefined) throw new TypeError('instruction type unspecified');
+        if (value === undefined) throw new TypeError('value unspecified');
+
+        const msg = `${instType} ${value}`;
+        this.swarm.mqttPublish('v1/robot/msg/broadcast', msg, options);
+    };
+
+    changeMode = (mode, options = {}) => {
+        this.broadcast('MODE', value);
+    };
+
     // TODO: add swarm functionality here
     // getSensorReadings
-    // registerRobot
     // stopRobot
     // resetRobot
-    // Note: add any other functions
-
-    compAngle = (a, b, c) => {
-        return a < b && b <= c;
-    };
-    getDistance = (id, callback) => {
-        if (id === undefined) throw new TypeError('id unspecified');
-
-        const xMin = -150;
-        const xMax = 150;
-        const yMin = -150;
-        const yMax = 150;
-
-        const { x, y, heading } = this.findRobotById(id).getCoordinates();
-
-        var p1 = { x: xMin, y: yMin }; // upper left
-        var p2 = { x: xMax, y: yMax }; // upper right
-        var p3 = { x: xMin, y: yMin }; // lower left
-        var p4 = { x: xMax, y: yMin }; // lower right
-
-        var angle1 = (Math.atan2(p1.y - y, p1.x - x) * 180) / Math.PI;
-        var angle2 = (Math.atan2(p2.y - y, p2.x - x) * 180) / Math.PI;
-        var angle3 = (Math.atan2(p3.y - y, p3.x - x) * 180) / Math.PI;
-        var angle4 = (Math.atan2(p3.y - y, p3.x - x) * 180) / Math.PI;
-
-        console.log('Distance');
-        console.log('Ang:', angle1, angle2, angle3, angle4);
-
-        if (this.compAngle(angle1, heading, 0) || this.compAngle(angle2, heading, 0)) {
-            console.log('line1');
-        } else if (this.compAngle(angle4, heading, angle2)) {
-            console.log('line2');
-        } else if (
-            this.compAngle(angle3, heading, 180) ||
-            this.compAngle(-180, heading, angle4)
-        ) {
-            console.log('line3');
-        } else if (this.compAngle(angle1, heading, angle3)) {
-            console.log('line4');
-        }
-    };
 }
 
-/**
- * method for initializing the robot class
- * @return {Robots} return the initialized Robots object
- */
 const initRobots = () => {
-    return new Robots();
+    // TODO: Fix this, in testings
+    return new Robots(this.swarm);
 };
 
 module.exports = {

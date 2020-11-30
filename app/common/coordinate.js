@@ -6,9 +6,7 @@ class Coordinate {
         this.heading = heading;
         this.x = x;
         this.y = y;
-        if (z !== undefined) {
-            this.z = z;
-        }
+        if (z !== undefined) this.z = z;
     }
 
     /**
@@ -20,11 +18,9 @@ class Coordinate {
      */
     setCoordinates = (heading, x, y, z) => {
         this.heading = heading;
-        this.x = x;
-        this.y = y;
-        if (z !== undefined) {
-            this.z = z;
-        }
+        this.x = Math.round(x * 100) / 100;
+        this.y = Math.round(y * 100) / 100;
+        if (z !== undefined) this.z = Math.round(z * 100) / 100;
     };
 
     /**
@@ -86,24 +82,15 @@ class Coordinate {
  * @param {coordinate} coordinate
  */
 const validateCoordinate = (coordinate) => {
-    var validity = -1,
-        i = 0;
-    if (Object.prototype.hasOwnProperty.call(coordinate, 'id')) {
-        i += 1;
-    }
-    if (Object.prototype.hasOwnProperty.call(coordinate, 'heading')) {
-        i += 1;
-    }
-    if (Object.prototype.hasOwnProperty.call(coordinate, 'x')) {
-        i += 1;
-    }
-    if (Object.prototype.hasOwnProperty.call(coordinate, 'y')) {
-        i += 1;
-    }
-    if (i === 4) {
-        validity = true;
-    }
-    return validity;
+    var i = 0;
+
+    if (Object.prototype.hasOwnProperty.call(coordinate, 'id')) i++;
+    if (Object.prototype.hasOwnProperty.call(coordinate, 'heading')) i++;
+    if (Object.prototype.hasOwnProperty.call(coordinate, 'x')) i++;
+    if (Object.prototype.hasOwnProperty.call(coordinate, 'y')) i++;
+
+    if (i === 4) return true;
+    return false;
 };
 
 module.exports = {

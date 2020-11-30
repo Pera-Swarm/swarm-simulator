@@ -3,9 +3,9 @@ var chai = require('chai');
 var expect = chai.expect;
 
 const { Robot } = require('../../modules/robot/');
-const { Robots, initRobots } = require('./robots');
+const { Robots } = require('./robots');
 
-var r = initRobots();
+var r = new Robot();
 var updated;
 
 const SAMPLE_ID_1 = 1;

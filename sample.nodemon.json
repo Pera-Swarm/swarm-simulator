@@ -3,13 +3,13 @@
         "DB_HOST": "localhost",
         "DB_USER": "root",
         "DB_PASS": "",
-        "DB_DATABASE": "swarm_server",
+        "DB_DATABASE": "",
         "MQTT_HOST": "mqtt://localhost",
         "MQTT_USER": "user",
-        "MQTT_PASS": "abcd1234",
+        "MQTT_PASS": "passwordd",
         "MQTT_CLIENT": "mqtt_swarm_server",
         "HTTP_HOST": "localhost",
-        "HTTP_PORT": 8088,
-        "PORT": 8088
-    }
+        "HTTP_PORT": 8088
+    },
+    "ignore": ["swarm-node/*"]
 }

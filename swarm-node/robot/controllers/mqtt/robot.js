@@ -5,10 +5,11 @@ const routes = [
     {
         topic: 'v1/robot/msg/broadcast',
         allowRetained: true,
+        type: 'String',
         handler: (msg, robot) => {
-            console.log('robot broadcast handler:', msg);
-            console.log('robot:', robot);
-            console.log('sensor readings:', robot.getSensorReadings());
+            //console.log('robot broadcast handler:', msg);
+            //console.log('robot:', robot);
+            //console.log('sensor readings:', robot.getSensorReadings());
         }
     }
 ];

@@ -4,25 +4,23 @@
 // MQTT
 const mqttClient = require('mqtt');
 const mqttConfig = require('../config/mqtt.config');
-const { mqttOptions } = require('../config/mqtt.config');
+const arenaConfig = require('../config/arena.config');
+
 const { MQTTRouter, publishToTopic, wrapper } = require('@pera-swarm/mqtt-router');
 
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 
-// Localization System
-const { SimpleLocalizationSystem } = require('../modules/localization');
-
 // cron - currently not implemented
 const cron = require('../services/cron.js');
 
-// Controllers
-const {
-    localizationRoutes,
-    sensorRoutes,
-    controlRoutes
-} = require('./controllers/mqtt/');
-const { initRobots } = require('./robots/robots');
+// Localization System
+const { SimpleLocalizationSystem } = require('../modules/localization');
+
+// MQTT Controllers
+const { localizationRoutes, sensorRoutes, controlRoutes } = require('./mqtt/');
+
+const { Robots } = require('./robots/robots');
 
 /**
  * @class Swarm Representation
@@ -35,35 +33,34 @@ class Swarm {
      */
     constructor(setup) {
         this.loc_system = new SimpleLocalizationSystem();
-        this.robots = initRobots();
+
+        // TODO: pass mqtt, swarm functions to Robots object
+        this.arenaConfig = arenaConfig;
+
         this.mqttRouter = new MQTTRouter(
             mqtt,
-            //myRoutes,
             wrapper([...controlRoutes, ...localizationRoutes, ...sensorRoutes], this),
-            mqttOptions,
+            mqttConfig,
             setup
         );
         this.mqttRouter.start();
-        this.init();
+
+        // Cron Jobs with defined intervals
+        cron.begin(cron.secondsInterval(10), this.prune);
+        cron.begin(cron.secondsInterval(30), this.broadcastCheckALive);
+
+        this.robots = new Robots(this);
     }
 
-    /**
-     * method for initializing the swarm
-     */
-    init = () => {
-        cron.begin(this, this.routine);
+    prune = () => {
+        //console.log('Swarm_Prune');
+        this.robots.prune(300);
     };
 
-    /**
-     * method for handling the swarm routine
-     * these tasks are scheduled with 'cron'
-     */
-    routine = () => {
-        //console.log('CRON_');
-        this.robots.prune(1, (robotId) => {
-            //console.log('callback with robotId', robotId);
-            this.publish('v1/robot/delete', { id: robotId });
-        });
+    broadcastCheckALive = () => {
+        // Publish with retain:true, qos:atLeastOnce
+        //console.log('Swarm_Check_a_Live');
+        this.robots.broadcast('ID?', -1, { qos: 1, rap: true });
     };
 
     /**
@@ -71,12 +68,13 @@ class Swarm {
      * @param {string} topic mqtt topic
      * @param {string} message mqtt message object
      */
-    publish = (topic, message) => {
+    mqttPublish = (topic, message, options = mqttConfig.mqttOptions, callback) => {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
 
-        publishToTopic(mqtt, topic, message.toString(), mqttOptions, () => {
-            console.log(`MQTT_Publish > ${message} to topic ${topic}`);
+        publishToTopic(mqtt, topic, message.toString(), options, () => {
+            //console.log(`MQTT_Publish > ${message} to topic ${topic}`);
+            if (callback !== undefined) callback();
         });
     };
 }

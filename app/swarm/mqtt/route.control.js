@@ -6,11 +6,16 @@ const routes = [
         topic: 'v1/test',
         allowRetained: false,
         subscribe: true,
-        type: 'String',
         handler: (msg, swarm) => {
             //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
+            const id = msg.id;
 
-            swarm.robots.prune(10);
+            console.log(msg);
+            var robot = swarm.robots.findRobotById(id);
+
+            const reading = swarm.robots.distanceSensor.viewReading(robot);
+            console.log('Test: ', reading);
+            //swarm.robots.prune(10);
         }
     },
     {
@@ -21,7 +26,7 @@ const routes = [
         handler: (msg, swarm) => {
             //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
 
-            const id = msg;
+            const { id } = msg;
             var robot = swarm.robots.findRobotById(id);
 
             if (robot !== -1) {

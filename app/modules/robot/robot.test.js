@@ -47,8 +47,8 @@ describe('Robot', function () {
             assert.typeOf(r.coordinate, 'object');
             expect(r.coordinate).to.be.instanceOf(Coordinate);
             // sensors
-            expect(r).to.haveOwnProperty('sensors');
-            assert.typeOf(r.sensors, 'object');
+            // expect(r).to.haveOwnProperty('sensors');
+            // assert.typeOf(r.sensors, 'object');
             // created
             expect(r).to.haveOwnProperty('created');
             assert.typeOf(r.created, 'date');
@@ -119,7 +119,7 @@ describe('Robot', function () {
             expect(coordinates.z).to.be.equal(INITIAL_Z);
         });
     });
-
+    /*
     describe('#getSensorReadings()', function () {
         it('should return the sensor readings of the robot instance', function () {
             const sensorReadings = r.getSensorReadings();
@@ -140,7 +140,7 @@ describe('Robot', function () {
             });
         });
     });
-
+*/
     describe('#updateHeartbeat()', function () {
         it('should update and return the updated timestamp of the robot instance', function () {
             const heartbeat = r.updateHeartbeat();
