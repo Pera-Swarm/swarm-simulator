@@ -119,7 +119,7 @@ describe('Robot', function () {
             expect(coordinates.z).to.be.equal(INITIAL_Z);
         });
     });
-/*
+    /*
     describe('#getSensorReadings()', function () {
         it('should return the sensor readings of the robot instance', function () {
             const sensorReadings = r.getSensorReadings();

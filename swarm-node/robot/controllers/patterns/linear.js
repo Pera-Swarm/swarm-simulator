@@ -10,7 +10,7 @@ function move(robot, d) {
     y = Math.round(y * 100) / 100;
 
     if (Math.abs(x) > 140 || Math.abs(y) > 140) {
-        const turn = 180 + ((Math.random() * 120)- 60);
+        const turn = 180 + (Math.random() * 120 - 60);
         heading = Math.round(normalizedAngle(heading + turn) * 10) / 10;
     }
     console.log(x, y, heading);

@@ -16,17 +16,17 @@ exports.begin = (interval, routine) => {
 };
 
 /**
-* Generates a cron interval called in given seconds
-* @param {freq} frequency in seconds
-*/
-exports.secondsInterval = (freq) =>{
-    return '*/'+freq+' * * * * *';
-}
+ * Generates a cron interval called in given seconds
+ * @param {freq} frequency in seconds
+ */
+exports.secondsInterval = (freq) => {
+    return '*/' + freq + ' * * * * *';
+};
 
 /**
-* Generates a cron interval called in given minutes
-* @param {freq} frequency in minutes
-*/
-exports.minutesInterval = (freq) =>{
-    return '*/'+freq+' * * * *';
-}
+ * Generates a cron interval called in given minutes
+ * @param {freq} frequency in minutes
+ */
+exports.minutesInterval = (freq) => {
+    return '*/' + freq + ' * * * *';
+};

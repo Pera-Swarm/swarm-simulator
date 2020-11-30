@@ -18,9 +18,9 @@ class Coordinate {
      */
     setCoordinates = (heading, x, y, z) => {
         this.heading = heading;
-        this.x = Math.round(x*100)/100;
-        this.y = Math.round(y*100)/100;
-        if (z !== undefined) this.z = Math.round(z*100)/100;
+        this.x = Math.round(x * 100) / 100;
+        this.y = Math.round(y * 100) / 100;
+        if (z !== undefined) this.z = Math.round(z * 100) / 100;
     };
 
     /**

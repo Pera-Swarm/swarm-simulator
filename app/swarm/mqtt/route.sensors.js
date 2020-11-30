@@ -11,12 +11,10 @@ const routes = [
 
             var robot = swarm.robots.findRobotById(msg.id);
             if (robot != -1) {
-                swarm.robots.distanceSensor.getReading(robot, (dist)=>{
+                swarm.robots.distanceSensor.getReading(robot, (dist) => {
                     console.log('MQTT_Sensor:Distance_Handler', dist);
                 });
-
             } else {
-
                 // No robot found. Just echo the message, because this is a blocking call for the robot
                 // TODO: register the robot into system
 
