@@ -18,19 +18,19 @@ const cron = require('../services/cron.js');
 const { SimpleLocalizationSystem } = require('../modules/localization');
 
 // MQTT Controllers
-const {localizationRoutes,sensorRoutes,controlRoutes} = require('./mqtt/');
+const { localizationRoutes, sensorRoutes, controlRoutes } = require('./mqtt/');
 
 const { Robots } = require('./robots/robots');
 
 /**
-* @class Swarm Representation
-* @classdesc representing the customized swarm level functionality
-*/
+ * @class Swarm Representation
+ * @classdesc representing the customized swarm level functionality
+ */
 class Swarm {
     /**
-    * @constructor Swarm constructor
-    * @param {function} setup a fuction to run when the swarm object created
-    */
+     * @constructor Swarm constructor
+     * @param {function} setup a fuction to run when the swarm object created
+     */
     constructor(setup) {
         this.loc_system = new SimpleLocalizationSystem();
 
@@ -52,29 +52,29 @@ class Swarm {
         this.robots = new Robots(this);
     }
 
-    prune = ()=>{
+    prune = () => {
         //console.log('Swarm_Prune');
-        this.robots.prune(300)
-    }
+        this.robots.prune(300);
+    };
 
-    broadcastCheckALive = ()=>{
+    broadcastCheckALive = () => {
         // Publish with retain:true, qos:atLeastOnce
         //console.log('Swarm_Check_a_Live');
-        this.robots.broadcast('ID?',-1, {qos:1, rap: true});
-    }
+        this.robots.broadcast('ID?', -1, { qos: 1, rap: true });
+    };
 
     /**
-    * method for publishing a message to a given topic
-    * @param {string} topic mqtt topic
-    * @param {string} message mqtt message object
-    */
-    mqttPublish = (topic, message, options=mqttConfig.mqttOptions, callback) => {
+     * method for publishing a message to a given topic
+     * @param {string} topic mqtt topic
+     * @param {string} message mqtt message object
+     */
+    mqttPublish = (topic, message, options = mqttConfig.mqttOptions, callback) => {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
 
         publishToTopic(mqtt, topic, message.toString(), options, () => {
             //console.log(`MQTT_Publish > ${message} to topic ${topic}`);
-            if(callback!==undefined) callback();
+            if (callback !== undefined) callback();
         });
     };
 }

@@ -19,19 +19,44 @@ class Robot {
      */
     constructor(id, heading, x, y, z) {
         this.id = id;
+
         heading = heading === undefined ? 0 : heading;
-        x = (x === undefined) ? 0 : x;
-        y = (y === undefined) ? 0 : y;
-        if (z !== undefined) {
-            this.z = z;
-        }
+        x = x === undefined ? 0 : x;
+        y = y === undefined ? 0 : y;
+        if (z !== undefined) this.z = z;
 
         this.coordinate = new Coordinate(id, heading, x, y);
-
         this.created = Date();
         this.updated = Date.now();
         this.timestamp = Date.now();
+
+        // This is to keep the customized data in the robot object
+        this.data = [];
     }
+
+    /**
+     * method for get a data by its key
+     * @param {number} key key for the data
+     * @returns {Object} the data object : if it exists
+     * @returns undefined : if it doesn't exist
+     */
+    getData = (key) => {
+        if (key === undefined) throw new TypeError('key unspecified');
+        return this.data[key];
+    };
+
+    /**
+     * method for set a data by its key
+     * @param {number} key key for the data object
+     * @param {Object} the data object
+     * @returns true
+     */
+    setData = (key, value) => {
+        if (key === undefined) throw new TypeError('key unspecified');
+        if (value === undefined) throw new TypeError('value unspecified');
+        this.data[key] = value;
+        return true;
+    };
 
     /**
      * method for getting coordinates
@@ -58,13 +83,10 @@ class Robot {
         } else {
             this.coordinate.setCoordinates(heading, x, y);
         }
+
+        //console.log(`Pos x:${x} y:${y} Heading:${heading}`)
         this.updated = Date.now();
     };
-
-    /**
-     * method for getting all the sensor readings
-     * @returns {object} all sensor readings with sensor type as the key and readings as the value
-     */
 
     /**
      * method for updating the heartbeat of the robot
@@ -86,8 +108,6 @@ class Robot {
         const seconds = Math.floor((Date.now() - this.updated) / 1000);
         return seconds <= interval;
     };
-
-
 }
 
 module.exports = { Robot };
