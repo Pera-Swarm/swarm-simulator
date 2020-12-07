@@ -15,13 +15,15 @@ class SimpleCommunication extends Communication {
 
         robots.forEach((robot, index) => {
             if (robot.id != thisRobot.id) {
-                const distCheck = this.#distanceCheck(this._getDistance(thisRobot, robot));
+                const distCheck = this.#distanceCheck(
+                    this._getDistance(thisRobot, robot)
+                );
 
                 if (distCheck) {
                     // within the distance range, so send the messaage
 
                     receivers++;
-                    if(this.debug) console.log(`robot #${robot.id}: pass`);
+                    if (this.debug) console.log(`robot #${robot.id}: pass`);
 
                     this.publish(`v1/communication/${robot.id}`, message);
                 }
@@ -31,7 +33,7 @@ class SimpleCommunication extends Communication {
     };
 
     #distanceCheck = (dist) => {
-        return (dist <= this.maxDistance);
+        return dist <= this.maxDistance;
     };
 }
 module.exports = { SimpleCommunication };

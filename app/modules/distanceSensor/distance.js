@@ -1,20 +1,18 @@
 const { abs, round, cos, sin } = require('mathjs');
 
 class DistanceSensor {
-
     /* ------------------------------------------------------
     Arena coordinate system (top view)
 
     P1   L4  P2
-       ┍━━━┑
+    ┍━━━┑
     L3 ┃   ┃ L1
-       ┕━━━┛
+    ┕━━━┛
     P3  L2  P4
 
     Axises: ↑ Y, → X
 
     ------------------------------------------------------ */
-
 
     constructor(arena, mqttPublish) {
         this.arena = arena;
@@ -24,6 +22,7 @@ class DistanceSensor {
     getReading = (robot, callback) => {
         const { x, y, heading } = robot.getCoordinates();
 
+        robot.updateHeartbeat();
         console.log(x, y, heading);
         var dist = round(this.#getBorderDistance(x, y, heading) * 10) / 10;
 
@@ -106,7 +105,6 @@ class DistanceSensor {
         const { xMin, xMax, yMin, yMax } = this.arena;
         const theta = heading * (Math.PI / 180);
 
-        //heading = heading*(Math.PI/180);
         if (line == 1) {
             return cos(theta) != 0 ? abs(x - xMax) / cos(theta) : abs(x - xMax);
         } else if (line == 2) {

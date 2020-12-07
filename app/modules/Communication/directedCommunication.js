@@ -19,14 +19,19 @@ class DirectedCommunication extends Communication {
 
         robots.forEach((robot, index) => {
             if (robot.id != thisRobot.id) {
-                const distCheck = this.#distanceCheck(this._getDistance(thisRobot, robot));
-                const angleCheck = this.#angleCheck(thisRobot.heading, this._getAngle(thisRobot, robot));
+                const distCheck = this.#distanceCheck(
+                    this._getDistance(thisRobot, robot)
+                );
+                const angleCheck = this.#angleCheck(
+                    thisRobot.heading,
+                    this._getAngle(thisRobot, robot)
+                );
 
-                if ( distCheck && angleCheck) {
+                if (distCheck && angleCheck) {
                     // within the distance range & angle threshold, so send the messaage
 
                     receivers++;
-                    if(this.debug) console.log(`robot #${robot.id}: pass`);
+                    if (this.debug) console.log(`robot #${robot.id}: pass`);
 
                     this.publish(`v1/communication/${robot.id}`, message);
                 }
@@ -37,7 +42,7 @@ class DirectedCommunication extends Communication {
     };
 
     #distanceCheck = (dist) => {
-        return (dist <= this.maxDistance);
+        return dist <= this.maxDistance;
     };
 
     #angleCheck = (heading, angle) => {
@@ -47,7 +52,7 @@ class DirectedCommunication extends Communication {
         if (difference > 180) difference -= 360;
 
         if (this.debug)
-        console.log(`heading: ${heading}, angle:${angle}, diff:${difference}`);
+            console.log(`heading: ${heading}, angle:${angle}, diff:${difference}`);
 
         return abs(difference) <= this.angleThreshold / 2;
     };
