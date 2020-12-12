@@ -3,6 +3,10 @@ const { Robot } = require('../../modules/robot/');
 const { Coordinate } = require('../../common/coordinate');
 
 const { DistanceSensor } = require('../../modules/distanceSensor');
+const {
+    SimpleCommunication,
+    DirectedCommunication
+} = require('../../modules/communication');
 
 // Class for representing the robots level functionality
 
@@ -17,9 +21,25 @@ class Robots {
         this.size = 0;
         this.updated = Date.now();
         this.swarm = swarm;
+        this.debug = true;
 
         // Attach distance sensor with giving access to arenaConfig data and MQTT publish
         this.distanceSensor = new DistanceSensor(swarm.arenaConfig, swarm.mqttPublish);
+
+        // Simple communication
+        this.simpleCommunication = new SimpleCommunication(
+            this,
+            swarm.mqttPublish,
+            100,
+            this.debug
+        );
+        this.directedCommunication = new DirectedCommunication(
+            this,
+            swarm.mqttPublish,
+            100,
+            30,
+            this.debug
+        );
     }
 
     /**
@@ -138,7 +158,7 @@ class Robots {
     getCoordinatesById = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
-        if (this.isisExistsRobot(id) === false) return -1;
+        if (this.isExistsRobot(id) === false) return -1;
         return this.findRobotById(id).getCoordinates();
     };
 

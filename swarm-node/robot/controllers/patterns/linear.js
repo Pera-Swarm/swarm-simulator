@@ -9,8 +9,8 @@ function move(robot, d) {
     if (Math.abs(x) > 140 || Math.abs(y) > 140) {
         const turn = 180 + (Math.random() * 120 - 60);
         heading = Math.round(normalizedAngle(heading + turn) * 10) / 10;
-        x = x - ((x/Math.abs(x))*10);
-        y = y - ((y/Math.abs(y))*10);
+        x = x - (x / Math.abs(x)) * 10;
+        y = y - (y / Math.abs(y)) * 10;
     }
 
     x = Math.round(x * 100) / 100;

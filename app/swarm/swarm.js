@@ -45,16 +45,16 @@ class Swarm {
         );
         this.mqttRouter.start();
 
-        // Cron Jobs with defined intervals
-        cron.begin(cron.secondsInterval(10), this.prune);
-        cron.begin(cron.secondsInterval(30), this.broadcastCheckALive);
+        // Cron Jobs with defined intervals, // TODO: define intervals as global variables
+        cron.begin(cron.secondsInterval(360), this.prune);
+        cron.begin(cron.secondsInterval(360), this.broadcastCheckALive);
 
         this.robots = new Robots(this);
     }
 
     prune = () => {
-        //console.log('Swarm_Prune');
-        this.robots.prune(300);
+        console.log('Swarm_Prune');
+        this.robots.prune(360); // TODO: define this as a global variable
     };
 
     broadcastCheckALive = () => {
