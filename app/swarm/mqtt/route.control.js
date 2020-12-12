@@ -10,11 +10,15 @@ const routes = [
             //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
             const id = msg.id;
 
-            console.log(msg);
-            var robot = swarm.robots.findRobotById(id);
+            console.log('');
+            swarm.robots.directedCommunication.broadcast(
+                id,
+                'This is a test ' + Date.now(),
+                (status) => {
+                    console.log('Directed:Status', status);
+                }
+            );
 
-            const reading = swarm.robots.distanceSensor.viewReading(robot);
-            console.log('Test: ', reading);
             //swarm.robots.prune(10);
         }
     },
