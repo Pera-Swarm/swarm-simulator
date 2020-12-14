@@ -1,8 +1,6 @@
-const robot = require('../../modules/robot/');
-const { Robot } = require('../../modules/robot/');
-const { Coordinate } = require('../../common/coordinate');
+const { VRobot: Robot, Coordinate, DistanceSensor } = require('pera-swarm');
 
-const { DistanceSensor } = require('../../modules/distanceSensor');
+// const { DistanceSensor } = require('../../modules/distanceSensor');
 const {
     SimpleCommunication,
     DirectedCommunication

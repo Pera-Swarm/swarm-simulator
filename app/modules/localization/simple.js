@@ -1,5 +1,5 @@
 const Localization = require('./Localization');
-const { Coordinate } = require('../../common/coordinate');
+const { Coordinate } = require('pera-swarm');
 
 class SimpleLocalizationSystem {
     /**

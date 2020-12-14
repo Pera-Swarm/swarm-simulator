@@ -2,7 +2,7 @@ var assert = require('assert');
 var chai = require('chai');
 var expect = chai.expect;
 
-const { Coordinate } = require('../../../common/coordinate');
+const { Coordinate } = require('pera-swarm');
 const Localization = require('../Localization');
 
 var l;
