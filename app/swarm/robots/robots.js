@@ -12,8 +12,8 @@ const {
 
 class Robots {
     /**
-     * Robots constructor
-     */
+    * Robots constructor
+    */
     constructor(swarm) {
         if (swarm === undefined) throw new TypeError('Swarm unspecified');
 
@@ -33,6 +33,8 @@ class Robots {
             100,
             this.debug
         );
+
+        // Directed communication 
         this.directedCommunication = new DirectedCommunication(
             this,
             swarm.mqttPublish,
@@ -43,14 +45,14 @@ class Robots {
     }
 
     /**
-     * method for adding a robot to the robotList
-     * @param {number} id robot id
-     * @param {number} heading heading coordinate
-     * @param {number} x x coordinate
-     * @param {number} y y coordinate
-     * @param {number} z z coordinate, optional
-     * @returns {number} id : if successful
-     */
+    * method for adding a robot to the robotList
+    * @param {number} id robot id
+    * @param {number} heading heading coordinate
+    * @param {number} x x coordinate
+    * @param {number} y y coordinate
+    * @param {number} z z coordinate, optional
+    * @returns {number} id : if successful
+    */
     addRobot = (id, heading, x, y, z) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
@@ -70,19 +72,19 @@ class Robots {
     };
 
     /**
-     * method for getting the size of the robot robotList
-     * @returns {number} the size of the robot instances : are in the list
-     */
+    * method for getting the size of the robot robotList
+    * @returns {number} the size of the robot instances : are in the list
+    */
     getSize = () => {
         return this.size;
     };
 
     /**
-     * method for finding a robot exists in the robotList or not
-     * @param {number} id robot id
-     * @returns {boolean} true : if it exists with the id
-     * @returns false : if a robot doesn't exist with the id
-     */
+    * method for finding a robot exists in the robotList or not
+    * @param {number} id robot id
+    * @returns {boolean} true : if it exists with the id
+    * @returns false : if a robot doesn't exist with the id
+    */
 
     createIfNotExists = (id, callback) => {
         if (id === undefined) throw new TypeError('id unspecified');
@@ -101,12 +103,12 @@ class Robots {
     };
 
     /**
-     * method for finding a robot alive or not
-     * @param {number} id robot id
-     * @param {number} interval considered time interval
-     * @returns {boolean} true : if robot is alive
-     * @returns false : if a robot doesn't alive
-     */
+    * method for finding a robot alive or not
+    * @param {number} id robot id
+    * @param {number} interval considered time interval
+    * @returns {boolean} true : if robot is alive
+    * @returns false : if a robot doesn't alive
+    */
     isAliveRobot = (id, interval) => {
         if (id === undefined) throw new TypeError('id unspecified');
         if (interval === undefined) throw new TypeError('interval unspecified');
@@ -114,11 +116,11 @@ class Robots {
     };
 
     /**
-     * method for finding the robot by id
-     * @param {number} id robot id
-     * @returns {Robot|number} the robot instance : if it exists
-     * @returns -1 : if it doesn't exist
-     */
+    * method for finding the robot by id
+    * @param {number} id robot id
+    * @returns {Robot|number} the robot instance : if it exists
+    * @returns -1 : if it doesn't exist
+    */
     findRobotById = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
@@ -127,12 +129,12 @@ class Robots {
     };
 
     /**
-     * method for removing the robot by id
-     * @param {number} id robot id
-     * @param {function} callback a callback function
-     * @returns {boolean} true : if successful
-     * @returns false : if it fails
-     */
+    * method for removing the robot by id
+    * @param {number} id robot id
+    * @param {function} callback a callback function
+    * @returns {boolean} true : if successful
+    * @returns false : if it fails
+    */
     removeRobot = (id, callback) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
@@ -150,11 +152,11 @@ class Robots {
     };
 
     /**
-     * method for getting the robot coordinates by id
-     * @param {number} id robot id
-     * @returns {Coordinate|number} the robot coordinates : if it exists
-     * @returns -1 : if it doesn't exist
-     */
+    * method for getting the robot coordinates by id
+    * @param {number} id robot id
+    * @returns {Coordinate|number} the robot coordinates : if it exists
+    * @returns -1 : if it doesn't exist
+    */
     getCoordinatesById = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
@@ -163,11 +165,11 @@ class Robots {
     };
 
     /**
-     * method for getting the robot coordinate string by id
-     * @param {number} id robot id
-     * @returns {String|number} the robot coordinate string : if it exists
-     * @returns -1 : if it doesn't exist
-     */
+    * method for getting the robot coordinate string by id
+    * @param {number} id robot id
+    * @returns {String|number} the robot coordinate string : if it exists
+    * @returns -1 : if it doesn't exist
+    */
     getCoordinateStringById = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
@@ -178,9 +180,9 @@ class Robots {
     };
 
     /**
-     * method for getting the coordinates of all robots
-     * @returns {Coordinate[]} current robot coordinates : that are existing in the list
-     */
+    * method for getting the coordinates of all robots
+    * @returns {Coordinate[]} current robot coordinates : that are existing in the list
+    */
     getCoordinatesAll = () => {
         var result = [];
         for (const key in this.robotList) {
@@ -190,9 +192,9 @@ class Robots {
     };
 
     /**
-     * method for updating the coordinates of the given robots coordinates data
-     * @param {Coordinate[]} coordinates coordinate data
-     */
+    * method for updating the coordinates of the given robots coordinates data
+    * @param {Coordinate[]} coordinates coordinate data
+    */
     updateCoordinates = (coordinates) => {
         if (coordinates === undefined) throw new TypeError('coordinates unspecified');
 
@@ -208,10 +210,10 @@ class Robots {
     };
 
     /**
-     * method for updating the coordinates of the given robots coordinates data
-     * @param {number} interval the maximum allowed time in 'seconds' for being counted as 'alive' for a robot unit
-     * @param {function} callback a callback function. 'id' will be given as a parameter
-     */
+    * method for updating the coordinates of the given robots coordinates data
+    * @param {number} interval the maximum allowed time in 'seconds' for being counted as 'alive' for a robot unit
+    * @param {function} callback a callback function. 'id' will be given as a parameter
+    */
     prune = (interval, callback) => {
         if (interval === undefined) throw new TypeError('interval unspecified');
 

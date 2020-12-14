@@ -11,7 +11,7 @@ const routes = [
             const id = msg.id;
 
             console.log('');
-            swarm.robots.directedCommunication.broadcast(
+            swarm.robots.simpleCommunication.broadcast(
                 id,
                 'This is a test ' + Date.now(),
                 (status) => {

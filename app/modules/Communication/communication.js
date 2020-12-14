@@ -18,7 +18,7 @@ class Communication {
         );
     };
 
-    // Internal use only -------------------------------------------------------
+    // Protected methods, internal use only -------------------------------------------------------
 
     _getDistance = (from, to) => {
         const xDiff = to.x - from.x;
