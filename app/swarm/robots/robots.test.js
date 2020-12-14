@@ -2,7 +2,7 @@ var assert = require('chai').assert;
 var chai = require('chai');
 var expect = chai.expect;
 
-const { Robot } = require('../../modules/robot/');
+const { VRobot: Robot } = require('pera-swarm');
 const { Robots } = require('./robots');
 
 var r = new Robot();

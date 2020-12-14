@@ -1,4 +1,4 @@
-const { validateCoordinate, Coordinate } = require('../../common/coordinate');
+const { validateCoordinate, Coordinate } = require('pera-swarm');
 
 class Localization {
     /**
