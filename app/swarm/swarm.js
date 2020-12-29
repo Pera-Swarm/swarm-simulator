@@ -15,7 +15,7 @@ const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 const cron = require('../services/cron.js');
 
 // Localization System
-const { SimpleLocalizationSystem } = require('../modules/localization');
+const { SimpleLocalizationSystem } = require('pera-swarm');
 
 // MQTT Controllers
 const { localizationRoutes, sensorRoutes, controlRoutes } = require('./mqtt/');

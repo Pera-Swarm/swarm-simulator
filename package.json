@@ -34,7 +34,7 @@
         "mqtt": "^4.0.1",
         "mysql2": "^2.1.0",
         "node-cron": "^2.0.3",
-        "pera-swarm": "^1.2.2",
+        "pera-swarm": "^1.2.3",
         "prettier": "^2.1.2",
         "sequelize": "^5.21.2"
     },
