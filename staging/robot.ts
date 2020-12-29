@@ -1,10 +1,18 @@
-const { AbstractCoordinateRobot, Coordinate, CoordinateValueInt } = require('pera-swarm');
+import { AbstractCoordinateRobot, Coordinate, CoordinateValueInt } from 'pera-swarm';
 
 /**
  * @class Robot Representation
  * @classdesc representing the specific robot level functionality in the Swarm Server
  */
-class Robot extends AbstractCoordinateRobot {
+export class Robot extends AbstractCoordinateRobot<
+    number,
+    Coordinate<number>,
+    CoordinateValueInt<number>
+> {
+    _data: any[];
+    created: Date;
+    timestamp: number;
+
     /**
      * Robot constructor
      * @param {string} id robot id
@@ -12,7 +20,7 @@ class Robot extends AbstractCoordinateRobot {
      * @param {number} x x coordinate
      * @param {number} y y coordinate
      */
-    constructor(id, heading, x, y) {
+    constructor(id: number, heading: number, x: number, y: number) {
         super(id, new Coordinate(id, heading, x, y));
         this.created = new Date();
         this.timestamp = Date.now();
@@ -24,7 +32,7 @@ class Robot extends AbstractCoordinateRobot {
     /**
      * method for getting coordinates
      */
-    get coordinates() {
+    get coordinates(): CoordinateValueInt<number> {
         return this._coordinates.values;
     }
 
@@ -41,7 +49,7 @@ class Robot extends AbstractCoordinateRobot {
      * @returns {Object} the data object : if it exists
      * @returns undefined : if it doesn't exist
      */
-    getData = (key) => {
+    getData = (key: string | number): object => {
         if (key === undefined) throw new TypeError('key unspecified');
         return this._data[key];
     };
@@ -52,7 +60,7 @@ class Robot extends AbstractCoordinateRobot {
      * @param {Object} the data object
      * @returns true
      */
-    setData = (key, value) => {
+    setData = (key: string | number, value: any) => {
         if (key === undefined) throw new TypeError('key unspecified');
         if (value === undefined) throw new TypeError('value unspecified');
         this._data[key] = value;
@@ -73,7 +81,7 @@ class Robot extends AbstractCoordinateRobot {
      * @param {number} x x coordinate
      * @param {number} y y coordinate
      */
-    setCoordinates = (coordinate) => {
+    setCoordinates = (coordinate: CoordinateValueInt<number>) => {
         const { heading, x, y } = coordinate;
         this._coordinates.setCoordinates(heading, x, y);
         //console.log(`Pos x:${x} y:${y} Heading:${heading}`)
@@ -86,7 +94,7 @@ class Robot extends AbstractCoordinateRobot {
      * @param {number} x x coordinate
      * @param {number} y y coordinate
      */
-    setCoordinateValues = (heading, x, y) => {
+    setCoordinateValues = (heading: number, x: number, y: number) => {
         this._coordinates.setCoordinates(heading, x, y);
         //console.log(`Pos x:${x} y:${y} Heading:${heading}`)
         this._updated = Date.now();
@@ -96,7 +104,7 @@ class Robot extends AbstractCoordinateRobot {
      * method for updating the heartbeat of the robot
      * @returns {number} updated datetime value
      */
-    updateHeartbeat = () => {
+    updateHeartbeat = (): number => {
         this._updated = Date.now();
         return this._updated;
     };
@@ -107,13 +115,9 @@ class Robot extends AbstractCoordinateRobot {
      * @returns {boolean} true : if the robot is counted as 'alive'
      * @returns false : if the robot is counted as 'dead'
      */
-    isAlive = (interval) => {
+    isAlive = (interval: number): boolean => {
         if (interval === undefined) throw new TypeError('interval unspecified');
         const seconds = Math.floor((Date.now() - this.updated) / 1000);
         return seconds <= interval;
     };
 }
-
-module.exports = {
-    Robot
-};
