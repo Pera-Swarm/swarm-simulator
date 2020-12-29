@@ -35,9 +35,9 @@ beforeEach(function () {
     timestamp = r.timestamp;
 });
 
-describe('VRobot', function () {
-    describe('#VRobot()', function () {
-        it('should create a VRobot instance', function () {
+describe('Robot', function () {
+    describe('#Robot()', function () {
+        it('should create a Robot instance', function () {
             // id
             expect(r).to.have.property('id');
             assert.typeOf(r.id, 'number');
