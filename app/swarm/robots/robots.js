@@ -1,10 +1,12 @@
-const { VRobot: Robot, Coordinate, DistanceSensor } = require('pera-swarm');
-
-// const { DistanceSensor } = require('../../modules/distanceSensor');
 const {
+    Coordinate,
+    DistanceSensor,
     SimpleCommunication,
     DirectedCommunication
-} = require('../../modules/communication');
+} = require('pera-swarm');
+const { Robot } = require('../robot/robot');
+
+// const { DistanceSensor } = require('../../modules/distanceSensor');
 
 // Class for representing the robots level functionality
 
@@ -39,6 +41,10 @@ class Robots {
             this.debug
         );
     }
+
+    robotBuilder = (id, heading, x, y) => {
+        return new Robot(id, heading, x, y);
+    };
 
     /**
      * method for adding a robot to the robotList
