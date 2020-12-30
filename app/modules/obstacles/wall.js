@@ -2,42 +2,37 @@
 const { abs, round, cos, sin, atan2 } = require('mathjs');
 
 class WallObstacle {
-
-    constructor(width, orientation, originX, originY, debug=false) {
-
+    constructor(width, orientation, originX, originY, debug = false) {
         this._width = width;
-        this._theta = ((orientation / 360) * 2 * Math.PI);
+        this._theta = (orientation / 360) * 2 * Math.PI;
         this.debug = debug;
 
         // Corner Points
-        this.p1 = {x: originX, y: originY};
-        this.p2 = {x: this.p1.x + this._width*cos(this._theta), y:this.p1.y + this._width*sin(this._theta)};
+        this.p1 = { x: originX, y: originY };
+        this.p2 = {
+            x: this.p1.x + this._width * cos(this._theta),
+            y: this.p1.y + this._width * sin(this._theta)
+        };
 
-        if(debug) {
+        if (debug) {
             console.log('Wall obstacle created');
             console.log('ori:', this._theta, 'width:', width);
             console.log('p1:', this.p1);
             console.log('p2:', this.p2);
             console.log('');
         }
-
     }
 
     geometric = () => {
-        return {
-
-        };
+        return {};
     };
 
-    visualize  = () => {
-        return {
-
-        };
+    visualize = () => {
+        return {};
     };
 
-    isInRange = (heading, x, y, angleThreshold=10) => {
-
-        const from = {x: x, y:y };
+    isInRange = (heading, x, y, angleThreshold = 10) => {
+        const from = { x: x, y: y };
 
         // Lets check the heading in between two points
         const pA1 = this._getAngle(from, this.p1);
@@ -53,8 +48,7 @@ class WallObstacle {
         return false;
     };
 
-    getDistance = (x, y, heading)=> {
-
+    getDistance = (x, y, heading) => {
         return 0;
     };
 

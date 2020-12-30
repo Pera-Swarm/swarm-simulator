@@ -28,7 +28,7 @@ const routes = [
         subscribe: true,
         type: 'String',
         handler: (msg, swarm) => {
-            console.log('UpdatingHeartbeat > id:',msg);
+            console.log('UpdatingHeartbeat > id:', msg);
             const id = msg.split(' ')[0];
             var robot = swarm.robots.findRobotById(id);
 
