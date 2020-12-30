@@ -2,21 +2,27 @@
 const { abs, round, cos, sin, atan2 } = require('mathjs');
 
 class WallObstacle {
-    constructor(width, orientation, originX, originY, debug = false) {
-        this._width = width;
-        this._theta = (orientation / 360) * 2 * Math.PI;
+    constructor(id, width,height, orientation, originX, originY, debug = false) {
+
+        // Geometric details
+        this.width = width;
+        this.height = height;
+        this.depth = 5;
+        this.orientation = orientation;
+        this.theta = (orientation / 360) * 2 * Math.PI;
+
         this.debug = debug;
 
-        // Corner Points
+        // Corner Points of the wall
         this.p1 = { x: originX, y: originY };
         this.p2 = {
-            x: this.p1.x + this._width * cos(this._theta),
-            y: this.p1.y + this._width * sin(this._theta)
+            x: this.p1.x + this.width * cos(this.theta),
+            y: this.p1.y + this.width * sin(this.theta)
         };
 
         if (debug) {
             console.log('Wall obstacle created');
-            console.log('ori:', this._theta, 'width:', width);
+            console.log('ori:', this.orientation, 'width:', width);
             console.log('p1:', this.p1);
             console.log('p2:', this.p2);
             console.log('');
@@ -24,11 +30,13 @@ class WallObstacle {
     }
 
     geometric = () => {
-        return {};
-    };
-
-    visualize = () => {
-        return {};
+        // Return basic geometric properties of the obstacle
+        return {
+            p1: this.p1,
+            p2: this.p2,
+            width: this.width,
+            orientation: this.orientation
+        };
     };
 
     isInRange = (heading, x, y, angleThreshold = 10) => {
@@ -45,12 +53,47 @@ class WallObstacle {
 
         console.log(`heading: ${heading}, a1:${a1}, a2:${a2}`);
 
+        // TODO: Need proper logic to take the decision
+
         return false;
     };
 
     getDistance = (x, y, heading) => {
+        // TODO: Need to implement
         return 0;
     };
+
+
+    visualize = () => {
+        return [
+            {
+                id: 1001,
+                geometry: {
+                    type: 'BoxGeometry',
+                    width: this.width,
+                    height: this.height,
+                    depth: this.depth
+                },
+                material: {
+                    type: 'MeshStandardMaterial',
+                    properties: {
+                        color: '#505050'
+                    }
+                },
+                position: {
+                    x: (this.p1.x+this.p2.x)/2,
+                    y: (this.p1.y+this.p2.y)/2
+                },
+                rotation: {
+                    x: 0,
+                    y: this.orientation,
+                    z: 0
+                }
+            }
+        ];
+    };
+
+    // Private functions -------------------------------------------------
 
     _normalizedAngle = (a) => {
         let b = (a + 180) % 360;
@@ -66,15 +109,13 @@ class WallObstacle {
     };
 
     _angleDifference = (heading, angle) => {
-        // Get the absolute difference between robot heading and target robot's absolute angle
+        // Get the absolute difference between heading and target angle
         var difference = (angle - heading) % 360;
         if (difference <= -180) difference += 360;
         if (difference > 180) difference -= 360;
 
-        //if (this.debug)
-        //    console.log(`heading: ${heading}, angle:${angle}, diff:${difference}`);
-
         return difference;
     };
 }
+
 module.exports = { WallObstacle };
