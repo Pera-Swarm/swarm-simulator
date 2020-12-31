@@ -33,6 +33,8 @@ class Robots {
             100,
             this.debug
         );
+
+        // Directed communication
         this.directedCommunication = new DirectedCommunication(
             this,
             swarm.mqttPublish,

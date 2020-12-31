@@ -11,7 +11,7 @@ const routes = [
             const id = msg.id;
 
             console.log('');
-            swarm.robots.directedCommunication.broadcast(
+            swarm.robots.simpleCommunication.broadcast(
                 id,
                 'This is a test ' + Date.now(),
                 (status) => {
@@ -28,7 +28,7 @@ const routes = [
         subscribe: true,
         type: 'String',
         handler: (msg, swarm) => {
-            console.log('UpdatingHeartbeat > id:',msg);
+            console.log('UpdatingHeartbeat > id:', msg);
             const id = msg.split(' ')[0];
             var robot = swarm.robots.findRobotById(id);
 
