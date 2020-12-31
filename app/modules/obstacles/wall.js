@@ -2,8 +2,7 @@
 const { abs, round, cos, sin, atan2 } = require('mathjs');
 
 class WallObstacle {
-    constructor(id, width,height, orientation, originX, originY, debug = false) {
-
+    constructor(id, width, height, orientation, originX, originY, debug = false) {
         // Geometric details
         this.width = width;
         this.height = height;
@@ -58,11 +57,10 @@ class WallObstacle {
         return false;
     };
 
-    getDistance = (x, y, heading) => {
+    getDistance = (heading, x, y) => {
         // TODO: Need to implement
         return 0;
     };
-
 
     visualize = () => {
         return [
@@ -81,8 +79,8 @@ class WallObstacle {
                     }
                 },
                 position: {
-                    x: (this.p1.x+this.p2.x)/2,
-                    y: (this.p1.y+this.p2.y)/2
+                    x: (this.p1.x + this.p2.x) / 2,
+                    y: (this.p1.y + this.p2.y) / 2
                 },
                 rotation: {
                     x: 0,
