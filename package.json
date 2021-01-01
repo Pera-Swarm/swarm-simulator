@@ -1,30 +1,50 @@
 {
-   "name": "node-rest-api-server-with-mqtt",
-   "version": "1.0.0",
-   "description": "Node.js Rest APIs with Express, Sequelize, MySQL & MQTT",
-   "main": "index.js",
-   "scripts": {
-      "start": "node app/index.js"
-   },
-   "keywords": [
-      "nodejs",
-      "express",
-      "rest",
-      "api",
-      "sequelize",
-      "mysql"
-   ],
-   "author": "Nuwan Jaliyagoda",
-   "license": "MIT",
-   "dependencies": {
-      "axios": "^0.19.2",
-      "body-parser": "^1.19.0",
-      "cors": "^2.8.5",
-      "dotenv": "^8.2.0",
-      "express": "^4.17.1",
-      "mqtt": "^4.0.1",
-      "mysql2": "^2.0.2",
-      "node-cron": "^2.0.3",
-      "sequelize": "^5.21.2"
-   }
+    "name": "node-rest-api-server-with-mqtt",
+    "version": "1.0.0",
+    "description": "Node.js Rest APIs with Express, Sequelize, MySQL & MQTT",
+    "main": "index.js",
+    "scripts": {
+        "start": "node app/index.js",
+        "dev": "nodemon app/index.js",
+        "testbed": "nodemon testbed/index.js",
+        "format": "prettier --write \"**/*.+(ts|js|jsx|json|yml|yaml|css|md)\"",
+        "test": "mocha --recursive './app/**/*test.js'",
+        "test:watch": "mocha --watch --recursive './app/**/*test.js'"
+    },
+    "keywords": [
+        "nodejs",
+        "express",
+        "rest",
+        "api"
+    ],
+    "author": "Pera-Swarm",
+    "license": "MIT",
+    "dependencies": {
+        "@pera-swarm/mqtt-router": "^1.0.1",
+        "@pera-swarm/types": "^1.0.1",
+        "axios": "^0.19.2",
+        "body-parser": "^1.19.0",
+        "chai": "^4.2.0",
+        "cors": "^2.8.5",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "mathjs": "^8.0.1",
+        "mocha": "^8.2.0",
+        "mqtt": "^4.0.1",
+        "mysql2": "^2.1.0",
+        "node-cron": "^2.0.3",
+        "pera-swarm": "^1.2.3",
+        "prettier": "^2.1.2",
+        "sequelize": "^5.21.2"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.4"
+    },
+    "nodemonConfig": {
+        "ignore": [
+            "test/*",
+            "swarm-node/*"
+        ],
+        "delay": "2500"
+    }
 }

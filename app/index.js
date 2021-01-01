@@ -1,18 +1,22 @@
-require('dotenv').config()
+require('dotenv').config();
 
-const axios = require('axios');
+// Set default timezone
+process.env.TZ = 'Asia/Colombo';
 
-const db = require("./services/database.js");
-const app = require("./services/express")
-const mqtt = require("./services/mqtt.js");
-const cron = require("./services/cron.js");
+//const axios = require('axios');
+//const express = require('./services/express');
+//const db = require("./services/database.js");
 
-app.start()
-mqtt.start();
+const { Swarm } = require('./swarm/');
 
-cron.begin(mqtt);
+// starting the swarm
+const swarm = new Swarm();
 
+//express.start();
+
+/*
 // force:true to drop the table if it already exists
-db.sequelize.sync({ force: false }).then(() => {
-   console.log("sequalize: started");
+db.sequelize.sync({ alter: true }).then(() => {
+console.log("sequalize: started");
 });
+*/

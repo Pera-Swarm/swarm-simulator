@@ -1,11 +1,32 @@
-'use strict'
+var cron = require('node-cron');
 
-const sensorUpdate = require("../cron/sensor.update.cron.js");
-var mqtt;
+exports.begin = (interval, routine) => {
+    // initerval in seconds
 
-exports.begin = (mqtt) => {
-   this.mqtt = mqtt;
+    cron.schedule(
+        interval,
+        () => {
+            routine();
+        },
+        {
+            scheduled: true,
+            timezone: 'Asia/Colombo'
+        }
+    );
+};
 
-   sensorUpdate.update(mqtt, 1009, 5); 
+/**
+ * Generates a cron interval called in given seconds
+ * @param {freq} frequency in seconds
+ */
+exports.secondsInterval = (freq) => {
+    return '*/' + freq + ' * * * * *';
+};
 
-}
+/**
+ * Generates a cron interval called in given minutes
+ * @param {freq} frequency in minutes
+ */
+exports.minutesInterval = (freq) => {
+    return '*/' + freq + ' * * * *';
+};
