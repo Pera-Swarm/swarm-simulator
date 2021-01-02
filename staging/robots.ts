@@ -78,7 +78,7 @@ class Robots extends AbstractRobots {
             delete this._robotList[id];
             this._size--;
             this._updated = Date.now();
-            // this.swarm.mqttPublish('v1/robot/delete', { id }, () => {
+            // this.swarm.mqttPublish('robot/delete', { id }, () => {
             //     if (callback !== undefined) callback(id);
             // });
             return true;
@@ -126,7 +126,7 @@ class Robots extends AbstractRobots {
         if (value === undefined) throw new TypeError('value unspecified');
 
         const msg = `${instType} ${value}`;
-        // this.swarm.mqttPublish('v1/robot/msg/broadcast', msg, options);
+        // this.swarm.mqttPublish('robot/msg/broadcast', msg, options);
     };
 
     changeMode = (mode: any, options = {}) => {

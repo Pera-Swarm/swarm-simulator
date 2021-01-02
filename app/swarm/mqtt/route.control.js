@@ -3,7 +3,7 @@
 
 const routes = [
     {
-        topic: 'v1/test',
+        topic: 'test',
         allowRetained: false,
         subscribe: true,
         handler: (msg, swarm) => {
@@ -23,12 +23,12 @@ const routes = [
         }
     },
     {
-        topic: 'v1/robot/live',
+        topic: 'robot/live',
         allowRetained: false,
         subscribe: true,
         type: 'String',
         handler: (msg, swarm) => {
-            console.log('UpdatingHeartbeat > id:', msg);
+            console.log('Updating Heartbeat > id:', msg);
             const id = msg.split(' ')[0];
             var robot = swarm.robots.findRobotById(id);
 
@@ -42,7 +42,7 @@ const routes = [
         }
     },
     {
-        topic: 'v1/robot/create',
+        topic: 'robot/create',
         allowRetained: true, // TODO: only in DEV mode
         subscribe: true,
         publish: false,
@@ -55,7 +55,7 @@ const routes = [
         }
     },
     {
-        topic: 'v1/robot/delete',
+        topic: 'robot/delete',
         allowRetained: false,
         subscribe: false,
         publish: true,
@@ -65,7 +65,7 @@ const routes = [
         }
     },
     {
-        topic: 'v1/robot/msg/broadcast',
+        topic: 'robot/msg/broadcast',
         allowRetained: false,
         subscribe: false,
         publish: true,

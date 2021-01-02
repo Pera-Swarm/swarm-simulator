@@ -3,7 +3,7 @@
 
 const routes = [
     {
-        topic: 'v1/localization/info',
+        topic: 'localization/info',
         allowRetained: true,
         subscribe: true,
         handler: (msg, swarm) => {
@@ -16,7 +16,7 @@ const routes = [
         }
     },
     {
-        topic: 'v1/localization/update',
+        topic: 'localization/update',
         allowRetained: false,
         subscribe: false,
         publish: true,
@@ -28,7 +28,7 @@ const routes = [
         }
     },
     {
-        topic: 'v1/localization/',
+        topic: 'localization/',
         allowRetained: false,
         subscribe: true,
         handler: (msg, swarm) => {
@@ -40,17 +40,17 @@ const routes = [
             var robotCoordinateString = swarm.robots.getCoordinateStringById(id);
 
             if (robotCoordinateString !== -1) {
-                swarm.publish(`v1/localization/${id}`, robotCoordinateString);
+                swarm.publish(`localization/${id}`, robotCoordinateString);
             } else {
                 // No robot found. Just echo the message, because this is a blocking call for the robot
                 // TODO: register the robot into system
                 const returnMsg = `${x} ${y} ${heading}`;
-                swarm.publish(`v1/localization/${id}`, returnMsg);
+                swarm.publish(`localization/${id}`, returnMsg);
             }
         }
     },
     {
-        topic: 'v1/localization/?',
+        topic: 'localization/?',
         allowRetained: false,
         type: 'String',
         subscribe: true,
@@ -59,7 +59,7 @@ const routes = [
             console.log('MQTT_Localization:RequestPrintLoc ', msg);
 
             var coordinates = JSON.stringify(swarm.robots.getCoordinatesAll());
-            swarm.publish('v1/localization/print', coordinates);
+            swarm.publish('localization/print', coordinates);
         }
     }
 ];

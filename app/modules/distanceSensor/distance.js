@@ -26,7 +26,7 @@ class DistanceSensor {
         console.log(x, y, heading);
         var dist = round(this.#getBorderDistance(x, y, heading) * 10) / 10;
 
-        this.publish(`v1/sensor/distance/${robot.id}`, dist);
+        this.publish(`sensor/distance/${robot.id}`, dist);
         this.setReading(robot, dist);
 
         if (callback != undefined) callback(dist);
