@@ -25,6 +25,7 @@ export abstract class AbstractObject {
         this._height = height;
         this._center = center;
         this._debug = debug;
+        this._type = 'Object';
         this._geometryType = 'Geometry';
         this._materialType = 'MeshStandardMaterial';
         this._created = new Date();

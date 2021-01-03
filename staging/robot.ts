@@ -51,6 +51,7 @@ export class Robot extends AbstractCoordinateRobot<
      */
     getData = (key: string | number): object => {
         if (key === undefined) throw new TypeError('key unspecified');
+        // @ts-ignore
         return this._data[key];
     };
 
@@ -63,6 +64,7 @@ export class Robot extends AbstractCoordinateRobot<
     setData = (key: string | number, value: any) => {
         if (key === undefined) throw new TypeError('key unspecified');
         if (value === undefined) throw new TypeError('value unspecified');
+        // @ts-ignore
         this._data[key] = value;
         return true;
     };
