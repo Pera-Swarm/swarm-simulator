@@ -15,7 +15,6 @@ export abstract class AbstractCylinder extends AbstractObject {
         this._radius = radius;
         this._type = 'Cylinder';
         this._geometryType = 'CylinderGeometry';
-        this._materialType = 'MeshStandardMaterial';
     }
 
     /**

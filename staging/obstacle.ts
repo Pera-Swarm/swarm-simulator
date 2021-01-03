@@ -25,7 +25,7 @@ export abstract class AbstractObject {
         this._height = height;
         this._center = center;
         this._debug = debug;
-        this._geometryType = 'CylinderGeometry';
+        this._geometryType = 'Geometry';
         this._materialType = 'MeshStandardMaterial';
         this._created = new Date();
         this._updated = Date.now();
@@ -91,7 +91,7 @@ export abstract class AbstractObject {
      * set material type
      * @param material material type
      */
-    protected setMaterial = (material: string) => {
+    setMaterial = (material: string) => {
         this._materialType = material;
         this._updated = Date.now();
     };
@@ -100,7 +100,7 @@ export abstract class AbstractObject {
      * set geometry type
      * @param geometry geometry type
      */
-    protected setGeometry = (geometry: string) => {
+    setGeometry = (geometry: string) => {
         this._geometryType = geometry;
         this._updated = Date.now();
     };

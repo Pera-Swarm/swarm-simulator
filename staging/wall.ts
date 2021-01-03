@@ -27,6 +27,7 @@ export abstract class AbstractWall extends AbstractObject {
         };
         this._depth = depth;
         this._type = 'Wall';
+        this._geometryType = 'BoxGeometry';
     }
 
     /**
@@ -104,11 +105,11 @@ export class Wall extends AbstractWall {
             {
                 id: this.id,
                 geometry: {
-                    type: 'BoxGeometry',
+                    type: this.geometryType,
                     ...this.geometric()
                 },
                 material: {
-                    type: 'MeshStandardMaterial',
+                    type: this.materialType,
                     properties: {
                         color: '#505050'
                     }
