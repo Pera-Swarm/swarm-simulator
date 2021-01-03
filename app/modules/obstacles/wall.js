@@ -1,5 +1,5 @@
 //const { AbstractObstacle } = require('../../staging/obstacle.js');
-const { abs, round, cos, sin, atan2 } = require('mathjs');
+const { abs, round, cos, sin, atan2, sqrt } = require('mathjs');
 
 class WallObstacle {
     constructor(id, width, height, orientation, originX, originY, debug = false) {
@@ -52,14 +52,20 @@ class WallObstacle {
 
         console.log(`heading: ${heading}, a1:${a1}, a2:${a2}`);
 
-        // TODO: Need proper logic to take the decision
-
-        return false;
+        return a1 * a2 <= 0; // Angles should be in different signs
     };
 
     getDistance = (heading, x, y) => {
-        // TODO: Need to implement
-        return 0;
+        const a = this.p2.y - this.p1.y;
+        const b = this.p2.x - this.p1.x;
+        const c = b * this.p1.y - a * this.p1.x;
+
+        if (a == 0 && b == 0) return 0;
+        if (sin(heading - this.theta) == 0) return 0;
+
+        return (
+            ((1 / sin(heading - this.theta)) * abs(this.p1.x * a + this.p1.y * b + c)) / sqrt(a * a + b * b)
+        );
     };
 
     visualize = () => {
