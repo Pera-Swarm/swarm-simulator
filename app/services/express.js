@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
     res.json({ message: 'Welcome to Swarm Backend' });
 });
 
-//app.use('/v1/controllers', apiControl);
+//app.use('/controllers', apiControl);
 
 exports.start = () => {
     const PORT = process.env.PORT || 8080;

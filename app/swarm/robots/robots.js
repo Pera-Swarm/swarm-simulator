@@ -147,7 +147,7 @@ class Robots {
             delete this.robotList[id];
             this.size--;
             this.updated = Date.now();
-            this.swarm.mqttPublish('v1/robot/delete', { id }, () => {
+            this.swarm.mqttPublish('robot/delete', { id }, () => {
                 if (callback !== undefined) callback(id);
             });
             return true;
@@ -233,7 +233,7 @@ class Robots {
         if (value === undefined) throw new TypeError('value unspecified');
 
         const msg = `${instType} ${value}`;
-        this.swarm.mqttPublish('v1/robot/msg/broadcast', msg, options);
+        this.swarm.mqttPublish('robot/msg/broadcast', msg, options);
     };
 
     changeMode = (mode, options = {}) => {
