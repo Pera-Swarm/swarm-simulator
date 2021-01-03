@@ -14,8 +14,8 @@ export abstract class AbstractObject {
     protected _height: number;
     protected _center: ObjectCoordinate;
     protected _type: string;
-    protected _materialType: string;
     protected _geometryType: string;
+    protected _materialType: string;
     protected _debug: boolean;
     protected _created: Date;
     protected _updated: number;
@@ -25,6 +25,7 @@ export abstract class AbstractObject {
         this._height = height;
         this._center = center;
         this._debug = debug;
+        this._geometryType = 'CylinderGeometry';
         this._materialType = 'MeshStandardMaterial';
         this._created = new Date();
         this._updated = Date.now();
@@ -87,6 +88,24 @@ export abstract class AbstractObject {
     }
 
     /**
+     * set material type
+     * @param material material type
+     */
+    protected setMaterial = (material: string) => {
+        this._materialType = material;
+        this._updated = Date.now();
+    };
+
+    /**
+     * set geometry type
+     * @param geometry geometry type
+     */
+    protected setGeometry = (geometry: string) => {
+        this._geometryType = geometry;
+        this._updated = Date.now();
+    };
+
+    /**
      * Obstacle Object string representation
      */
     abstract toString: Function;
@@ -110,4 +129,28 @@ export abstract class AbstractObject {
      * @returns {number} distance from the given object to this obstacle
      */
     abstract getDistance: Function;
+}
+
+/**
+ * method for validating an object coordinate.
+ * @param {Coordinate} coordinate
+ * @returns {boolean|-1} true if valid or -1 if not.
+ */
+export function validateObjectCoordinate<TId>(
+    coordinate: ObjectCoordinate
+): boolean | -1 {
+    var validity: boolean | -1;
+    var i: number;
+    validity = -1;
+    i = 0;
+    if (Object.prototype.hasOwnProperty.call(coordinate, 'x')) {
+        i += 1;
+    }
+    if (Object.prototype.hasOwnProperty.call(coordinate, 'y')) {
+        i += 1;
+    }
+    if (i === 2) {
+        validity = true;
+    }
+    return validity;
 }
