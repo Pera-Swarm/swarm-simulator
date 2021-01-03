@@ -40,12 +40,12 @@ const routes = [
             var robotCoordinateString = swarm.robots.getCoordinateStringById(id);
 
             if (robotCoordinateString !== -1) {
-                swarm.mqttPublish(`localization/${id}`, robotCoordinateString);
+                swarm.publish(`localization/${id}`, robotCoordinateString);
             } else {
                 // No robot found. Just echo the message, because this is a blocking call for the robot
                 // TODO: register the robot into system
                 const returnMsg = `${x} ${y} ${heading}`;
-                swarm.mqttPublish(`localization/${id}`, returnMsg);
+                swarm.publish(`localization/${id}`, returnMsg);
             }
         }
     },
@@ -59,7 +59,7 @@ const routes = [
             console.log('MQTT_Localization:RequestPrintLoc ', msg);
 
             var coordinates = JSON.stringify(swarm.robots.getCoordinatesAll());
-            swarm.mqttPublish('localization/print', coordinates);
+            swarm.publish('localization/print', coordinates);
         }
     }
 ];
