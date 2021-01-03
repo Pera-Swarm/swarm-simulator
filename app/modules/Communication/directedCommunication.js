@@ -33,7 +33,7 @@ class DirectedCommunication extends Communication {
                     receivers++;
                     if (this.debug) console.log(`robot #${robot.id}: pass`);
 
-                    this.publish(`v1/communication/${robot.id}`, message);
+                    this.publish(`communication/${robot.id}`, message);
                 }
             }
         });
