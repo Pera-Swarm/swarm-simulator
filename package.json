@@ -5,13 +5,11 @@
     "main": "index.js",
     "scripts": {
         "start": "node app/index.js",
-        "compile:staging": "tsc",
-        "dev:staging": "tsc --watch",
         "dev": "nodemon app/index.js",
+        "testbed": "nodemon testbed/index.js",
         "format": "prettier --write \"**/*.+(ts|js|jsx|json|yml|yaml|css|md)\"",
         "test": "mocha --recursive './app/**/*test.js'",
-        "test:watch": "mocha --watch --recursive './app/**/*test.js'",
-        "testbed": "nodemon testbed/index.js"
+        "test:watch": "mocha --watch --recursive './app/**/*test.js'"
     },
     "keywords": [
         "nodejs",

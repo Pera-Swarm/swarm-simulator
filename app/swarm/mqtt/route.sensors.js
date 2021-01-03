@@ -34,11 +34,11 @@ const routes = [
 
             if (robot != undefined) {
                 //var returnValue = robot.sensors.distance.syncReading(msg.distance);
-                swarm.mqttPublish('sensor/color/' + robot.id, returnValue);
+                swarm.publish('sensor/color/' + robot.id, returnValue);
             } else {
                 // No robot found. Just echo the message, because this is a blocking call for the robot
                 // TODO: register the robot into system
-                swarm.mqttPublish('sensor/color/' + msg.id, msg.distance);
+                swarm.publish('sensor/color/' + msg.id, msg.distance);
             }
         }
     }
