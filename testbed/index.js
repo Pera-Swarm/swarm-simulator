@@ -40,3 +40,7 @@ console.log(range2, ans2);
 // console.log(w.isInRange(0, 0, 0));
 // console.log(w.center);
 // console.log(w.visualize());
+console.log(w);
+builder.changeMaterial(w, 'MeshMaterial');
+console.log(w);
+console.log(w.visualize());
