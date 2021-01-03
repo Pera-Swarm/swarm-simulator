@@ -1,59 +1,89 @@
-type ObstacleCoordinate = {
+import { v4 as uuid } from 'uuid';
+
+export type ObjectCoordinate = {
     x: number;
     y: number;
 };
 
 /**
- * @class Obstacle
- * @classdesc Obstacle Representation
+ * @class Obstacle Object
+ * @classdesc Obstacle Object Representation
  */
-abstract class AbstractObstacle {
+export abstract class AbstractObject {
+    protected _id: string;
     protected _height: number;
-    protected _width: number;
-    protected _length: number;
-    protected _coordinate: ObstacleCoordinate;
+    protected _center: ObjectCoordinate;
+    protected _type: string;
+    protected _debug: boolean;
+    protected _created: Date;
+    protected _updated: number;
 
-    constructor(height: number, width: number, length: number) {
+    constructor(height: number, center: ObjectCoordinate, debug: boolean = false) {
+        this._id = uuid();
         this._height = height;
-        this._width = width;
-        this._length = length;
-        // other geometric properties if necessary
+        this._center = center;
+        this._debug = debug;
+        this._created = new Date();
+        this._updated = Date.now();
     }
 
     /**
-     * return {an array of geometric properties of the object};
+     * get id
      */
-    abstract geometric = () => {};
+    get id(): string {
+        return this._id;
+    }
 
     /**
-     * return [
-        	{an array of properties need to be set in three.js object creation},
-        	{an array of properties need to be set in three.js object creation}
-        ]
+     * get height
      */
-    abstract visualize = () => {};
+    get height(): number {
+        return this._height;
+    }
 
     /**
-     * return (is object in front of the source robot or not as boolean);
-     * @param heading
-     * @param x
-     * @param y
-     * @param angleThreshold
+     * get center coordinate
      */
-    abstract isInRange = (
-        heading: number,
-        x: number,
-        y: number,
-        angleThreshold = 10
-    ) => {};
+    get center(): ObjectCoordinate {
+        return this._center;
+    }
 
     /**
-     * return (distance from the given object to this obstacle);
-     * @param x
-     * @param y
-     * @param heading
+     * get created datetime
      */
-    abstract getDistance = (x: number, y: number, heading = null) => {};
+    get created(): Date {
+        return this._created;
+    }
 
-    // Any other utility methods required...
+    /**
+     * get updated timestamp
+     */
+    get updated(): number {
+        return this._updated;
+    }
+
+    /**
+     * Obstacle Object string representation
+     */
+    abstract toString: Function;
+
+    /**
+     * return an array of geometric properties of the object};
+     */
+    abstract geometric: Function;
+
+    /**
+     * an array of properties need to be set in three.js object creation
+     */
+    abstract visualize: Function;
+
+    /**
+     * @returns {boolean} whether the object is in front of the source robot or not
+     */
+    abstract isInRange: Function;
+
+    /**
+     * @returns {number} distance from the given object to this obstacle
+     */
+    abstract getDistance: Function;
 }
