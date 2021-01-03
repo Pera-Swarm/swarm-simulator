@@ -1,23 +1,22 @@
-'use strict';
+"use strict";
 exports.__esModule = true;
-var uuid_1 = require('uuid');
+var uuid_1 = require("uuid");
 /**
  * @class Obstacle Object
  * @classdesc Obstacle Object Representation
  */
 var AbstractObject = /** @class */ (function () {
     function AbstractObject(height, center, debug) {
-        if (debug === void 0) {
-            debug = false;
-        }
+        if (debug === void 0) { debug = false; }
         this._id = uuid_1.v4();
         this._height = height;
         this._center = center;
         this._debug = debug;
+        this._materialType = 'MeshStandardMaterial';
         this._created = new Date();
         this._updated = Date.now();
     }
-    Object.defineProperty(AbstractObject.prototype, 'id', {
+    Object.defineProperty(AbstractObject.prototype, "id", {
         /**
          * get id
          */
@@ -27,7 +26,7 @@ var AbstractObject = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(AbstractObject.prototype, 'height', {
+    Object.defineProperty(AbstractObject.prototype, "height", {
         /**
          * get height
          */
@@ -37,7 +36,7 @@ var AbstractObject = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(AbstractObject.prototype, 'center', {
+    Object.defineProperty(AbstractObject.prototype, "center", {
         /**
          * get center coordinate
          */
@@ -47,7 +46,7 @@ var AbstractObject = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(AbstractObject.prototype, 'created', {
+    Object.defineProperty(AbstractObject.prototype, "created", {
         /**
          * get created datetime
          */
@@ -57,7 +56,7 @@ var AbstractObject = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(AbstractObject.prototype, 'updated', {
+    Object.defineProperty(AbstractObject.prototype, "updated", {
         /**
          * get updated timestamp
          */
@@ -67,6 +66,36 @@ var AbstractObject = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(AbstractObject.prototype, "type", {
+        /**
+         * get type
+         */
+        get: function () {
+            return this._type;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AbstractObject.prototype, "geometryType", {
+        /**
+         * get geometry type
+         */
+        get: function () {
+            return this._geometryType;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AbstractObject.prototype, "materialType", {
+        /**
+         * get material type
+         */
+        get: function () {
+            return this._materialType;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return AbstractObject;
-})();
+}());
 exports.AbstractObject = AbstractObject;

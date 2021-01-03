@@ -14,6 +14,8 @@ export abstract class AbstractObject {
     protected _height: number;
     protected _center: ObjectCoordinate;
     protected _type: string;
+    protected _materialType: string;
+    protected _geometryType: string;
     protected _debug: boolean;
     protected _created: Date;
     protected _updated: number;
@@ -23,6 +25,7 @@ export abstract class AbstractObject {
         this._height = height;
         this._center = center;
         this._debug = debug;
+        this._materialType = 'MeshStandardMaterial';
         this._created = new Date();
         this._updated = Date.now();
     }
@@ -60,6 +63,27 @@ export abstract class AbstractObject {
      */
     get updated(): number {
         return this._updated;
+    }
+
+    /**
+     * get type
+     */
+    get type(): string {
+        return this._type;
+    }
+
+    /**
+     * get geometry type
+     */
+    get geometryType(): string {
+        return this._geometryType;
+    }
+
+    /**
+     * get material type
+     */
+    get materialType(): string {
+        return this._materialType;
     }
 
     /**
