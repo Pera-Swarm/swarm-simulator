@@ -72,6 +72,7 @@ export class Wall extends AbstractWall {
             center2: this._center2,
             width: this._width,
             height: this._height,
+            depth: this._depth,
             orientation: this._orientation
         };
     };
@@ -101,30 +102,26 @@ export class Wall extends AbstractWall {
     };
 
     visualize = () => {
-        return [
-            {
-                id: this.id,
-                geometry: {
-                    type: this.geometryType,
-                    ...this.geometric()
-                },
-                material: {
-                    type: this.materialType,
-                    properties: {
-                        color: '#505050'
-                    }
-                },
-                position: {
-                    x: (this._center.x + this._center2.x) / 2,
-                    y: (this._center.y + this._center2.y) / 2
-                },
-                rotation: {
-                    x: 0,
-                    y: this._orientation,
-                    z: 0
-                }
+        return {
+            id: this.id,
+            geometry: {
+                type: this.geometryType,
+                ...this.geometric()
+            },
+            material: {
+                type: this.materialType,
+                properties: this.appearance
+            },
+            position: {
+                x: (this._center.x + this._center2.x) / 2,
+                y: (this._center.y + this._center2.y) / 2
+            },
+            rotation: {
+                x: 0,
+                y: this._orientation,
+                z: 0
             }
-        ];
+        };
     };
 
     // -------------------- Private functions --------------------
