@@ -1,5 +1,5 @@
 //const { AbstractObstacle } = require('../../staging/obstacle.js');
-const { abs, round, cos, sin, atan2, sqrt } = require('mathjs');
+const { abs, round, cos, sin, tan, atan2, sqrt, pow, distance } = require('mathjs');
 
 class WallObstacle {
     constructor(id, width, height, orientation, originX, originY, debug = false) {
@@ -120,6 +120,46 @@ class WallObstacle {
 
         return difference;
     };
+
+
+    //new functions--------------------------------------------------------
+    //angle in radians
+    _getLine = (x1, y1, angle) => {
+        const a = 1;
+        const b = -tan(angle);
+        const c = (tan(angle) * x1) - y1;
+        return [a, b, c];
+    };
+
+    _getIntersectionPoint = (a1, b1, c1, a2, b2, c2) => {
+        const x0 = ((b1 * c2) - (b2 * c1)) / ((a1 * b2) - (a2 * b1));
+        const y0 = ((a2 * c1) - (a1 * c2)) / ((a1 * b2) - (a2 * b1));
+        return [x0, y0];
+    };
+
+    _getDistancebetween2points = (x1, y1, x2, y2) => {
+        const distance = sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
+        return distance;
+    };
+
+    _getDistanceAlongHeading = (px, py, heading, p1x, p1y, theta) => {
+        var headingDistance=0;
+        if (this.isInRange == 0) {
+            headingDistance = 0;
+        } else {
+            const headingLine = this._getLine(px, py, heading);
+            console.log('headingLine: '+headingLine);
+
+            const obstacleLine = this._getLine(p1x, p1y, theta);
+            console.log('obstacleLine: '+ obstacleLine);
+
+            const intersectionPoint = this._getIntersectionPoint(headingLine[0], headingLine[1], headingLine[2], obstacleLine[0], obstacleLine[1], obstacleLine[2]);
+            console.log('intersectionPoint: '+ intersectionPoint);
+            
+            headingDistance = this._getDistancebetween2points(px, py, intersectionPoint[0], intersectionPoint[1]);
+            console.log('headingDistance: '+ headingDistance);
+        }
+    }
 }
 
 module.exports = { WallObstacle };

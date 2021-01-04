@@ -24,3 +24,13 @@ const range = obs.isInRange(heading, x, y, 5);
 const ans = obs.getDistance(heading, x, y);
 
 console.log(range, ans);
+
+/*const line = obs._getLine(3,2,1.24904577);
+const point = obs._getIntersectionPoint(1,2,1,2,3,5);
+const dd= obs._getDistancebetween2points(3,2,9,7);
+
+console.log('line: '+line);
+console.log('point: '+point);
+console.log('distance: '+dd);*/
+
+obs._getDistanceAlongHeading(0,0,30,-2,-2,360);
