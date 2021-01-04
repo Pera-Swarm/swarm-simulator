@@ -23,13 +23,8 @@ interface AbstractObstacleBuilder {
     changeMaterial(obstacle: AbstractObject, materialType: string): void;
 }
 
-class ObstacleBuilder implements AbstractObstacleBuilder {
+export class ObstacleBuilder implements AbstractObstacleBuilder {
     protected static instance: ObstacleBuilder;
-    protected list: AbstractObject[];
-
-    constructor() {
-        this.list = [];
-    }
 
     public static getInstance(): ObstacleBuilder {
         if (!ObstacleBuilder.instance) {
