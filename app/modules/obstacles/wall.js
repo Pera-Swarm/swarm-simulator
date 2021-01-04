@@ -8,7 +8,7 @@ class WallObstacle {
         this.height = height;
         this.depth = 5;
         this.orientation = orientation;
-        this.theta = orientation * (Math.PI/180);
+        this.theta = (orientation / 360) * 2 * Math.PI;
 
         this.debug = debug;
 
@@ -45,37 +45,27 @@ class WallObstacle {
         const pA1 = this._getAngle(from, this.p1);
         const pA2 = this._getAngle(from, this.p2);
 
-        //console.log(`Calculated Angles: ${pA1}, ${pA2}`);
+        console.log(`Calculated Angles: ${pA1}, ${pA2}`);
 
         const a1 = this._angleDifference(heading, pA1);
         const a2 = this._angleDifference(heading, pA2);
 
-        //console.log(`heading: ${heading}, a1:${a1}, a2:${a2}`);
+        console.log(`heading: ${heading}, a1:${a1}, a2:${a2}`);
 
         return a1 * a2 <= 0; // Angles should be in different signs
     };
 
     getDistance = (heading, x, y) => {
-        const from = { x: x, y: y };
+        const a = this.p2.y - this.p1.y;
+        const b = this.p2.x - this.p1.x;
+        const c = b * this.p1.y - a * this.p1.x;
 
-        if (this.isInRange(heading, x, y) == 0) {
-            return undefined;
-        } else {
-            const headingLine = this._getLine(x, y, heading* (Math.PI/180));
-            const obstacleLine = this._getLine(this.p1.x, this.p1.y, this.theta);
+        if (a == 0 && b == 0) return 0;
+        if (sin(heading - this.theta) == 0) return 0;
 
-            console.log('headingLine:', headingLine);
-            console.log('obstacleLine:', obstacleLine);
-
-            const intersectionPoint = this._getIntersectionPoint(headingLine, obstacleLine);
-            console.log('intersectionPoint', intersectionPoint);
-
-            const headingDistance = this._point2PointDistance(from, intersectionPoint);
-
-            console.log('headingDistance: '+ headingDistance);
-            return headingDistance;
-
-        }
+        return (
+            ((1 / sin(heading - this.theta)) * abs(this.p1.x * a + this.p1.y * b + c)) / sqrt(a * a + b * b)
+        );
     };
 
     visualize = () => {
@@ -107,8 +97,6 @@ class WallObstacle {
         ];
     };
 
-
-
     // Private functions -------------------------------------------------
 
     _normalizedAngle = (a) => {
@@ -133,25 +121,45 @@ class WallObstacle {
         return difference;
     };
 
-    _getLine = (x, y, angle) => {
-        const a = 1;
-        const b = -1*tan(angle);
-        const c = (tan(angle) * x) - y;
-        return {a, b, c};
+
+    //new functions--------------------------------------------------------
+    //angle in radians
+    _getLine = (x1, y1, angle) => {
+        const a = cos(angle);
+        const b = -1 * sin(angle);
+        const c = (sin(angle) * x1) - (cos(angle) * y1);
+        return [a, b, c];
     };
 
-    _getIntersectionPoint = (line1, line2) => {
-        const x = ((line1.b * line2.c) - (line2.b * line1.c)) / ((line1.a * line2.b) - (line2.a * line1.b));
-        const y = ((line2.a * line1.c) - (line1.a * line2.c)) / ((line1.a * line2.b) - (line2.a * line1.b));
-        return {x,y};
+    _getIntersectionPoint = (a1, b1, c1, a2, b2, c2) => {
+        const x0 = ((b1 * c2) - (b2 * c1)) / ((a1 * b2) - (a2 * b1));
+        const y0 = ((a2 * c1) - (a1 * c2)) / ((a1 * b2) - (a2 * b1));
+        return [x0, y0];
     };
 
-    _point2PointDistance = (from, to) => {
-        const xDiff = to.x - from.x;
-        const yDiff = to.y - from.y;
-        return round(sqrt(pow(xDiff, 2) + pow(yDiff, 2)), 2);
+    _getDistancebetween2points = (x1, y1, x2, y2) => {
+        const distance = sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
+        return distance;
     };
 
+    _getDistanceAlongHeading = (px, py, heading, p1x, p1y, theta) => {
+        var headingDistance = 0;
+        if (this.isInRange == 0) {
+            headingDistance = 0;
+        } else {
+            const headingLine = this._getLine(px, py, heading);
+            console.log('headingLine: ' + headingLine);
+
+            const obstacleLine = this._getLine(p1x, p1y, theta);
+            console.log('obstacleLine: ' + obstacleLine);
+
+            const intersectionPoint = this._getIntersectionPoint(headingLine[0], headingLine[1], headingLine[2], obstacleLine[0], obstacleLine[1], obstacleLine[2]);
+            console.log('intersectionPoint: ' + intersectionPoint);
+
+            headingDistance = this._getDistancebetween2points(px, py, intersectionPoint[0], intersectionPoint[1]);
+            console.log('headingDistance: ' + headingDistance);
+        }
+    }
 }
 
 module.exports = { WallObstacle };
