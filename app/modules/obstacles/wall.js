@@ -129,14 +129,24 @@ class WallObstacle {
         var difference = (angle - heading) % 360;
         if (difference <= -180) difference += 360;
         if (difference > 180) difference -= 360;
-
         return difference;
     };
 
     _getLine = (x, y, angle) => {
-        const a = cos(angle);
-        const b = -1 * sin(angle);
-        const c = (sin(angle) * x) - (cos(angle) * y);
+        var a, b, c;
+        if ((angle == 90 * (Math.PI / 180)) || (angle == -90 * (Math.PI / 180))) {
+            a = 0;
+            b = -1 * sin(angle);
+            c = (sin(angle) * x) - (cos(angle) * y);
+        } else if ((angle == 0) || (angle == 1 * Math.PI)) {
+            a = cos(angle);
+            b = 0;
+            c = (sin(angle) * x) - (cos(angle) * y);
+        } else {
+            a = cos(angle);
+            b = -1 * sin(angle);
+            c = (sin(angle) * x) - (cos(angle) * y);
+        }
         return { a, b, c };
     };
 

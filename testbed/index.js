@@ -7,7 +7,7 @@ const wallOrientation = 0;
 
 const x = 0;
 const y = 0;
-const heading = 45;
+const heading = 90;
 
 // id, width, height, orientation, originX, originY, debug = false
 const obs = new WallObstacle(1, wallWidth, 20, wallOrientation, wallX,wallY, true);
