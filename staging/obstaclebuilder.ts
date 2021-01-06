@@ -2,7 +2,7 @@ import { AbstractCylinder, Cylinder } from './cylinder';
 import { AbstractWall, Wall } from './wall';
 import { AbstractObject } from './obstacle';
 
-interface AbstractObstacleBuilder {
+export interface AbstractObstacleBuilder {
     createWall(
         width: number,
         height: number,
@@ -60,6 +60,9 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
     };
 }
 
+/**
+ * get singleton obstacle builder instance
+ */
 export const obstacleBuilder = () => {
     return ObstacleBuilder.getInstance();
 };
