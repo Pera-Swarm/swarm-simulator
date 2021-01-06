@@ -1,8 +1,12 @@
-const { WallObstacle, CylinderObstacle } = require('../app/modules/obstacles/');
+// const { Wall } = require('../dist/wall');
+// const { Cylinder } = require('../dist/cylinder');
+// const { WallObstacle, CylinderObstacle } = require('../app/modules/obstacles/');
 const { obstacleBuilder } = require('../dist/obstaclebuilder');
-const { ObstacleController, obstacleList } = require('../dist/obstacleController');
-const { Cylinder } = require('../dist/cylinder');
-const { Wall } = require('../dist/wall');
+const {
+    ObstacleController,
+    obstacleList,
+    obstacleController
+} = require('../dist/obstacleController');
 
 const x = 40;
 const y = 40;
@@ -11,47 +15,47 @@ const heading = 180 + 45;
 const width = 100;
 const height = 20;
 const depth = 5;
+const orientation = 0;
 const radius = 10;
 const originX = 15;
 const originY = 15;
+const debug = true;
 
+// Note: obstacleBuilder is used for creating individual obstacles seperately.
 const builder = obstacleBuilder();
 
-// id, radius,height, originX, originY, debug = false
+// radius,height, originX, originY, debug = false
 // const c = new CylinderObstacle(1, radius, height, originX, originY, true);
 // const c = new Cylinder(radius, height, originX, originY, true);
-const c = builder.createCylinder(radius, height, originX, originY, true);
+const c1 = builder.createCylinder(radius, height, originX, originY, true);
 
-const range = c.isInRange(heading, x, y, 5);
-const ans = c.getDistance(heading, x, y);
+const range = c1.isInRange(heading, x, y, 5);
+const ans = c1.getDistance(heading, x, y);
 
 console.log(range, ans);
-// console.log(c.visualize());
 
-//const wall1 = new WallObstacle(1, 100,20, 0, -50, 50, true);
-//const ans = wall1.isInRange(0, 0, 0);
 // width, height, orientation, originX, originY, depth, debug=false
+// const wall1 = new WallObstacle(1, 100,20, 0, -50, 50, true);
+// const ans = wall1.isInRange(0, 0, 0);
 // const w = new Wall(100, 20, 0, -50, -50, depth, true);
-const w = builder.createWall(100, 20, 0, -50, -50, depth, true);
-const range2 = w.isInRange(heading, x, y, 5);
-const ans2 = w.getDistance(heading, x, y);
+const w1 = builder.createWall(width, height, orientation, originX, originY, depth, debug);
+const range2 = w1.isInRange(heading, x, y, 5);
+const ans2 = w1.getDistance(heading, x, y);
 
 console.log(range2, ans2);
 // console.log(w.isInRange(0, 0, 0));
 // console.log(w.center);
-builder.changeMaterial(w, 'MeshMaterial');
+
+builder.changeMaterial(w1, 'MeshMaterial');
 // console.log([w.visualize(), c.visualize()]);
 // console.log(c.visualize());
 // console.log(w.visualize());
 
-const controller = new ObstacleController();
-const wall = controller.createObstacle(obstacleList.WALL)(
-    100,
-    20,
-    0,
-    -50,
-    -50,
-    depth,
-    true
-);
-// console.log(wall);
+// Note: obstacleController is used for creating and managing a list of obstacles.
+// const controller = new ObstacleController();
+const controller = obstacleController();
+const c2 = controller.createCylinder(100, 20, 0, -50, -50, depth, true);
+const w2 = controller.createWall(100, 20, 0, -50, -50, depth, true);
+// console.log(controller.findObstaclesByType('Cylinder'));
+// console.log(controller.findObstaclesByType('Wall'));
+console.log(controller.visualizeObstacles());
