@@ -1,5 +1,6 @@
 const { WallObstacle, CylinderObstacle } = require('../app/modules/obstacles/');
 const { obstacleBuilder } = require('../dist/obstaclebuilder');
+const { ObstacleController, obstacleList } = require('../dist/obstacleController');
 const { Cylinder } = require('../dist/cylinder');
 const { Wall } = require('../dist/wall');
 
@@ -15,7 +16,6 @@ const originX = 15;
 const originY = 15;
 
 const builder = obstacleBuilder();
-console.log(builder);
 
 // id, radius,height, originX, originY, debug = false
 // const c = new CylinderObstacle(1, radius, height, originX, originY, true);
@@ -39,8 +39,19 @@ const ans2 = w.getDistance(heading, x, y);
 console.log(range2, ans2);
 // console.log(w.isInRange(0, 0, 0));
 // console.log(w.center);
-// console.log(w.visualize());
-console.log(w);
 builder.changeMaterial(w, 'MeshMaterial');
-console.log(w);
-console.log(w.visualize());
+// console.log([w.visualize(), c.visualize()]);
+// console.log(c.visualize());
+// console.log(w.visualize());
+
+const controller = new ObstacleController();
+const wall = controller.createObstacle(obstacleList.WALL)(
+    100,
+    20,
+    0,
+    -50,
+    -50,
+    depth,
+    true
+);
+// console.log(wall);
