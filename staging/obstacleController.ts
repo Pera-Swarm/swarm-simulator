@@ -119,11 +119,11 @@ implements AbstractObstacleBuilder, AbstractObstacleController {
     };
 
     /**
-    * method for finding obstacles in the list with a given type
+    * method for finding is there any obstacle in front
     * @param {number} heading heading coordinate
     * @param {number} x x coordinate
     * @param {number} y y coordinate
-    * @returns {boolean} true : if thre any obstacle in heading direction
+    * @returns {boolean} true : if there any obstacle in heading direction
     */
     isObstacleThere = (heading:number, x: number, y:number) => {
         // TODO: @luk3Sky please review this
@@ -138,7 +138,7 @@ implements AbstractObstacleBuilder, AbstractObstacleController {
     }
 
     /**
-    * method for finding obstacles in the list with a given type
+    * method for obtain the virtaul distance sensor readings with these virtual objects
     * @param {number} heading heading coordinate
     * @param {number} x x coordinate
     * @param {number} y y coordinate
@@ -232,12 +232,26 @@ implements AbstractObstacleBuilder, AbstractObstacleController {
     };
 
     /**
+    *
+    */
+
+    /**
     * method for obtaining a list of visualize object representation of obstacles
+    * @returns {any} ObstacleAPI defined Objects
     */
     visualizeObstacles = () => {
-        const visualizeList = this._list.map((item) => {
-            return item.visualize();
+        // TODO: @luk3Sky please fix this TS error
+        visualizeList: any[];
+
+        this._list.forEach((item: any) => {
+            // One obstacle object can have multiple geometrics.
+            item.visualize().forEach((itemChild: any) =>{
+                //console.log(itemChild);
+                visualizeList.push(itemChild);
+            });
         });
+
+        // Return a list of Obstacle API defined objects
         return visualizeList;
     };
 }

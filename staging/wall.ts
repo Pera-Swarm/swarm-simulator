@@ -125,7 +125,7 @@ export class Wall extends AbstractWall {
     };
 
     visualize = () => {
-        return {
+        return [{
             id: this.id,
             geometry: {
                 type: this.geometryType,
@@ -144,7 +144,7 @@ export class Wall extends AbstractWall {
                 y: this._orientation,
                 z: 0
             }
-        };
+        }];
     };
 
     // -------------------- Private functions --------------------
@@ -189,7 +189,7 @@ export class Wall extends AbstractWall {
             a = cos(angle);
             b = 0;
             c = (sin(angle) * x) - (cos(angle) * y);
-            
+
         } else {
             a = cos(angle);
             b = -1 * sin(angle);
