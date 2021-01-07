@@ -49,7 +49,8 @@ class Robots extends AbstractRobots {
     }
 
     robotBuilder = (id: number, heading: number, x: number, y: number) => {
-        return new Robot(id, heading, x, y);
+        // TODO: fix; Cannot create an instance of an abstract class
+        //return new Robot(id, heading, x, y);
     };
 
     /**
