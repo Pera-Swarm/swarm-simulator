@@ -1,4 +1,4 @@
-// const { Wall } = require('../dist/wall');
+const { Wall } = require('../dist/wall');
 // const { Cylinder } = require('../dist/cylinder');
 // const { WallObstacle, CylinderObstacle } = require('../app/modules/obstacles/');
 const { obstacleBuilder } = require('../dist/obstaclebuilder');
@@ -17,23 +17,21 @@ const x = 0;
 const y = 0;
 const heading = 85;
 
-// id, width, height, orientation, originX, originY, debug = false
-const obs = new WallObstacle(1, wallWidth, 20, wallOrietation, wallX,wallY, true);
+// Note: Do not specify ids please! an uuid will generate with the initialization
+// width, height, orientation, originX, originY, debug = false
+const obs = new WallObstacle(wallWidth, 20, wallOrietation, wallX, wallY, true);
+const obs = new Wall(wallWidth, 20, wallOrietation, wallX, wallY, true);
 
-const range = obs.isInRange(heading, x, y, 5);
-const ans = obs.getDistance(heading, x, y);
+var range = obs.isInRange(heading, x, y, 5);
+var ans = obs.getDistance(heading, x, y);
 
 console.log(range, ans);
 
-
-/*
 // For cylinder obstacle
-
 const radius = 10;
 const height = 20;
 const depth = 5;
 const orientation = 0;
-const radius = 10;
 const originX = 15;
 const originY = 15;
 const debug = true;
@@ -46,8 +44,8 @@ const builder = obstacleBuilder();
 // const c = new Cylinder(radius, height, originX, originY, true);
 const c1 = builder.createCylinder(radius, height, originX, originY, true);
 
-const range = c1.isInRange(heading, x, y, 5);
-const ans = c1.getDistance(heading, x, y);
+range = c1.isInRange(heading, x, y, 5);
+ans = c1.getDistance(heading, x, y);
 
 console.log(range, ans);
 
@@ -55,7 +53,15 @@ console.log(range, ans);
 // const wall1 = new WallObstacle(1, 100,20, 0, -50, 50, true);
 // const ans = wall1.isInRange(0, 0, 0);
 // const w = new Wall(100, 20, 0, -50, -50, depth, true);
-const w1 = builder.createWall(width, height, orientation, originX, originY, depth, debug);
+const w1 = builder.createWall(
+    wallWidth,
+    height,
+    orientation,
+    originX,
+    originY,
+    depth,
+    debug
+);
 const range2 = w1.isInRange(heading, x, y, 5);
 const ans2 = w1.getDistance(heading, x, y);
 
@@ -76,4 +82,3 @@ const w2 = controller.createWall(100, 20, 0, -50, -50, depth, true);
 // console.log(controller.findObstaclesByType('Cylinder'));
 // console.log(controller.findObstaclesByType('Wall'));
 console.log(controller.visualizeObstacles());
-
