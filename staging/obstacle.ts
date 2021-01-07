@@ -5,8 +5,27 @@ export type ObjectCoordinate = {
     y: number;
 };
 
+export type ObjectRotation = {
+    x: number;
+    y: number;
+    z: number;
+};
+
 export type Appearance = {
     color: string;
+};
+
+export type MaterialType = {
+    type: string;
+    properties: Appearance;
+};
+
+export type VisualizeType = {
+    id: string;
+    geometry: any;
+    material: MaterialType;
+    position: ObjectCoordinate;
+    rotation: ObjectRotation;
 };
 
 /**
