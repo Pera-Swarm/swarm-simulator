@@ -5,11 +5,13 @@
     "main": "index.js",
     "scripts": {
         "start": "node app/index.js",
+        "compile:staging": "tsc",
+        "dev:staging": "tsc --watch",
         "dev": "nodemon app/index.js",
-        "testbed": "nodemon testbed/index.js",
         "format": "prettier --write \"**/*.+(ts|js|jsx|json|yml|yaml|css|md)\"",
         "test": "mocha --recursive './app/**/*test.js'",
-        "test:watch": "mocha --watch --recursive './app/**/*test.js'"
+        "test:watch": "mocha --watch --recursive './app/**/*test.js'",
+        "testbed": "nodemon testbed/index.js"
     },
     "keywords": [
         "nodejs",
@@ -22,7 +24,7 @@
     "dependencies": {
         "@pera-swarm/mqtt-router": "^1.1.0",
         "@pera-swarm/types": "^1.0.1",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "body-parser": "^1.19.0",
         "chai": "^4.2.0",
         "cors": "^2.8.5",
@@ -38,6 +40,7 @@
         "sequelize": "^5.21.2"
     },
     "devDependencies": {
+        "@types/uuid": "^8.3.0",
         "nodemon": "^2.0.4"
     },
     "nodemonConfig": {

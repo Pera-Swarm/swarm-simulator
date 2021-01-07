@@ -1,4 +1,7 @@
 const { WallObstacle, CylinderObstacle } = require('../app/modules/obstacles/');
+const { obstacleBuilder } = require('../dist/obstaclebuilder');
+const { Cylinder } = require('../dist/cylinder');
+const { Wall } = require('../dist/wall');
 
 const wallWidth = 100;
 const wallX = -50;
@@ -23,15 +26,17 @@ console.log(range, ans);
 
 const radius = 10;
 const height = 20;
+const depth = 5;
+const radius = 10;
 const originX = 15;
 const originY = 15;
 
 id, radius,height, originX, originY, debug = false
 const c = new CylinderObstacle(1, radius, height, originX, originY, true);
 
+
 const range = obs.isInRange(heading, x, y, 5);
 const ans = obs.getDistance(heading, x, y);
 
 console.log(range, ans);
-
 */
