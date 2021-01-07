@@ -2,12 +2,13 @@
 const { abs, round, cos, sin, tan, atan2, sqrt, pow, distance } = require('mathjs');
 
 class WallObstacle {
-    constructor(id, width, height, orientation, originX, originY, debug = false) {
+    constructor(id, width, height, orientation, originX, originY, color, debug = false) {
         // Geometric details
         this.width = width;
         this.height = height;
         this.depth = 5;
         this.orientation = orientation;
+        this.color = color;
         this.theta = orientation * (Math.PI/180);
 
         this.debug = debug;
@@ -35,6 +36,13 @@ class WallObstacle {
             p2: this.p2,
             width: this.width,
             orientation: this.orientation
+        };
+    };
+
+    appearance = () => {
+        // Return basic appearance properties of the obstacle
+        return {
+            color: this.color
         };
     };
 
@@ -106,8 +114,6 @@ class WallObstacle {
             }
         ];
     };
-
-
 
     // Private functions -------------------------------------------------
 
