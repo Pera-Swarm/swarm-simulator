@@ -18,8 +18,8 @@ export abstract class AbstractCylinder extends AbstractObject {
     }
 
     /**
-     * Cylinder Object string representation
-     */
+    * Cylinder Object string representation
+    */
     public toString = (): string => {
         return `  ${this._type} Obstacle\n   radius: ${this._radius} height: ${this._height}\n   center: { x: ${this._center.x}, y: ${this._center.y}}\n`;
     };
@@ -49,11 +49,11 @@ export class Cylinder extends AbstractCylinder {
     };
 
     /**
-     * @param {number} heading heading value
-     * @param {number} x x value
-     * @param {number} y y value
-     * @returns {number} the distance from the center of robot to the wall of the cylinder
-     */
+    * @param {number} heading heading value
+    * @param {number} x x value
+    * @param {number} y y value
+    * @returns {number} the distance from the center of robot to the wall of the cylinder
+    */
     getDistance = (heading: number, x: number, y: number) => {
         // Return
         const from = { x: x, y: y };
@@ -97,7 +97,7 @@ export class Cylinder extends AbstractCylinder {
     };
 
     visualize = () => {
-        return {
+        return [{
             id: this.id,
             geometry: {
                 type: this.geometryType,
@@ -118,7 +118,7 @@ export class Cylinder extends AbstractCylinder {
                 y: 0,
                 z: 0
             }
-        };
+        }];
     };
 
     // -------------------- Private functions --------------------
