@@ -14,7 +14,7 @@ export interface AbstractObstacleController {
 }
 
 export class ObstacleController
-    implements AbstractObstacleBuilder, AbstractObstacleController {
+implements AbstractObstacleBuilder, AbstractObstacleController {
     _list: AbstractObject[];
     private builder: AbstractObstacleBuilder;
     protected static instance: ObstacleController;
@@ -66,17 +66,17 @@ export class ObstacleController
     }
 
     /**
-     * get obstacle list
-     */
+    * get obstacle list
+    */
     get list(): AbstractObject[] {
         return this.list;
     }
 
     /**
-     * method for finding an obstacle in the list with a given id
-     * @param {string} type
-     * @returns {AbstractObject|-1}
-     */
+    * method for finding an obstacle in the list with a given id
+    * @param {string} type
+    * @returns {AbstractObject|-1}
+    */
     findObstacleById = (id: string): AbstractObject | -1 => {
         if (id === undefined) {
             throw new TypeError('Invalid id');
@@ -96,10 +96,10 @@ export class ObstacleController
     };
 
     /**
-     * method for finding obstacles in the list with a given type
-     * @param {string} type
-     * @returns {AbstractObject[]}
-     */
+    * method for finding obstacles in the list with a given type
+    * @param {string} type
+    * @returns {AbstractObject[]}
+    */
     findObstaclesByType = (type: string): AbstractObject[] => {
         if (type === undefined) {
             throw new TypeError('Invalid type');
@@ -119,9 +119,54 @@ export class ObstacleController
     };
 
     /**
-     * method for removing an obstacle in the list by a given id
-     * @param {string} id
-     */
+    * method for finding obstacles in the list with a given type
+    * @param {number} heading heading coordinate
+    * @param {number} x x coordinate
+    * @param {number} y y coordinate
+    * @returns {boolean} true : if thre any obstacle in heading direction
+    */
+    isObstacleThere = (heading:number, x: number, y:number) => {
+        // TODO: @luk3Sky please review this
+        var found = false;
+
+        for (var i = 0; i < this._list.length; i++) {
+            found = this._list[i].isInRange(heading, x, y);
+            //console.log(found);
+            if(found==true) return true;
+        }
+        return found;
+    }
+
+    /**
+    * method for finding obstacles in the list with a given type
+    * @param {number} heading heading coordinate
+    * @param {number} x x coordinate
+    * @param {number} y y coordinate
+    * @returns {number | Infinity} if thre any obstacle in heading front, return the distance to the closest one
+    */
+    getDistance = (heading:number, x: number, y:number) => {
+        // TODO: @luk3Sky please review this
+        var minDist = Infinity;
+
+        for (var i = 0; i < this._list.length; i++) {
+            const found = this._list[i].isInRange(heading, x, y);
+            //console.log(found);
+            if(found==true){
+                const dist = this._list[i].getDistance(heading, x, y);
+                console.log(dist);
+
+                if(dist>0 &&  dist<= minDist){
+                    minDist = dist;
+                }
+            }
+        }
+        return minDist;
+    }
+
+    /**
+    * method for removing an obstacle in the list by a given id
+    * @param {string} id
+    */
     removeObstacleById = (id: string) => {
         if (typeof id !== 'string' || id !== undefined) {
             throw new TypeError('Invalid id');
@@ -136,10 +181,10 @@ export class ObstacleController
     };
 
     /**
-     * change material
-     * @param {AbstractObject} id
-     * @param {string} materialType
-     */
+    * change material
+    * @param {AbstractObject} id
+    * @param {string} materialType
+    */
     changeMaterial(obstacle: AbstractObject, materialType: string): void {
         if (materialType === undefined) {
             throw new TypeError('Invalid material type');
@@ -153,10 +198,10 @@ export class ObstacleController
     }
 
     /**
-     * set material by id
-     * @param {string} id
-     * @param {string} materialType
-     */
+    * set material by id
+    * @param {string} id
+    * @param {string} materialType
+    */
     setMaterialById = (id: string, materialType: string) => {
         if (id === undefined && materialType === undefined) {
             throw new TypeError('Invalid params');
@@ -170,10 +215,10 @@ export class ObstacleController
     };
 
     /**
-     * set color by id
-     * @param {string} id
-     * @param {string} color
-     */
+    * set color by id
+    * @param {string} id
+    * @param {string} color
+    */
     setColorById = (id: string, color: string) => {
         if (id === undefined && color === undefined) {
             throw new TypeError('Invalid params');
@@ -187,8 +232,8 @@ export class ObstacleController
     };
 
     /**
-     * method for obtaining a list of visualize object representation of obstacles
-     */
+    * method for obtaining a list of visualize object representation of obstacles
+    */
     visualizeObstacles = () => {
         const visualizeList = this._list.map((item) => {
             return item.visualize();
@@ -198,8 +243,8 @@ export class ObstacleController
 }
 
 /**
- * get singleton obstacle controller instance
- */
+* get singleton obstacle controller instance
+*/
 export const obstacleController = () => {
     return ObstacleController.getInstance();
 };
