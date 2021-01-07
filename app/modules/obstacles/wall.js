@@ -2,12 +2,13 @@
 const { abs, round, cos, sin, tan, atan2, sqrt, pow, distance } = require('mathjs');
 
 class WallObstacle {
-    constructor(id, width, height, orientation, originX, originY, debug = false) {
+    constructor(id, width, height, orientation, originX, originY, color, debug = false) {
         // Geometric details
         this.width = width;
         this.height = height;
         this.depth = 5;
         this.orientation = orientation;
+        this.color = color;
         this.theta = orientation * (Math.PI/180);
 
         this.debug = debug;
@@ -38,6 +39,13 @@ class WallObstacle {
         };
     };
 
+    appearance = () => {
+        // Return basic appearance properties of the obstacle
+        return {
+            color: this.color
+        };
+    };
+
     isInRange = (heading, x, y, angleThreshold = 10) => {
         const from = { x: x, y: y };
 
@@ -61,7 +69,7 @@ class WallObstacle {
         if (this.isInRange(heading, x, y) == 0) {
             return undefined;
         } else {
-            const headingLine = this._getLine(x, y, heading* (Math.PI/180));
+            const headingLine = this._getLine(x, y, heading * (Math.PI / 180));
             const obstacleLine = this._getLine(this.p1.x, this.p1.y, this.theta);
 
             console.log('headingLine:', headingLine);
@@ -72,7 +80,7 @@ class WallObstacle {
 
             const headingDistance = this._point2PointDistance(from, intersectionPoint);
 
-            console.log('headingDistance: '+ headingDistance);
+            console.log('headingDistance: ' + headingDistance);
             return headingDistance;
 
         }
@@ -107,8 +115,6 @@ class WallObstacle {
         ];
     };
 
-
-
     // Private functions -------------------------------------------------
 
     _normalizedAngle = (a) => {
@@ -134,16 +140,16 @@ class WallObstacle {
     };
 
     _getLine = (x, y, angle) => {
-        const a = 1;
-        const b = -1*tan(angle);
-        const c = (tan(angle) * x) - y;
-        return {a, b, c};
+        const a = cos(angle);
+        const b = -1 * sin(angle);
+        const c = (sin(angle) * x) - (cos(angle) * y);
+        return { a, b, c };
     };
 
     _getIntersectionPoint = (line1, line2) => {
         const x = ((line1.b * line2.c) - (line2.b * line1.c)) / ((line1.a * line2.b) - (line2.a * line1.b));
         const y = ((line2.a * line1.c) - (line1.a * line2.c)) / ((line1.a * line2.b) - (line2.a * line1.b));
-        return {x,y};
+        return { x, y };
     };
 
     _point2PointDistance = (from, to) => {
