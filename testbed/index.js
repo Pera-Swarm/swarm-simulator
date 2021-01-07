@@ -68,10 +68,12 @@ const controller = obstacleController();
 const w2 = controller.createWall(wallWidth, height, 0, -50, 50, depth, debug);
 const w3 = controller.createWall(wallWidth, height, 90, -50, -50, depth, debug);
 
-const isObstacle = controller.isObstacleThere(heading, x, y,);
-const dist = controller.getDistance(heading, x, y,);
-console.log('isObstacle:', isObstacle, 'distance:', dist);
+// const isObstacle = controller.isObstacleThere(heading, x, y,);
+// const dist = controller.getDistance(heading, x, y,);
+// console.log('isObstacle:', isObstacle, 'distance:', dist);
 
 // console.log(controller.findObstaclesByType('Cylinder'));
 // console.log(controller.findObstaclesByType('Wall'));
-//console.log(controller.visualizeObstacles());
+
+console.log('print all geometry:');
+console.log(controller.visualizeObstacles());
