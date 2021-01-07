@@ -8,11 +8,28 @@ const {
     obstacleController
 } = require('../dist/obstacleController');
 
-const x = 40;
-const y = 40;
-const heading = 180 + 45;
+const wallWidth = 100;
+const wallX = -50;
+const wallY = 50;
+const wallOrietation = 45;
 
-const width = 100;
+const x = 0;
+const y = 0;
+const heading = 85;
+
+// id, width, height, orientation, originX, originY, debug = false
+const obs = new WallObstacle(1, wallWidth, 20, wallOrietation, wallX,wallY, true);
+
+const range = obs.isInRange(heading, x, y, 5);
+const ans = obs.getDistance(heading, x, y);
+
+console.log(range, ans);
+
+
+/*
+// For cylinder obstacle
+
+const radius = 10;
 const height = 20;
 const depth = 5;
 const orientation = 0;
@@ -59,3 +76,4 @@ const w2 = controller.createWall(100, 20, 0, -50, -50, depth, true);
 // console.log(controller.findObstaclesByType('Cylinder'));
 // console.log(controller.findObstaclesByType('Wall'));
 console.log(controller.visualizeObstacles());
+
