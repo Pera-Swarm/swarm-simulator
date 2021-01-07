@@ -97,32 +97,28 @@ export class Cylinder extends AbstractCylinder {
     };
 
     visualize = () => {
-        return [
-            {
-                id: this.id,
-                geometry: {
-                    type: this.geometryType,
-                    radiusTop: this._radius,
-                    radiusBottom: this._radius,
-                    height: this.height
-                },
-                material: {
-                    type: this.materialType,
-                    properties: {
-                        color: '#505050'
-                    }
-                },
-                position: {
-                    x: this.center.x,
-                    y: this.center.y
-                },
-                rotation: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                }
+        return {
+            id: this.id,
+            geometry: {
+                type: this.geometryType,
+                radiusTop: this._radius,
+                radiusBottom: this._radius,
+                height: this.height
+            },
+            material: {
+                type: this.materialType,
+                properties: this.appearance
+            },
+            position: {
+                x: this.center.x,
+                y: this.center.y
+            },
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 0
             }
-        ];
+        };
     };
 
     // -------------------- Private functions --------------------

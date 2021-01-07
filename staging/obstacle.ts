@@ -5,6 +5,10 @@ export type ObjectCoordinate = {
     y: number;
 };
 
+export type Appearance = {
+    color: string;
+};
+
 /**
  * @class Obstacle Object
  * @classdesc Obstacle Object Representation
@@ -15,6 +19,7 @@ export abstract class AbstractObject {
     protected _center: ObjectCoordinate;
     protected _type: string;
     protected _geometryType: string;
+    protected _color: string;
     protected _materialType: string;
     protected _debug: boolean;
     protected _created: Date;
@@ -27,6 +32,7 @@ export abstract class AbstractObject {
         this._debug = debug;
         this._type = 'Object';
         this._geometryType = 'Geometry';
+        this._color = '#505050';
         this._materialType = 'MeshStandardMaterial';
         this._created = new Date();
         this._updated = Date.now();
@@ -75,6 +81,15 @@ export abstract class AbstractObject {
     }
 
     /**
+     * get appearance properties
+     */
+    get appearance(): Appearance {
+        return {
+            color: this._color
+        };
+    }
+
+    /**
      * get geometry type
      */
     get geometryType(): string {
@@ -89,20 +104,29 @@ export abstract class AbstractObject {
     }
 
     /**
-     * set material type
-     * @param material material type
-     */
-    setMaterial = (material: string) => {
-        this._materialType = material;
-        this._updated = Date.now();
-    };
-
-    /**
      * set geometry type
      * @param geometry geometry type
      */
     setGeometry = (geometry: string) => {
         this._geometryType = geometry;
+        this._updated = Date.now();
+    };
+
+    /**
+     * set color
+     * @param color color value
+     */
+    setColor = (color: string) => {
+        this._color = color;
+        this._updated = Date.now();
+    };
+
+    /**
+     * set material type
+     * @param material material type
+     */
+    setMaterial = (material: string) => {
+        this._materialType = material;
         this._updated = Date.now();
     };
 
