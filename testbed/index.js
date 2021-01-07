@@ -14,14 +14,13 @@ const heading = 140;
 
 // Note: Do not specify ids please! an uuid will generate with the initialization
 // width, height, orientation, originX, originY, debug = false
-const obs = new WallObstacle(wallWidth, 20, wallOrietation, wallX, wallY, true);
-const obs = new Wall(wallWidth, 20, wallOrietation, wallX, wallY, true);
+// const obs = new WallObstacle(wallWidth, 20, wallOrietation, wallX, wallY, true);
+// const obs = new Wall(wallWidth, 20, wallOrietation, wallX, wallY, true);
 
-var range = obs.isInRange(heading, x, y, 5);
-var ans = obs.getDistance(heading, x, y);
+// var range = obs.isInRange(heading, x, y, 5);
+// var ans = obs.getDistance(heading, x, y);
 
-console.log(range, ans);
-
+// console.log(range, ans);
 
 // For cylinder obstacle
 const radius = 10;
@@ -35,7 +34,6 @@ const debug = true;
 // Note: obstacleBuilder is used for creating individual obstacles seperately.
 const builder = obstacleBuilder();
 
-
 /*
 // radius,height, originX, originY, debug = false
 // const c = new CylinderObstacle(1, radius, height, originX, originY, true);
@@ -47,7 +45,6 @@ ans = c1.getDistance(heading, x, y);
 
 console.log(range, ans);
 */
-
 
 const wallWidth = 100;
 const wallX = -50;
