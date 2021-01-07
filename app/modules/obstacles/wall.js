@@ -9,7 +9,7 @@ class WallObstacle {
         this.depth = 5;
         this.orientation = orientation;
         this.color = color;
-        this.theta = orientation * (Math.PI/180);
+        this.theta = orientation * (Math.PI / 180);
 
         this.debug = debug;
 
@@ -75,14 +75,16 @@ class WallObstacle {
             console.log('headingLine:', headingLine);
             console.log('obstacleLine:', obstacleLine);
 
-            const intersectionPoint = this._getIntersectionPoint(headingLine, obstacleLine);
+            const intersectionPoint = this._getIntersectionPoint(
+                headingLine,
+                obstacleLine
+            );
             console.log('intersectionPoint', intersectionPoint);
 
             const headingDistance = this._point2PointDistance(from, intersectionPoint);
 
             console.log('headingDistance: ' + headingDistance);
             return headingDistance;
-
         }
     };
 
@@ -142,13 +144,17 @@ class WallObstacle {
     _getLine = (x, y, angle) => {
         const a = cos(angle);
         const b = -1 * sin(angle);
-        const c = (sin(angle) * x) - (cos(angle) * y);
+        const c = sin(angle) * x - cos(angle) * y;
         return { a, b, c };
     };
 
     _getIntersectionPoint = (line1, line2) => {
-        const x = ((line1.b * line2.c) - (line2.b * line1.c)) / ((line1.a * line2.b) - (line2.a * line1.b));
-        const y = ((line2.a * line1.c) - (line1.a * line2.c)) / ((line1.a * line2.b) - (line2.a * line1.b));
+        const x =
+            (line1.b * line2.c - line2.b * line1.c) /
+            (line1.a * line2.b - line2.a * line1.b);
+        const y =
+            (line2.a * line1.c - line1.a * line2.c) /
+            (line1.a * line2.b - line2.a * line1.b);
         return { x, y };
     };
 
@@ -157,7 +163,6 @@ class WallObstacle {
         const yDiff = to.y - from.y;
         return round(sqrt(pow(xDiff, 2) + pow(yDiff, 2)), 2);
     };
-
 }
 
 module.exports = { WallObstacle };
