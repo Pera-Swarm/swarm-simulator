@@ -1,28 +1,34 @@
 {
-    "name": "node-rest-api-server-with-mqtt",
+    "name": "pera-swarm-server",
     "version": "1.0.0",
-    "description": "Node.js Rest APIs with Express, Sequelize, MySQL & MQTT",
+    "description": "A mixed reality-based swarm simulator using node.js, cron, mqtt & pera-swarm",
     "main": "index.js",
     "scripts": {
         "start": "node app/index.js",
+        "compile:staging": "tsc",
+        "dev:staging": "tsc --watch",
         "dev": "nodemon app/index.js",
-        "testbed": "nodemon testbed/index.js",
         "format": "prettier --write \"**/*.+(ts|js|jsx|json|yml|yaml|css|md)\"",
         "test": "mocha --recursive './app/**/*test.js'",
-        "test:watch": "mocha --watch --recursive './app/**/*test.js'"
+        "test:watch": "mocha --watch --recursive './app/**/*test.js'",
+        "testbed": "nodemon testbed/index.js"
     },
     "keywords": [
-        "nodejs",
-        "express",
-        "rest",
-        "api"
+        "Pera",
+        "Swarm",
+        "Server",
+        "Mixed",
+        "Reality",
+        "Mixed Reality",
+        "Pera-Swarm",
+        "Swarm Server"
     ],
     "author": "Pera-Swarm",
     "license": "MIT",
     "dependencies": {
-        "@pera-swarm/mqtt-router": "^1.1.0",
+        "@pera-swarm/mqtt-router": "^1.1.4",
         "@pera-swarm/types": "^1.0.1",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "body-parser": "^1.19.0",
         "chai": "^4.2.0",
         "cors": "^2.8.5",
@@ -38,6 +44,7 @@
         "sequelize": "^5.21.2"
     },
     "devDependencies": {
+        "@types/uuid": "^8.3.0",
         "nodemon": "^2.0.4"
     },
     "nodemonConfig": {

@@ -2,12 +2,13 @@
 const { abs, round, cos, sin, tan, atan2, sqrt, pow, distance } = require('mathjs');
 
 class WallObstacle {
-    constructor(id, width, height, orientation, originX, originY, debug = false) {
+    constructor(id, width, height, orientation, originX, originY, color, debug = false) {
         // Geometric details
         this.width = width;
         this.height = height;
         this.depth = 5;
         this.orientation = orientation;
+        this.color = color;
         this.theta = orientation * (Math.PI / 180);
 
         this.debug = debug;
@@ -35,6 +36,13 @@ class WallObstacle {
             p2: this.p2,
             width: this.width,
             orientation: this.orientation
+        };
+    };
+
+    appearance = () => {
+        // Return basic appearance properties of the obstacle
+        return {
+            color: this.color
         };
     };
 
@@ -67,14 +75,16 @@ class WallObstacle {
             console.log('headingLine:', headingLine);
             console.log('obstacleLine:', obstacleLine);
 
-            const intersectionPoint = this._getIntersectionPoint(headingLine, obstacleLine);
+            const intersectionPoint = this._getIntersectionPoint(
+                headingLine,
+                obstacleLine
+            );
             console.log('intersectionPoint', intersectionPoint);
 
             const headingDistance = this._point2PointDistance(from, intersectionPoint);
 
             console.log('headingDistance: ' + headingDistance);
             return headingDistance;
-
         }
     };
 
@@ -106,8 +116,6 @@ class WallObstacle {
             }
         ];
     };
-
-
 
     // Private functions -------------------------------------------------
 
@@ -151,8 +159,12 @@ class WallObstacle {
     };
 
     _getIntersectionPoint = (line1, line2) => {
-        const x = ((line1.b * line2.c) - (line2.b * line1.c)) / ((line1.a * line2.b) - (line2.a * line1.b));
-        const y = ((line2.a * line1.c) - (line1.a * line2.c)) / ((line1.a * line2.b) - (line2.a * line1.b));
+        const x =
+            (line1.b * line2.c - line2.b * line1.c) /
+            (line1.a * line2.b - line2.a * line1.b);
+        const y =
+            (line2.a * line1.c - line1.a * line2.c) /
+            (line1.a * line2.b - line2.a * line1.b);
         return { x, y };
     };
 
@@ -161,7 +173,6 @@ class WallObstacle {
         const yDiff = to.y - from.y;
         return round(sqrt(pow(xDiff, 2) + pow(yDiff, 2)), 2);
     };
-
 }
 
 module.exports = { WallObstacle };
