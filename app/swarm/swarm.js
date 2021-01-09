@@ -23,14 +23,14 @@ const { localizationRoutes, sensorRoutes, controlRoutes } = require('./mqtt/');
 const { Robots } = require('./robots/robots');
 
 /**
-* @class Swarm Representation
-* @classdesc representing the customized swarm level functionality
-*/
+ * @class Swarm Representation
+ * @classdesc representing the customized swarm level functionality
+ */
 class Swarm {
     /**
-    * @constructor Swarm constructor
-    * @param {function} setup a fuction to run when the swarm object created
-    */
+     * @constructor Swarm constructor
+     * @param {function} setup a fuction to run when the swarm object created
+     */
     constructor(setup) {
         // TODO: considder; is this needed ?
         // this.loc_system = new SimpleLocalizationSystem();
@@ -51,7 +51,6 @@ class Swarm {
         // Cron Jobs with defined intervals, // TODO: define intervals as global variables
         cron.begin(cron.secondsInterval(360), this.prune);
         cron.begin(cron.secondsInterval(30), this.broadcastCheckALive);
-
     }
 
     prune = () => {
@@ -66,10 +65,10 @@ class Swarm {
     };
 
     /**
-    * method for publishing a message to a given topic
-    * @param {string} topic mqtt topic
-    * @param {string} message mqtt message object
-    */
+     * method for publishing a message to a given topic
+     * @param {string} topic mqtt topic
+     * @param {string} message mqtt message object
+     */
     mqttPublish = (topic, message, options = mqttConfig.mqttOptions, callback) => {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);

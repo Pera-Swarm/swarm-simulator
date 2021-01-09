@@ -19,12 +19,12 @@ class Communication {
     };
 
     /*
-    * method contains the default subscription topics of the module.
-    * Should be add to mqttRouter once module is created.
-    */
+     * method contains the default subscription topics of the module.
+     * Should be add to mqttRouter once module is created.
+     */
     defaultSubscriptions = () => {
         return [];
-    }
+    };
 
     // Protected methods, internal use only -------------------------------------------------------
 

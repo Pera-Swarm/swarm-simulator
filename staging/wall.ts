@@ -34,8 +34,8 @@ export abstract class AbstractWall extends AbstractObject {
     }
 
     /**
-    * Wall Object string representation
-    */
+     * Wall Object string representation
+     */
     public toString = (): string => {
         return `  ${this._type} Obstacle\n   width : ${this._width} height: ${this._height}\n   depth: ${this._depth} orientation: ${this._orientation}\n p1: { x: ${this._p1.x}, y: ${this._p1.y}} p2: { x: ${this._p2.x}, y: ${this._p2.y}}\n`;
     };
@@ -121,30 +121,32 @@ export class Wall extends AbstractWall {
 
         // TODO: Need proper logic to take the decision
 
-        return abs(a1)<=90 && abs(a2)<=90 && (a1 * a2 <= 0); // Angles should be in different signs
+        return abs(a1) <= 90 && abs(a2) <= 90 && a1 * a2 <= 0; // Angles should be in different signs
     };
 
     visualize = () => {
-        return [{
-            id: this.id,
-            geometry: {
-                type: this.geometryType,
-                ...this.geometric()
-            },
-            material: {
-                type: this.materialType,
-                properties: this.appearance
-            },
-            position: {
-                x: (this._p1.x + this._p2.x) / 2,
-                y: (this._p1.y + this._p2.y) / 2
-            },
-            rotation: {
-                x: 0,
-                y: this._orientation,
-                z: 0
+        return [
+            {
+                id: this.id,
+                geometry: {
+                    type: this.geometryType,
+                    ...this.geometric()
+                },
+                material: {
+                    type: this.materialType,
+                    properties: this.appearance
+                },
+                position: {
+                    x: (this._p1.x + this._p2.x) / 2,
+                    y: (this._p1.y + this._p2.y) / 2
+                },
+                rotation: {
+                    x: 0,
+                    y: this._orientation,
+                    z: 0
+                }
             }
-        }];
+        ];
     };
 
     // -------------------- Private functions --------------------
@@ -158,7 +160,7 @@ export class Wall extends AbstractWall {
     };
 
     // angle: in degrees
-    _getAngle = (from: any, to:any) => {
+    _getAngle = (from: any, to: any) => {
         const xDiff = to.x - from.x;
         const yDiff = to.y - from.y;
         return this._normalizedAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
@@ -178,33 +180,31 @@ export class Wall extends AbstractWall {
     _getLine = (x: number, y: number, angle: number) => {
         var a, b, c;
 
-        if ((angle == 90 * (Math.PI / 180)) || (angle == -90 * (Math.PI / 180))) {
+        if (angle == 90 * (Math.PI / 180) || angle == -90 * (Math.PI / 180)) {
             // line which parallel to y axis
             a = 0;
             b = -1 * sin(angle);
-            c = (sin(angle) * x) - (cos(angle) * y);
-
-        } else if ((angle == 0) || (angle == 1 * Math.PI)) {
+            c = sin(angle) * x - cos(angle) * y;
+        } else if (angle == 0 || angle == 1 * Math.PI) {
             // line which parallel to x axis
             a = cos(angle);
             b = 0;
-            c = (sin(angle) * x) - (cos(angle) * y);
-
+            c = sin(angle) * x - cos(angle) * y;
         } else {
             a = cos(angle);
             b = -1 * sin(angle);
-            c = (sin(angle) * x) - (cos(angle) * y);
+            c = sin(angle) * x - cos(angle) * y;
         }
         return { a, b, c };
     };
 
     _getIntersectionPoint = (line1: any, line2: any) => {
         const x =
-        (line1.b * line2.c - line2.b * line1.c) /
-        (line1.a * line2.b - line2.a * line1.b);
+            (line1.b * line2.c - line2.b * line1.c) /
+            (line1.a * line2.b - line2.a * line1.b);
         const y =
-        (line2.a * line1.c - line1.a * line2.c) /
-        (line1.a * line2.b - line2.a * line1.b);
+            (line2.a * line1.c - line1.a * line2.c) /
+            (line1.a * line2.b - line2.a * line1.b);
         return { x, y };
     };
 

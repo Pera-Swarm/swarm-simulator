@@ -25,7 +25,6 @@ const debug = true;
 // Note: obstacleBuilder is used for creating individual obstacles seperately.
 const builder = obstacleBuilder();
 
-
 /*
 // radius,height, originX, originY, debug = false
 // const c = new CylinderObstacle(1, radius, height, originX, originY, true);
@@ -37,7 +36,6 @@ const ans = c1.getDistance(heading, x, y);
 
 console.log(range, ans);
 */
-
 
 const wallWidth = 100;
 const wallX = -50;

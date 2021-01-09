@@ -160,8 +160,6 @@ class Robots {
         return result !== undefined ? result : -1;
     };
 
-
-
     /**
      * method for getting the robot coordinates by id
      * @param {number} id robot id
