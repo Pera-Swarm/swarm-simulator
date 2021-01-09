@@ -41,6 +41,23 @@ class DirectedCommunication extends Communication {
         if (callback != undefined) callback({ receivers: receivers });
     };
 
+    /*
+    * method contains the default subscription topics of the module.
+    * Should be add to mqttRouter once module is created.
+    */
+    defaultSubscriptions = () => {
+        return [{
+            topic: 'comm/out/directed',
+            allowRetained: false,
+            subscribe: true,
+            handler: (msg, this) => {
+                // this = SimpleCommunication
+                console.log(`Comm:Directed > robot ${msg.id} transmitted ${msg.msg}`);
+                this.broadcast(msg.id, msg.msg,console.log('Simple broadcast');)
+            }
+        }];
+    }
+
     #distanceCheck = (dist) => {
         return dist <= this.maxDistance;
     };
@@ -52,7 +69,7 @@ class DirectedCommunication extends Communication {
         if (difference > 180) difference -= 360;
 
         if (this.debug)
-            console.log(`heading: ${heading}, angle:${angle}, diff:${difference}`);
+        console.log(`heading: ${heading}, angle:${angle}, diff:${difference}`);
 
         return abs(difference) <= this.angleThreshold / 2;
     };

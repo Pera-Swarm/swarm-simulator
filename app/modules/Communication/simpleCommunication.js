@@ -32,8 +32,29 @@ class SimpleCommunication extends Communication {
         if (callback != undefined) callback({ receivers: receivers });
     };
 
+    /**
+    * method contains the default subscription topics of the module.
+    * Should be add to mqttRouter once module is created
+    */
+    defaultSubscriptions = () => {
+        return [{
+            topic: 'comm/out/simple',
+            allowRetained: false,
+            subscribe: true,
+            handler: (msg, this) => {
+                // this = SimpleCommunication
+                console.log(`Comm:Simple > robot ${msg.id} transmitted ${msg.msg}`);
+                this.broadcast(msg.id, msg.msg,console.log('Simple broadcast');)
+            }
+        }];
+    }
+
     #distanceCheck = (dist) => {
         return dist <= this.maxDistance;
     };
+
+}
+
+
 }
 module.exports = { SimpleCommunication };
