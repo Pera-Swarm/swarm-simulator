@@ -45,15 +45,16 @@ class DirectedCommunication extends Communication {
     * method contains the default subscription topics of the module.
     * Should be add to mqttRouter once module is created.
     */
-    defaultSubscriptions = () => {
+    defaultSubscriptions = (directedComm) => {
+        // This is not a completed implementation. Please check @luk3Sky
         return [{
             topic: 'comm/out/directed',
             allowRetained: false,
             subscribe: true,
-            handler: (msg, this) => {
+            handler: (msg, directedComm) => {
                 // this = SimpleCommunication
                 console.log(`Comm:Directed > robot ${msg.id} transmitted ${msg.msg}`);
-                this.broadcast(msg.id, msg.msg,console.log('Simple broadcast');)
+                directedComm.broadcast(msg.id, msg.msg,console.log('Simple broadcast'))
             }
         }];
     }
