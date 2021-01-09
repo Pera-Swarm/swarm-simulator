@@ -3,7 +3,7 @@
 
 const routes = [
     {
-        topic: 'test',
+        topic: 'comm/out/simple',
         allowRetained: false,
         subscribe: true,
         handler: (msg, swarm) => {

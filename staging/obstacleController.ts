@@ -1,5 +1,5 @@
 import { AbstractCylinder } from './cylinder';
-import { AbstractObject } from './obstacle';
+import { AbstractObject, VisualizeType } from './obstacle';
 import { obstacleBuilder, AbstractObstacleBuilder } from './obstaclebuilder';
 import { AbstractWall } from './wall';
 
@@ -14,7 +14,7 @@ export interface AbstractObstacleController {
 }
 
 export class ObstacleController
-implements AbstractObstacleBuilder, AbstractObstacleController {
+    implements AbstractObstacleBuilder, AbstractObstacleController {
     _list: AbstractObject[];
     private builder: AbstractObstacleBuilder;
     protected static instance: ObstacleController;
@@ -66,17 +66,17 @@ implements AbstractObstacleBuilder, AbstractObstacleController {
     }
 
     /**
-    * get obstacle list
-    */
+     * get obstacle list
+     */
     get list(): AbstractObject[] {
         return this.list;
     }
 
     /**
-    * method for finding an obstacle in the list with a given id
-    * @param {string} type
-    * @returns {AbstractObject|-1}
-    */
+     * method for finding an obstacle in the list with a given id
+     * @param {string} type
+     * @returns {AbstractObject|-1}
+     */
     findObstacleById = (id: string): AbstractObject | -1 => {
         if (id === undefined) {
             throw new TypeError('Invalid id');
@@ -96,10 +96,10 @@ implements AbstractObstacleBuilder, AbstractObstacleController {
     };
 
     /**
-    * method for finding obstacles in the list with a given type
-    * @param {string} type
-    * @returns {AbstractObject[]}
-    */
+     * method for finding obstacles in the list with a given type
+     * @param {string} type
+     * @returns {AbstractObject[]}
+     */
     findObstaclesByType = (type: string): AbstractObject[] => {
         if (type === undefined) {
             throw new TypeError('Invalid type');
@@ -119,54 +119,54 @@ implements AbstractObstacleBuilder, AbstractObstacleController {
     };
 
     /**
-    * method for finding is there any obstacle in front
-    * @param {number} heading heading coordinate
-    * @param {number} x x coordinate
-    * @param {number} y y coordinate
-    * @returns {boolean} true : if there any obstacle in heading direction
-    */
-    isObstacleThere = (heading:number, x: number, y:number) => {
+     * method for finding is there any obstacle in front
+     * @param {number} heading heading coordinate
+     * @param {number} x x coordinate
+     * @param {number} y y coordinate
+     * @returns {boolean} true : if there any obstacle in heading direction
+     */
+    isObstacleThere = (heading: number, x: number, y: number) => {
         // TODO: @luk3Sky please review this
         var found = false;
 
         for (var i = 0; i < this._list.length; i++) {
             found = this._list[i].isInRange(heading, x, y);
             //console.log(found);
-            if(found==true) return true;
+            if (found == true) return true;
         }
         return found;
-    }
+    };
 
     /**
-    * method for obtain the virtaul distance sensor readings with these virtual objects
-    * @param {number} heading heading coordinate
-    * @param {number} x x coordinate
-    * @param {number} y y coordinate
-    * @returns {number | Infinity} if thre any obstacle in heading front, return the distance to the closest one
-    */
-    getDistance = (heading:number, x: number, y:number) => {
+     * method for obtain the virtaul distance sensor readings with these virtual objects
+     * @param {number} heading heading coordinate
+     * @param {number} x x coordinate
+     * @param {number} y y coordinate
+     * @returns {number | Infinity} if thre any obstacle in heading front, return the distance to the closest one
+     */
+    getDistance = (heading: number, x: number, y: number) => {
         // TODO: @luk3Sky please review this
         var minDist = Infinity;
 
         for (var i = 0; i < this._list.length; i++) {
             const found = this._list[i].isInRange(heading, x, y);
             //console.log(found);
-            if(found==true){
+            if (found == true) {
                 const dist = this._list[i].getDistance(heading, x, y);
                 console.log(dist);
 
-                if(dist>0 &&  dist<= minDist){
+                if (dist > 0 && dist <= minDist) {
                     minDist = dist;
                 }
             }
         }
         return minDist;
-    }
+    };
 
     /**
-    * method for removing an obstacle in the list by a given id
-    * @param {string} id
-    */
+     * method for removing an obstacle in the list by a given id
+     * @param {string} id
+     */
     removeObstacleById = (id: string) => {
         if (typeof id !== 'string' || id !== undefined) {
             throw new TypeError('Invalid id');
@@ -181,10 +181,10 @@ implements AbstractObstacleBuilder, AbstractObstacleController {
     };
 
     /**
-    * change material
-    * @param {AbstractObject} id
-    * @param {string} materialType
-    */
+     * change material
+     * @param {AbstractObject} id
+     * @param {string} materialType
+     */
     changeMaterial(obstacle: AbstractObject, materialType: string): void {
         if (materialType === undefined) {
             throw new TypeError('Invalid material type');
@@ -198,10 +198,10 @@ implements AbstractObstacleBuilder, AbstractObstacleController {
     }
 
     /**
-    * set material by id
-    * @param {string} id
-    * @param {string} materialType
-    */
+     * set material by id
+     * @param {string} id
+     * @param {string} materialType
+     */
     setMaterialById = (id: string, materialType: string) => {
         if (id === undefined && materialType === undefined) {
             throw new TypeError('Invalid params');
@@ -215,10 +215,10 @@ implements AbstractObstacleBuilder, AbstractObstacleController {
     };
 
     /**
-    * set color by id
-    * @param {string} id
-    * @param {string} color
-    */
+     * set color by id
+     * @param {string} id
+     * @param {string} color
+     */
     setColorById = (id: string, color: string) => {
         if (id === undefined && color === undefined) {
             throw new TypeError('Invalid params');
@@ -232,33 +232,29 @@ implements AbstractObstacleBuilder, AbstractObstacleController {
     };
 
     /**
-    *
-    */
+     *
+     */
 
     /**
-    * method for obtaining a list of visualize object representation of obstacles
-    * @returns {any} ObstacleAPI defined Objects
-    */
-    visualizeObstacles = () => {
-        // TODO: @luk3Sky please fix this TS error
-        visualizeList: any[];
-
-        this._list.forEach((item: any) => {
-            // One obstacle object can have multiple geometrics.
-            item.visualize().forEach((itemChild: any) =>{
-                //console.log(itemChild);
+     * method for obtaining a list of visualize object representation of obstacles
+     * @returns {any} ObstacleAPI defined Objects
+     */
+    visualizeObstacles = (): VisualizeType[] => {
+        var visualizeList: VisualizeType[] = [];
+        this._list.forEach((item: AbstractObject) => {
+            // one obstacle object can have multiple geometrics.
+            item.visualize().forEach((itemChild: VisualizeType) => {
                 visualizeList.push(itemChild);
             });
         });
-
-        // Return a list of Obstacle API defined objects
+        // return a list of Obstacle API defined objects
         return visualizeList;
     };
 }
 
 /**
-* get singleton obstacle controller instance
-*/
+ * get singleton obstacle controller instance
+ */
 export const obstacleController = () => {
     return ObstacleController.getInstance();
 };

@@ -32,10 +32,13 @@ class Swarm {
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-        this.loc_system = new SimpleLocalizationSystem();
+        // TODO: considder; is this needed ?
+        // this.loc_system = new SimpleLocalizationSystem();
 
         // TODO: pass mqtt, swarm functions to Robots object
         this.arenaConfig = arenaConfig;
+
+        this.robots = new Robots(this);
 
         this.mqttRouter = new MQTTRouter(
             mqtt,
@@ -47,9 +50,7 @@ class Swarm {
 
         // Cron Jobs with defined intervals, // TODO: define intervals as global variables
         cron.begin(cron.secondsInterval(360), this.prune);
-        cron.begin(cron.secondsInterval(360), this.broadcastCheckALive);
-
-        this.robots = new Robots(this);
+        cron.begin(cron.secondsInterval(30), this.broadcastCheckALive);
     }
 
     prune = () => {
