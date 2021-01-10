@@ -119,7 +119,7 @@ export class MQTTRouter {
             this.handleRouteSubscriptions();
             this._publishQueue.begin();
 
-                console.log('MQTT-Router: Connected\n');
+            console.log('MQTT-Router: Connected\n');
         });
 
         this._mqttClient.on('error', (err) => {
