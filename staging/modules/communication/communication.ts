@@ -11,6 +11,7 @@ export interface CommunicationInterface {
     _debug: boolean;
 
     broadcast: Function;
+    /*defaultSubscriptions: Function;*/
     // ------------- Internal use only -------------
 }
 

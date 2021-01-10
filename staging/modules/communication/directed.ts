@@ -62,6 +62,29 @@ export class DirectedCommunication extends Communication {
         if (callback != undefined) callback({ receivers: receivers });
     };
 
+    /*
+     * method contains the default subscription topics of the module.
+     * Should be add to mqttRouter once module is created.
+     */
+    defaultSubscriptions = () => {
+        // This is not a completed implementation. Please check @luk3Sky
+        const that = this;
+        return [
+            {
+                topic: 'comm/out/directed',
+                allowRetained: false,
+                subscribe: true,
+                handler: (msg: any, that: any) => {
+                    // this = SimpleCommunication
+                    console.log(`Comm:Directed > robot ${msg.id} transmitted ${msg.msg}`);
+                    that.broadcast(msg.id, msg.msg, () => {
+                        console.log('Simple broadcast');
+                    });
+                }
+            }
+        ];
+    };
+
     /**
      * ethod for checking the given angle value is within the accepted value range
      * @param {number} heading heading value
