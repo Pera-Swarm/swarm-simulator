@@ -6,6 +6,9 @@ import { Communication } from './index';
 export class SimpleCommunication extends Communication {
     constructor(robots: Robots, mqttClient: Client, maxDistance = 100, debug = false) {
         super(robots, mqttClient, maxDistance, debug);
+        if (this._debug) {
+            console.log('SimpleCommunication:Debug:', this._debug);
+        }
     }
 
     /**
