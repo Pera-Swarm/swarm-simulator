@@ -1,12 +1,12 @@
 // const { Wall } = require('../dist/wall');
 // const { Cylinder } = require('../dist/cylinder');
 // const { WallObstacle, CylinderObstacle } = require('../app/modules/obstacles/');
-const { obstacleBuilder } = require('../dist/obstaclebuilder');
+const { obstacleBuilder } = require('../dist/modules/obstacles/obstacleBuilder');
 const {
     ObstacleController,
     obstacleList,
     obstacleController
-} = require('../dist/obstacleController');
+} = require('../dist/modules/obstacles/obstacleController');
 
 const x = 0;
 const y = 0;

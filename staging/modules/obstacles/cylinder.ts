@@ -1,4 +1,4 @@
-import { normalizeAngle } from '../../helpers';
+import { normalizeAngle } from 'pera-swarm/lib';
 import { AbstractObject, ObjectCoordinate, validateObjectCoordinate } from './obstacle';
 const { sqrt, pow, abs, round, cos, sin, atan2, max, asin } = require('mathjs');
 
@@ -25,6 +25,7 @@ export abstract class AbstractCylinder extends AbstractObject {
     };
 }
 
+// This should be in cylinder.js after pera-swarm library migration
 export class Cylinder extends AbstractCylinder {
     constructor(
         radius: number,
@@ -96,28 +97,30 @@ export class Cylinder extends AbstractCylinder {
     };
 
     visualize = () => {
-        return {
-            id: this.id,
-            geometry: {
-                type: this.geometryType,
-                radiusTop: this._radius,
-                radiusBottom: this._radius,
-                height: this.height
-            },
-            material: {
-                type: this.materialType,
-                properties: this.appearance
-            },
-            position: {
-                x: this.center.x,
-                y: this.center.y
-            },
-            rotation: {
-                x: 0,
-                y: 0,
-                z: 0
+        return [
+            {
+                id: this.id,
+                geometry: {
+                    type: this.geometryType,
+                    radiusTop: this._radius,
+                    radiusBottom: this._radius,
+                    height: this.height
+                },
+                material: {
+                    type: this.materialType,
+                    properties: this.appearance
+                },
+                position: {
+                    x: this.center.x,
+                    y: this.center.y
+                },
+                rotation: {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                }
             }
-        };
+        ];
     };
 
     // -------------------- Private functions --------------------

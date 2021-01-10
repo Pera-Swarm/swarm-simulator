@@ -1,6 +1,6 @@
 import { AbstractCylinder } from './cylinder';
-import { AbstractObject } from './obstacle';
-import { obstacleBuilder, AbstractObstacleBuilder } from './obstaclebuilder';
+import { AbstractObject, VisualizeType } from './obstacle';
+import { obstacleBuilder, AbstractObstacleBuilder } from './obstacleBuilder';
 import { AbstractWall } from './wall';
 
 export interface AbstractObstacleController {
@@ -119,6 +119,51 @@ export class ObstacleController
     };
 
     /**
+     * method for finding is there any obstacle in front
+     * @param {number} heading heading coordinate
+     * @param {number} x x coordinate
+     * @param {number} y y coordinate
+     * @returns {boolean} true : if there any obstacle in heading direction
+     */
+    isObstacleThere = (heading: number, x: number, y: number) => {
+        // TODO: @luk3Sky please review this
+        var found = false;
+
+        for (var i = 0; i < this._list.length; i++) {
+            found = this._list[i].isInRange(heading, x, y);
+            //console.log(found);
+            if (found == true) return true;
+        }
+        return found;
+    };
+
+    /**
+     * method for obtain the virtaul distance sensor readings with these virtual objects
+     * @param {number} heading heading coordinate
+     * @param {number} x x coordinate
+     * @param {number} y y coordinate
+     * @returns {number | Infinity} if thre any obstacle in heading front, return the distance to the closest one
+     */
+    getDistance = (heading: number, x: number, y: number) => {
+        // TODO: @luk3Sky please review this
+        var minDist = Infinity;
+
+        for (var i = 0; i < this._list.length; i++) {
+            const found = this._list[i].isInRange(heading, x, y);
+            //console.log(found);
+            if (found == true) {
+                const dist = this._list[i].getDistance(heading, x, y);
+                console.log(dist);
+
+                if (dist > 0 && dist <= minDist) {
+                    minDist = dist;
+                }
+            }
+        }
+        return minDist;
+    };
+
+    /**
      * method for removing an obstacle in the list by a given id
      * @param {string} id
      */
@@ -187,12 +232,22 @@ export class ObstacleController
     };
 
     /**
-     * method for obtaining a list of visualize object representation of obstacles
+     *
      */
-    visualizeObstacles = () => {
-        const visualizeList = this._list.map((item) => {
-            return item.visualize();
+
+    /**
+     * method for obtaining a list of visualize object representation of obstacles
+     * @returns {any} ObstacleAPI defined Objects
+     */
+    visualizeObstacles = (): VisualizeType[] => {
+        var visualizeList: VisualizeType[] = [];
+        this._list.forEach((item: AbstractObject) => {
+            // one obstacle object can have multiple geometrics.
+            item.visualize().forEach((itemChild: VisualizeType) => {
+                visualizeList.push(itemChild);
+            });
         });
+        // return a list of Obstacle API defined objects
         return visualizeList;
     };
 }
