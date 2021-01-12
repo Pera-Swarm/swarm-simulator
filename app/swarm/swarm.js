@@ -69,14 +69,13 @@ class Swarm {
      * @param {string} topic mqtt topic
      * @param {string} message mqtt message object
      */
-    mqttPublish = (topic, message, options = mqttConfig.mqttOptions, callback) => {
+    mqttPublish = (topic, message, options = mqttConfig.mqttOptions) => {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
 
-        publishToTopic(mqtt, topic, message.toString(), options, () => {
-            //console.log(`MQTT_Publish > ${message} to topic ${topic}`);
-            if (callback !== undefined) callback();
-        });
+        this.mqttRouter.pushToPublishQueue(topic, message.toString());
+        // TODO: add publish options to library
+        // this.mqttRouter.pushToPublishQueue(topic, message.toString(), options);
     };
 }
 

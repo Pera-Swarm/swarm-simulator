@@ -92,9 +92,8 @@ class Robots {
             delete this.robotList[id];
             this.size--;
             this.updated = Date.now();
-            this.swarm.mqttPublish('robot/delete', { id }, () => {
-                if (callback !== undefined) callback(id);
-            });
+            this.swarm.mqttPublish('robot/delete', { id });
+            if (callback !== undefined) callback(id);
             return true;
         }
         return false;
