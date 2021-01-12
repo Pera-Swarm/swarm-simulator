@@ -1,6 +1,6 @@
 import { AbstractCylinder } from './cylinder';
 import { AbstractObject, VisualizeType } from './obstacle';
-import { obstacleBuilder, AbstractObstacleBuilder } from './obstaclebuilder';
+import { obstacleBuilder, AbstractObstacleBuilder } from './obstacleBuilder';
 import { AbstractWall } from './wall';
 
 export interface AbstractObstacleController {
@@ -230,10 +230,6 @@ export class ObstacleController
             }
         }
     };
-
-    /**
-     *
-     */
 
     /**
      * method for obtaining a list of visualize object representation of obstacles
