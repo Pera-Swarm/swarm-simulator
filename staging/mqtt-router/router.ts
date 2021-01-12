@@ -119,7 +119,7 @@ export class MQTTRouter {
             this.handleRouteSubscriptions();
             this._publishQueue.begin();
 
-            console.log('MQTT-Router: Connected\n');
+            console.log(`MQTT-Router: Connected to channel ${channel}\n`);
         });
 
         this._mqttClient.on('error', (err) => {
@@ -137,6 +137,7 @@ export class MQTTRouter {
                             this._routes[i].type == 'String'
                                 ? message.toString()
                                 : message.toJSON().data;
+
                         if (logLevel !== 'info') {
                             console.log(
                                 'MQTT_Message_To_Be_Handled:',
@@ -205,6 +206,7 @@ export class MQTTRouter {
      * @param {Route} route entry in the route definition
      */
     callHandler = (topic: string, message: string | number[], route: Route) => {
+        // TODO: @luk3Sky nessage is a numeric array, it should be casted to string
         route.handler(message);
         if (logLevel === 'debug') {
             console.log('MQTT_Msg_Handled: ', topic, '>', message);

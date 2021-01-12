@@ -48,6 +48,8 @@ const routes = [
         publish: false,
         handler: (msg, swarm) => {
             // Only create fresh robot units
+            console.log(msg);
+
             const { id, heading, x, y } = msg;
             const resp = swarm.robots.addRobot(id, heading, x, y);
 
