@@ -1,9 +1,10 @@
 const {
     SimpleCommunication,
     DirectedCommunication
-} = require('../../modules/communication');
+} = require('../../../dist/pera-swarm');
 
-const { Coordinate } = require('pera-swarm');
+// const { Coordinate } = require('pera-swarm');
+
 const { Robot } = require('../robot/robot');
 
 const { DistanceSensor } = require('../../modules/distanceSensor');
@@ -26,7 +27,8 @@ class Robots {
         // Attach distance sensor with giving access to arenaConfig data and MQTT publish
         this.distanceSensor = new DistanceSensor(swarm.arenaConfig, swarm.mqttPublish);
 
-        //swarm.mqttRouter.pushRoutes(this.distanceSensor.defaultSubscriptions());
+        // TODO: @luk3Sky please check how to export module specific routes to mqtt-router
+        // something like swarm.mqttRouter.addRoute(route)
 
         // Simple communication
         this.simpleCommunication = new SimpleCommunication(

@@ -6,19 +6,23 @@ const mqttClient = require('mqtt');
 const mqttConfig = require('../config/mqtt.config');
 const arenaConfig = require('../config/arena.config');
 
-const { MQTTRouter, publishToTopic, wrapper } = require('@pera-swarm/mqtt-router');
+const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router');
 
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
+// MQTT routes
+const {
+    localizationRoutes,
+    sensorRoutes,
+    controlRoutes,
+    communicationRoutes
+} = require('./mqtt/');
 
-// cron - currently not implemented
+// TODO: make as a module
 const cron = require('../services/cron.js');
 
 // Localization System
-const { SimpleLocalizationSystem } = require('pera-swarm');
-
-// MQTT Controllers
-const { localizationRoutes, sensorRoutes, controlRoutes } = require('./mqtt/');
+// const { SimpleLocalizationSystem } = require('pera-swarm');
 
 const { Robots } = require('./robots/robots');
 
@@ -42,7 +46,15 @@ class Swarm {
 
         this.mqttRouter = new MQTTRouter(
             mqtt,
-            wrapper([...controlRoutes, ...localizationRoutes, ...sensorRoutes], this),
+            wrapper(
+                [
+                    ...controlRoutes,
+                    ...localizationRoutes,
+                    ...sensorRoutes,
+                    ...communicationRoutes
+                ],
+                this
+            ),
             mqttConfig,
             setup
         );
