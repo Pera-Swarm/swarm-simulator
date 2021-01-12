@@ -2,6 +2,7 @@ build
 **/public/assets
 **/node_modules/**
 /dist
+/references
 
 docker
 Dockerfile*
