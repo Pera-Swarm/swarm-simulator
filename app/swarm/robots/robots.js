@@ -1,7 +1,4 @@
-const {
-    SimpleCommunication,
-    DirectedCommunication
-} = require('../../modules/communication');
+const { SimpleCommunication, DirectedCommunication } = require('../../../dist/');
 
 const { Coordinate } = require('pera-swarm');
 const { Robot } = require('../robot/robot');
