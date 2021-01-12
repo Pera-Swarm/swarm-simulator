@@ -12,6 +12,16 @@ const x = 0;
 const y = 0;
 const heading = 140;
 
+// Note: Do not specify ids please! an uuid will generate with the initialization
+// width, height, orientation, originX, originY, debug = false
+// const obs = new WallObstacle(wallWidth, 20, wallOrietation, wallX, wallY, true);
+// const obs = new Wall(wallWidth, 20, wallOrietation, wallX, wallY, true);
+
+// var range = obs.isInRange(heading, x, y, 5);
+// var ans = obs.getDistance(heading, x, y);
+
+// console.log(range, ans);
+
 // For cylinder obstacle
 
 const radius = 10;

@@ -1,5 +1,10 @@
 import { normalizeAngle } from 'pera-swarm/lib';
-import { AbstractObject, ObjectCoordinate, validateObjectCoordinate } from './obstacle';
+import {
+    AbstractObject,
+    ObjectCoordinate,
+    validateObjectCoordinate,
+    VisualizeType
+} from './obstacle';
 const { abs, round, cos, sin, tan, atan2, sqrt, pow, distance } = require('mathjs');
 
 export abstract class AbstractWall extends AbstractObject {
@@ -124,7 +129,7 @@ export class Wall extends AbstractWall {
         return abs(a1) <= 90 && abs(a2) <= 90 && a1 * a2 <= 0; // Angles should be in different signs
     };
 
-    visualize = () => {
+    visualize = (): VisualizeType[] => {
         return [
             {
                 id: this.id,
