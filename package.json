@@ -26,7 +26,7 @@
     "author": "Pera-Swarm",
     "license": "MIT",
     "dependencies": {
-        "@pera-swarm/mqtt-router": "^1.1.4",
+        "@pera-swarm/mqtt-router": "^1.2.0",
         "@pera-swarm/types": "^1.0.1",
         "axios": "^0.21.1",
         "body-parser": "^1.19.0",
