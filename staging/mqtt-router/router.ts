@@ -136,10 +136,17 @@ export class MQTTRouter {
                         // convert message format
                         var msg;
                         try {
+
                             msg =
                                 this._routes[i].type == 'String'
                                     ? message.toString()
-                                    : message.toJSON().data;
+                                    : JSON.parse(message.toString());
+                            /*msg = message.toString();
+
+                            if(this._routes[i].type != 'String'){
+                                console.log('translating to JSON');
+                                msg = JSON.parse(msg);
+                            }*/
 
                             if (logLevel !== 'info') {
                                 console.log(
