@@ -222,7 +222,6 @@ export class MQTTRouter {
      * @param {Route} route entry in the route definition
      */
     callHandler = (topic: string, message: string | number[], route: Route) => {
-        // TODO: @luk3Sky nessage is a numeric array, it should be casted to string
         route.handler(message);
         if (logLevel === 'debug') {
             console.log('MQTT_Msg_Handled: ', topic, '>', message);
