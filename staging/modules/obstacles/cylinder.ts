@@ -1,5 +1,10 @@
 import { normalizeAngle } from 'pera-swarm/lib';
-import { AbstractObject, ObjectCoordinate, validateObjectCoordinate } from './obstacle';
+import {
+    AbstractObject,
+    ObjectCoordinate,
+    validateObjectCoordinate,
+    VisualizeType
+} from './obstacle';
 const { sqrt, pow, abs, round, cos, sin, atan2, max, asin } = require('mathjs');
 
 export abstract class AbstractCylinder extends AbstractObject {
@@ -96,7 +101,7 @@ export class Cylinder extends AbstractCylinder {
         return aCW <= aHeading && aHeading <= aCCW;
     };
 
-    visualize = () => {
+    visualize = (): VisualizeType[] => {
         return [
             {
                 id: this.id,
