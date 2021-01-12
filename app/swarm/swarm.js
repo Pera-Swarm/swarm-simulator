@@ -11,7 +11,7 @@ const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router'
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 // MQTT routes
-const { localizationRoutes, sensorRoutes, controlRoutes } = require('./mqtt/');
+const { localizationRoutes, sensorRoutes, controlRoutes, communicationRoutes } = require('./mqtt/');
 
 // TODO: make as a module
 const cron = require('../services/cron.js');
@@ -41,7 +41,7 @@ class Swarm {
 
         this.mqttRouter = new MQTTRouter(
             mqtt,
-            wrapper([...controlRoutes, ...localizationRoutes, ...sensorRoutes], this),
+            wrapper([...controlRoutes, ...localizationRoutes, ...sensorRoutes, ...communicationRoutes], this),
             mqttConfig,
             setup
         );
