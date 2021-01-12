@@ -63,3 +63,5 @@ nodemon.json
 
 .vscode
 .idea
+
+dist
