@@ -1,6 +1,6 @@
 import { AbstractCylinder } from './cylinder';
 import { AbstractObject, VisualizeType } from './obstacle';
-import { obstacleBuilder, AbstractObstacleBuilder } from './obstacleBuilder';
+import { obstacleBuilder, AbstractObstacleBuilder } from './obstaclebuilder';
 import { AbstractWall } from './wall';
 
 export interface AbstractObstacleController {
