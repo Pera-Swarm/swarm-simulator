@@ -136,7 +136,6 @@ export class MQTTRouter {
                         // convert message format
                         var msg;
                         try {
-
                             msg =
                                 this._routes[i].type == 'String'
                                     ? message.toString()

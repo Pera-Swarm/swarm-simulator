@@ -243,7 +243,6 @@ class Robots {
     changeMode = (mode, options = {}) => {
         this.broadcast('MODE', value);
     };
-
 }
 
 const initRobots = () => {

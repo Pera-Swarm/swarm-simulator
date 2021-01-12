@@ -33,7 +33,6 @@ class Swarm {
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-
         this.arenaConfig = arenaConfig;
 
         this.robots = new Robots(this);
