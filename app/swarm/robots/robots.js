@@ -1,12 +1,12 @@
 const {
-    Coordinate,
-    DistanceSensor,
     SimpleCommunication,
     DirectedCommunication
-} = require('pera-swarm');
+} = require('../../modules/communication');
+
+const { Coordinate } = require('pera-swarm');
 const { Robot } = require('../robot/robot');
 
-// const { DistanceSensor } = require('../../modules/distanceSensor');
+const { DistanceSensor } = require('../../modules/distanceSensor');
 
 // Class for representing the robots level functionality
 
@@ -25,6 +25,8 @@ class Robots {
 
         // Attach distance sensor with giving access to arenaConfig data and MQTT publish
         this.distanceSensor = new DistanceSensor(swarm.arenaConfig, swarm.mqttPublish);
+
+        //swarm.mqttRouter.pushRoutes(this.distanceSensor.defaultSubscriptions());
 
         // Simple communication
         this.simpleCommunication = new SimpleCommunication(
@@ -76,6 +78,29 @@ class Robots {
     };
 
     /**
+     * method for removing the robot by id
+     * @param {number} id robot id
+     * @param {function} callback a callback function
+     * @returns {boolean} true : if successful
+     * @returns false : if it fails
+     */
+    removeRobot = (id, callback) => {
+        if (id === undefined) throw new TypeError('id unspecified');
+
+        if (this.isExistsRobot(id)) {
+            // remove the key along with the value.
+            delete this.robotList[id];
+            this.size--;
+            this.updated = Date.now();
+            this.swarm.mqttPublish('robot/delete', { id }, () => {
+                if (callback !== undefined) callback(id);
+            });
+            return true;
+        }
+        return false;
+    };
+
+    /**
      * method for getting the size of the robot robotList
      * @returns {number} the size of the robot instances : are in the list
      */
@@ -86,21 +111,24 @@ class Robots {
     /**
      * method for finding a robot exists in the robotList or not
      * @param {number} id robot id
-     * @returns {boolean} true : if it exists with the id
-     * @returns false : if a robot doesn't exist with the id
+     * @returns nothing
      */
 
     createIfNotExists = (id, callback) => {
         if (id === undefined) throw new TypeError('id unspecified');
-
         if (this.isExistsRobot(id) == false) {
             this.addRobot(id); // robot doesn't exists
         }
 
         if (callback !== undefined) callback();
-        return true;
+        return;
     };
 
+    /**
+     * method for finding a robot exists or not
+     * @param {number} id robot id
+     * @returns {boolean} true : if robot exists
+     */
     isExistsRobot = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
         return this.robotList[id] != undefined;
@@ -130,29 +158,6 @@ class Robots {
 
         var result = this.robotList[id];
         return result !== undefined ? result : -1;
-    };
-
-    /**
-     * method for removing the robot by id
-     * @param {number} id robot id
-     * @param {function} callback a callback function
-     * @returns {boolean} true : if successful
-     * @returns false : if it fails
-     */
-    removeRobot = (id, callback) => {
-        if (id === undefined) throw new TypeError('id unspecified');
-
-        if (this.isExistsRobot(id)) {
-            // remove the key along with the value.
-            delete this.robotList[id];
-            this.size--;
-            this.updated = Date.now();
-            this.swarm.mqttPublish('robot/delete', { id }, () => {
-                if (callback !== undefined) callback(id);
-            });
-            return true;
-        }
-        return false;
     };
 
     /**
