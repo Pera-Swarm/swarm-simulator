@@ -1,0 +1,12 @@
+{
+    "id": "79337c9b-df49-4592-a456-911c9251a266",
+    "geometry": {
+        "type": "CylinderGeometry",
+        "radiusTop": 10,
+        "radiusBottom": 10,
+        "height": 20
+    },
+    "material": { "type": "MeshStandardMaterial", "properties": { "color": "#505050" } },
+    "position": { "x": 15, "y": 15 },
+    "rotation": { "x": 0, "y": 0, "z": 0 }
+}

@@ -2,10 +2,12 @@
 const { sqrt, pow, abs, round, cos, sin, atan2, max, asin } = require('mathjs');
 
 class CylinderObstacle {
-    constructor(id, radius, height, originX, originY, debug = false) {
+    constructor(id, radius, height, originX, originY, color, debug = false) {
         // Geometric details
         this.radius = radius;
         this.height = height;
+        this.color = color;
+
         this.debug = debug;
 
         // Center point of the cylinder

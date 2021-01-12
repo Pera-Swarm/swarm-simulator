@@ -1,11 +1,11 @@
 import {
+    Robot,
     Robots as AbstractRobots,
     DistanceSensor,
     SimpleCommunication,
     DirectedCommunication
 } from 'pera-swarm';
 
-import { Robot } from '../app/swarm/robot/robot';
 // const { DistanceSensor } = require('../../modules/distanceSensor');
 
 // Class for representing the robots level functionality
@@ -33,12 +33,14 @@ class Robots extends AbstractRobots {
         // Simple communication
         this.simpleCommunication = new SimpleCommunication(
             this,
+            // @ts-ignore
             swarm.mqttPublish,
             100,
             this._debug
         );
         this.directedCommunication = new DirectedCommunication(
             this,
+            // @ts-ignore
             swarm.mqttPublish,
             100,
             30,
@@ -47,7 +49,8 @@ class Robots extends AbstractRobots {
     }
 
     robotBuilder = (id: number, heading: number, x: number, y: number) => {
-        return new Robot(id, heading, x, y);
+        // TODO: fix; Cannot create an instance of an abstract class
+        //return new Robot(id, heading, x, y);
     };
 
     /**
@@ -60,6 +63,7 @@ class Robots extends AbstractRobots {
     isAliveRobot = (id: number, interval: any) => {
         if (id === undefined) throw new TypeError('id unspecified');
         if (interval === undefined) throw new TypeError('interval unspecified');
+        // @ts-ignore
         return this._robotList[id].isAlive(interval);
     };
 
@@ -97,6 +101,7 @@ class Robots extends AbstractRobots {
             const { id, x, y, heading } = item;
             if (this.isExistsRobot(id)) {
                 if (this.findRobotById(id) !== -1) {
+                    // @ts-ignore
                     this.findRobotById(id).setCoordinates(heading, x, y);
                 }
             } else {
