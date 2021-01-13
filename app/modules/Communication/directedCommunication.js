@@ -49,7 +49,7 @@ class DirectedCommunication extends Communication {
         // This is not a completed implementation. Please check @luk3Sky
         return [
             {
-                topic: 'comm/out/directed',
+                topic: 'comm/out/directional',
                 allowRetained: false,
                 subscribe: true,
                 handler: (msg, directedComm) => {

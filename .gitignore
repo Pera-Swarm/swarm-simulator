@@ -63,6 +63,5 @@ nodemon.json
 /package-lock.json
 
 .idea
-
+.vscode
 dist
-

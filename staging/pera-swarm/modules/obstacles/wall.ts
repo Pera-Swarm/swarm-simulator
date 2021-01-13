@@ -124,8 +124,6 @@ export class Wall extends AbstractWall {
 
         //console.log(`heading: ${heading}, a1:${a1}, a2:${a2}`);
 
-        // TODO: Need proper logic to take the decision
-
         return abs(a1) <= 90 && abs(a2) <= 90 && a1 * a2 <= 0; // Angles should be in different signs
     };
 
@@ -155,20 +153,14 @@ export class Wall extends AbstractWall {
     };
 
     // -------------------- Private functions --------------------
-
-    // angle: in degrees
-    _normalizedAngle = (a: number) => {
-        let b = (a + 180) % 360;
-        if (b <= 0) b += 360;
-        b = b - 180;
-        return round(b, 2);
-    };
-
-    // angle: in degrees
-    _getAngle = (from: any, to: any) => {
-        const xDiff = to.x - from.x;
-        const yDiff = to.y - from.y;
-        return this._normalizedAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
+    _getAngle = (from: ObjectCoordinate, to: ObjectCoordinate) => {
+        if (validateObjectCoordinate(from) && validateObjectCoordinate(to)) {
+            const xDiff = to.x - from.x;
+            const yDiff = to.y - from.y;
+            return normalizeAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
+        } else {
+            throw new TypeError('Invalid arguments');
+        }
     };
 
     // angle: in degrees

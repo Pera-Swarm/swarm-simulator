@@ -1,12 +1,14 @@
-const { SimpleCommunication, DirectedCommunication } = require('../../../dist/');
+const {
+    SimpleCommunication,
+    DirectedCommunication
+} = require('../../../dist/pera-swarm');
 
-const { Coordinate } = require('pera-swarm');
 const { Robot } = require('../robot/robot');
 
+// TODO: need to move this to pera-swarm library
 const { DistanceSensor } = require('../../modules/distanceSensor');
 
 // Class for representing the robots level functionality
-
 class Robots {
     /**
      * Robots constructor
@@ -23,7 +25,8 @@ class Robots {
         // Attach distance sensor with giving access to arenaConfig data and MQTT publish
         this.distanceSensor = new DistanceSensor(swarm.arenaConfig, swarm.mqttPublish);
 
-        //swarm.mqttRouter.pushRoutes(this.distanceSensor.defaultSubscriptions());
+        // TODO: @luk3Sky please check how to export module specific routes to mqtt-router
+        // something like swarm.mqttRouter.addRoute(route)
 
         // Simple communication
         this.simpleCommunication = new SimpleCommunication(
@@ -89,9 +92,8 @@ class Robots {
             delete this.robotList[id];
             this.size--;
             this.updated = Date.now();
-            this.swarm.mqttPublish('robot/delete', { id }, () => {
-                if (callback !== undefined) callback(id);
-            });
+            this.swarm.mqttPublish('robot/delete', { id });
+            if (callback !== undefined) callback(id);
             return true;
         }
         return false;
@@ -241,15 +243,9 @@ class Robots {
     changeMode = (mode, options = {}) => {
         this.broadcast('MODE', value);
     };
-
-    // TODO: add swarm functionality here
-    // getSensorReadings
-    // stopRobot
-    // resetRobot
 }
 
 const initRobots = () => {
-    // TODO: Fix this, in testings
     return new Robots(this.swarm);
 };
 

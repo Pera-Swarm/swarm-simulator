@@ -232,10 +232,6 @@ export class ObstacleController
     };
 
     /**
-     *
-     */
-
-    /**
      * method for obtaining a list of visualize object representation of obstacles
      * @returns {any} ObstacleAPI defined Objects
      */

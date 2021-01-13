@@ -11,13 +11,15 @@ const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router'
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 // MQTT routes
-const { localizationRoutes, sensorRoutes, controlRoutes } = require('./mqtt/');
+const {
+    localizationRoutes,
+    sensorRoutes,
+    controlRoutes,
+    communicationRoutes
+} = require('./mqtt/');
 
 // TODO: make as a module
 const cron = require('../services/cron.js');
-
-// Localization System
-// const { SimpleLocalizationSystem } = require('pera-swarm');
 
 const { Robots } = require('./robots/robots');
 
@@ -31,17 +33,21 @@ class Swarm {
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-        // TODO: considder; is this needed ?
-        // this.loc_system = new SimpleLocalizationSystem();
-
-        // TODO: pass mqtt, swarm functions to Robots object
         this.arenaConfig = arenaConfig;
 
         this.robots = new Robots(this);
 
         this.mqttRouter = new MQTTRouter(
             mqtt,
-            wrapper([...controlRoutes, ...localizationRoutes, ...sensorRoutes], this),
+            wrapper(
+                [
+                    ...controlRoutes,
+                    ...localizationRoutes,
+                    ...sensorRoutes,
+                    ...communicationRoutes
+                ],
+                this
+            ),
             mqttConfig,
             setup
         );
@@ -68,14 +74,11 @@ class Swarm {
      * @param {string} topic mqtt topic
      * @param {string} message mqtt message object
      */
-    mqttPublish = (topic, message, options = mqttConfig.mqttOptions, callback) => {
+    mqttPublish = (topic, message, options = mqttConfig.mqttOptions) => {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
 
-        publishToTopic(mqtt, topic, message.toString(), options, () => {
-            //console.log(`MQTT_Publish > ${message} to topic ${topic}`);
-            if (callback !== undefined) callback();
-        });
+        this.mqttRouter.pushToPublishQueue(topic, message.toString());
     };
 }
 
