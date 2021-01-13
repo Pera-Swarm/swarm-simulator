@@ -3,14 +3,12 @@ const {
     DirectedCommunication
 } = require('../../../dist/pera-swarm');
 
-// const { Coordinate } = require('pera-swarm');
-
 const { Robot } = require('../robot/robot');
 
+// TODO: need to move this to pera-swarm library
 const { DistanceSensor } = require('../../modules/distanceSensor');
 
 // Class for representing the robots level functionality
-
 class Robots {
     /**
      * Robots constructor
@@ -245,15 +243,9 @@ class Robots {
     changeMode = (mode, options = {}) => {
         this.broadcast('MODE', value);
     };
-
-    // TODO: add swarm functionality here
-    // getSensorReadings
-    // stopRobot
-    // resetRobot
 }
 
 const initRobots = () => {
-    // TODO: Fix this, in testings
     return new Robots(this.swarm);
 };
 

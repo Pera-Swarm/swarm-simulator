@@ -21,9 +21,6 @@ const {
 // TODO: make as a module
 const cron = require('../services/cron.js');
 
-// Localization System
-// const { SimpleLocalizationSystem } = require('pera-swarm');
-
 const { Robots } = require('./robots/robots');
 
 /**
@@ -36,10 +33,6 @@ class Swarm {
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-        // TODO: considder; is this needed ?
-        // this.loc_system = new SimpleLocalizationSystem();
-
-        // TODO: pass mqtt, swarm functions to Robots object
         this.arenaConfig = arenaConfig;
 
         this.robots = new Robots(this);
@@ -86,8 +79,6 @@ class Swarm {
         if (typeof message === 'object') message = JSON.stringify(message);
 
         this.mqttRouter.pushToPublishQueue(topic, message.toString());
-        // TODO: add publish options to library
-        // this.mqttRouter.pushToPublishQueue(topic, message.toString(), options);
     };
 }
 

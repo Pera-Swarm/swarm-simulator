@@ -124,8 +124,6 @@ export class Wall extends AbstractWall {
 
         //console.log(`heading: ${heading}, a1:${a1}, a2:${a2}`);
 
-        // TODO: Need proper logic to take the decision
-
         return abs(a1) <= 90 && abs(a2) <= 90 && a1 * a2 <= 0; // Angles should be in different signs
     };
 
