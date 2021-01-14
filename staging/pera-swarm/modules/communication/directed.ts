@@ -77,8 +77,8 @@ export class DirectedCommunication extends Communication {
                 publish: false,
                 handler: (msg: any) => {
                     console.log(`Comm:Directed > robot ${msg.id} transmitted ${msg.msg}`);
-                    this.broadcast(msg.id, msg.msg, () => {
-                        console.log('Directed broadcast');
+                    this.broadcast(msg.id, msg.msg, (data: any) => {
+                        console.log('Sent to', data.receivers, 'robots');
                     });
                 }
             }
