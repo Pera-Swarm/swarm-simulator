@@ -135,6 +135,12 @@ export class MQTTRouter {
                     if (resolveChannelTopic(this._routes[i].topic) === topic) {
                         // convert message format
                         var msg;
+                        if (logLevel !== 'info') {
+                            console.log(
+                                'MQTT_Message_To_Be_Handled:',
+                                topic + ' > ' + message
+                            );
+                        }
                         try {
                             msg =
                                 this._routes[i].type == 'String'
@@ -146,13 +152,6 @@ export class MQTTRouter {
                                 console.log('translating to JSON');
                                 msg = JSON.parse(msg);
                             }*/
-
-                            if (logLevel !== 'info') {
-                                console.log(
-                                    'MQTT_Message_To_Be_Handled:',
-                                    topic + ' > ' + msg
-                                );
-                            }
                             if (!packet.retain) {
                                 // Fresh messages
                                 this.callHandler(topic, msg, this._routes[i]);
