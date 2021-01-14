@@ -23,6 +23,15 @@ swarm(setup){
 
         // objects
         robotList = {}
+            Robot(id, heading = 0, x = 0, y = 0){
+                +getData(key)
+                +setData(key, value)
+                +getCoordinates()
+                +setCoordinates(coordinate)
+                +setCoordinateValues(heading, x, y)
+                +updateHeartbeat()
+                +isAlive(interval)
+            }
 
         DistanceSensor(arenaConfig, mqttClient, isObstacleThere, this.obstadistanceCheck){
             // module isn't finalized

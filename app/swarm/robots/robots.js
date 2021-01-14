@@ -209,7 +209,7 @@ class Robots {
         coordinates.forEach((item) => {
             const { id, x, y, heading } = item;
             if (this.isExistsRobot(id)) {
-                this.findRobotById(id).setCoordinates(heading, x, y);
+                this.findRobotById(id).setCoordinateValues(heading, x, y);
             } else {
                 this.addRobot(id, heading, x, y);
             }
