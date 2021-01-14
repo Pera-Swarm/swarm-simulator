@@ -11,7 +11,6 @@ export interface CommunicationInterface {
     _debug: boolean;
 
     broadcast: Function;
-    /*defaultSubscriptions: Function;*/
     // ------------- Internal use only -------------
 }
 
@@ -46,18 +45,6 @@ export abstract class AbstractCommunication<
     // Internal use only -------------------------------------------------------
     protected abstract _getDistance: Function;
     protected abstract _getAngle: Function;
-
-    /**
-     * method for normalizing a given angle
-     * @param {number} a angle value
-     * @returns the normalized angle
-     */
-    normalizeAngle = (a: number): number => {
-        let b = (Number(a) + 180) % 360;
-        if (b <= 0) b += 360;
-        b = b - 180;
-        return round(b, 2);
-    };
 
     /**
      * method for finding whether a given distance value is within the max distance range
