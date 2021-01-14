@@ -24,7 +24,7 @@ class DistanceSensor {
 
         robot.updateHeartbeat();
         console.log(x, y, heading);
-        var dist = round(this.#getBorderDistance(x, y, heading) * 10) / 10;
+        var dist = round(this.#getBorderDistance(x, y, heading) * 10); // return in mm
 
         this.publish(`sensor/distance/${robot.id}`, dist);
         this.setReading(robot, dist);

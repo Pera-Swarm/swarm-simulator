@@ -26,11 +26,10 @@ const routes = [
         topic: 'robot/live',
         allowRetained: false,
         subscribe: true,
-        type: 'String',
         handler: (msg, swarm) => {
-            console.log('Updating Heartbeat > id:', msg);
-            const id = msg.split(' ')[0];
-            var robot = swarm.robots.findRobotById(id);
+            console.log('Updating Heartbeat > ', msg);
+            //const id = msg.split(' ')[0];
+            var robot = swarm.robots.findRobotById(msg.id);
 
             if (robot !== -1) {
                 const heartbeat = robot.updateHeartbeat();
@@ -38,6 +37,10 @@ const routes = [
             } else {
                 // No robot found.
                 // TODO: create robot if not already exists
+                swarm.robots.createIfNotExists(msg.id, ()=>{
+                    console.log("A robot created", msg.id);
+                });
+
             }
         }
     },
