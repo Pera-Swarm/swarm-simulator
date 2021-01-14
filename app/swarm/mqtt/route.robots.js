@@ -1,25 +1,7 @@
-// control routes and handlers
+// robot routes and handlers
 // Note: 'swarm' argument will be added via wrapper
 
 const routes = [
-    {
-        topic: 'comm/out/simple',
-        type: 'JSON',
-        allowRetained: false,
-        subscribe: true,
-        publish: false,
-        handler: (msg, swarm) => {
-            //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
-            const id = msg.id;
-            swarm.robots.simpleCommunication.broadcast(
-                id,
-                'This is a test ' + Date.now(),
-                (status) => {
-                    console.log('Directed:Status', status);
-                }
-            );
-        }
-    },
     {
         topic: 'robot/live',
         type: 'JSON',
@@ -27,15 +9,17 @@ const routes = [
         subscribe: true,
         publish: false,
         handler: (msg, swarm) => {
-            console.log('Updating Heartbeat > ', msg);
+            // Heartbeat signal from the robots to server
+            console.log('MQTT.Robot: robot/live', msg);
+
             var robot = swarm.robots.findRobotById(msg.id);
             if (robot !== -1) {
                 const heartbeat = robot.updateHeartbeat();
-                console.log('Heatbeat of the robot', msg, 'is updated to', heartbeat);
+                //console.log('Heatbeat of the robot', msg, 'is updated to', heartbeat);
             } else {
                 // No robot found.
                 swarm.robots.createIfNotExists(msg.id, () => {
-                    console.log('A robot created', msg.id);
+                    //console.log('A robot created', msg.id);
                 });
             }
         }
@@ -47,11 +31,11 @@ const routes = [
         subscribe: true,
         publish: false,
         handler: (msg, swarm) => {
-            // Only create fresh robot units
-            // console.log(msg);
+            // Create a robot on simulator
+            console.log('MQTT.Robot: robot/create', msg);
+
             const { id, heading, x, y } = msg;
             const resp = swarm.robots.addRobot(id, heading, x, y);
-            console.log('MQTT_Robot:Create:', id);
         }
     },
     {
@@ -62,7 +46,9 @@ const routes = [
         publish: true,
         handler: (msg, swarm) => {
             // This will instruct GUI to delete the robot instance
-            console.log('MQTT_Robot:Delete', msg.id);
+            console.log('MQTT.Robot: robot/delete', msg);
+
+            // No actions need to be here, just for representation
         }
     },
     {
@@ -72,6 +58,11 @@ const routes = [
         subscribe: false,
         publish: true,
         handler: (msg, swarm) => {
+            // This will instruct GUI to delete the robot instance
+            console.log('MQTT.:Robot: robot/msg/broadcast', msg);
+
+            // No actions need to be here, just for representation
+
             // This is called by the server at the beginning
             // with the value of 'ID? -1'
             // and the robots will send their heartbeat pules to the server

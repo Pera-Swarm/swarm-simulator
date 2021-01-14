@@ -1,11 +1,11 @@
 const sensorRoutes = require('./route.sensors');
 const localizationRoutes = require('./route.localization');
-const controlRoutes = require('./route.control');
+const robotRoutes = require('./route.robots');
 const communicationRoutes = require('./route.communication');
 
 module.exports = {
     sensorRoutes,
     localizationRoutes,
-    controlRoutes,
+    robotRoutes,
     communicationRoutes
 };

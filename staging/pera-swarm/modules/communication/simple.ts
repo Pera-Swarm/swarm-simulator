@@ -61,8 +61,8 @@ export class SimpleCommunication extends Communication {
                 publish: true,
                 handler: (msg: any) => {
                     console.log(`Comm:Simple > robot ${msg.id} transmitted ${msg.msg}`);
-                    this.broadcast(msg.id, msg.msg, () => {
-                        console.log('Simple broadcast');
+                    this.broadcast(msg.id, msg.msg, (data: any) => {
+                        console.log('Sent to', data.receivers, 'robots');
                     });
                 }
             }
