@@ -4,8 +4,10 @@
 const routes = [
     {
         topic: 'comm/out/directional',
+        type: 'JSON',
         allowRetained: false,
         subscribe: true,
+        publish: false,
         handler: (msg, swarm) => {
             // this = SimpleCommunication
             console.log(`Comm:Directed > robot ${msg.id} transmitted ${msg.msg}`);
@@ -18,8 +20,10 @@ const routes = [
     },
     {
         topic: 'comm/out/simple',
+        type: 'JSON',
         allowRetained: false,
         subscribe: true,
+        publish: false,
         handler: (msg, swarm) => {
             // this = SimpleCommunication
             console.log(`Comm:Simple > robot ${msg.id} transmitted ${msg.msg}`);
