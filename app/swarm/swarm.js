@@ -34,9 +34,7 @@ class Swarm {
      */
     constructor(setup) {
         this.arenaConfig = arenaConfig;
-
-        this.robots = new Robots(this);
-
+        this.robots = new Robots(this, this.mqttPublish);
         this.mqttRouter = new MQTTRouter(
             mqtt,
             wrapper(
@@ -54,7 +52,8 @@ class Swarm {
         );
         this.mqttRouter.start();
 
-        // Cron Jobs with defined intervals, // TODO: define intervals as global variables
+        // Cron Jobs with defined intervals,
+        // TODO: define intervals as global variables
         cron.begin(cron.secondsInterval(360), this.prune);
         cron.begin(cron.secondsInterval(30), this.broadcastCheckALive);
 
