@@ -46,6 +46,17 @@ class Robots {
         );
     }
 
+    /**
+     * method for obtaining default routes
+     */
+    get defaultSubscriptionRoutes() {
+        const commRoutes = [
+            ...this.simpleCommunication.defaultSubscriptions(),
+            ...this.directedCommunication.defaultSubscriptions()
+        ];
+        return commRoutes;
+    }
+
     robotBuilder = (id, heading, x, y) => {
         return new Robot(id, heading, x, y);
     };

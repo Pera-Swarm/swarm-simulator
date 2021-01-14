@@ -44,7 +44,8 @@ class Swarm {
                     ...controlRoutes,
                     ...localizationRoutes,
                     ...sensorRoutes,
-                    ...communicationRoutes
+                    //...communicationRoutes,
+                    ...this.robots.defaultSubscriptionRoutes
                 ],
                 this
             ),
