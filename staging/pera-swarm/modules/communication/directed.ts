@@ -1,5 +1,6 @@
 import { abs } from 'mathjs';
 import { MqttClient } from 'mqtt';
+import { Route } from '../../../mqtt-router';
 import { CoordinateValueInt } from '../coordinate';
 import { Robots } from '../robots';
 import { Communication } from './';
@@ -51,7 +52,7 @@ export class DirectedCommunication extends Communication {
                         receivers++;
                         if (this._debug) console.log(`robot #${coordinate.id}: pass`);
                         this._mqttClient.publish(
-                            `v1/communication/${coordinate.id}`,
+                            `/communication/${coordinate.id}`,
                             message
                         );
                     }
@@ -64,21 +65,20 @@ export class DirectedCommunication extends Communication {
 
     /*
      * method contains the default subscription topics of the module.
-     * Should be add to mqttRouter once module is created.
+     * this will be handled by mqtt-router
      */
-    defaultSubscriptions = () => {
-        // This is not a completed implementation. Please check @luk3Sky
-        const that = this;
+    defaultSubscriptions = (): Route[] => {
         return [
             {
                 topic: 'comm/out/directed',
+                type: 'JSON',
                 allowRetained: false,
                 subscribe: true,
-                handler: (msg: any, that: any) => {
-                    // this = SimpleCommunication
+                publish: false,
+                handler: (msg: any) => {
                     console.log(`Comm:Directed > robot ${msg.id} transmitted ${msg.msg}`);
-                    that.broadcast(msg.id, msg.msg, () => {
-                        console.log('Simple broadcast');
+                    this.broadcast(msg.id, msg.msg, () => {
+                        console.log('Directed broadcast');
                     });
                 }
             }
@@ -86,7 +86,7 @@ export class DirectedCommunication extends Communication {
     };
 
     /**
-     * ethod for checking the given angle value is within the accepted value range
+     * method for checking the given angle value is within the accepted value range
      * @param {number} heading heading value
      * @param {number} angle angle value
      * @returns {boolean} the verification of angle

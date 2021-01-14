@@ -1,4 +1,5 @@
 import { Client } from 'mqtt';
+import { Route } from '../../../mqtt-router';
 import { CoordinateValueInt } from '../coordinate';
 import { Robots } from '../robots';
 import { Communication } from './index';
@@ -36,7 +37,7 @@ export class SimpleCommunication extends Communication {
                         receivers++;
                         if (this._debug) console.log(`robot #${coordinate.id}: pass`);
                         this._mqttClient.publish(
-                            `v1/communication/${coordinate.id}`,
+                            `/communication/${coordinate.id}`,
                             message
                         );
                     }
@@ -48,20 +49,19 @@ export class SimpleCommunication extends Communication {
 
     /*
      * method contains the default subscription topics of the module.
-     * Should be add to mqttRouter once module is created.
+     * this will be handled by mqtt-router
      */
-    defaultSubscriptions = () => {
-        // This is not a completed implementation. Please check @luk3Sky
-        const that = this;
+    defaultSubscriptions = (): Route[] => {
         return [
             {
                 topic: 'comm/out/simple',
+                type: 'JSON',
                 allowRetained: false,
                 subscribe: true,
-                handler: (msg: any, that: any) => {
-                    // this = SimpleCommunication
+                publish: true,
+                handler: (msg: any) => {
                     console.log(`Comm:Simple > robot ${msg.id} transmitted ${msg.msg}`);
-                    that.broadcast(msg.id, msg.msg, () => {
+                    this.broadcast(msg.id, msg.msg, () => {
                         console.log('Simple broadcast');
                     });
                 }
