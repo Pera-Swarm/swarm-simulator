@@ -13,25 +13,23 @@ class Robots {
     /**
      * Robots constructor
      */
-    constructor(swarm) {
+    constructor(swarm, mqttPublish) {
         if (swarm === undefined) throw new TypeError('Swarm unspecified');
 
         this.robotList = {};
         this.size = 0;
         this.updated = Date.now();
         this.swarm = swarm;
+        this.mqttPublish = mqttPublish;
         this.debug = true;
 
         // Attach distance sensor with giving access to arenaConfig data and MQTT publish
-        this.distanceSensor = new DistanceSensor(swarm.arenaConfig, swarm.mqttPublish);
-
-        // TODO: @luk3Sky please check how to export module specific routes to mqtt-router
-        // something like swarm.mqttRouter.addRoute(route)
+        this.distanceSensor = new DistanceSensor(swarm.arenaConfig, this.mqttPublish);
 
         // Simple communication
         this.simpleCommunication = new SimpleCommunication(
             this,
-            swarm.mqttPublish,
+            this.mqttPublish,
             100,
             this.debug
         );
@@ -39,7 +37,7 @@ class Robots {
         // Directed communication
         this.directedCommunication = new DirectedCommunication(
             this,
-            swarm.mqttPublish,
+            this.mqttPublish,
             100,
             30,
             this.debug
@@ -103,7 +101,7 @@ class Robots {
             delete this.robotList[id];
             this.size--;
             this.updated = Date.now();
-            this.swarm.mqttPublish('robot/delete', { id });
+            this.mqttPublish('robot/delete', { id });
             if (callback !== undefined) callback(id);
             return true;
         }
@@ -248,7 +246,7 @@ class Robots {
         if (value === undefined) throw new TypeError('value unspecified');
 
         const msg = `${instType} ${value}`;
-        this.swarm.mqttPublish('robot/msg/broadcast', msg, options);
+        this.mqttPublish('robot/msg/broadcast', msg, options);
     };
 
     changeMode = (mode, options = {}) => {
