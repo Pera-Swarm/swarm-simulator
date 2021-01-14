@@ -1,12 +1,11 @@
-import { sqrt, pow, round, atan2, boolean } from 'mathjs';
-import { MqttClient } from 'mqtt';
+import { sqrt, pow, round, atan2 } from 'mathjs';
 import { normalizeAngle } from '../../helpers';
 import { Coordinate, CoordinateValueInt } from '../coordinate';
 import { Robots } from '../robots';
 import { SensorsType, SensorValueType } from '../sensors';
 
 export interface CommunicationInterface {
-    _mqttClient: MqttClient;
+    _mqttPublish: Function;
     _maxDistance: number;
     _debug: boolean;
 
@@ -21,21 +20,16 @@ export abstract class AbstractCommunication<
     TSensors,
     TSensorsValueType
 > implements CommunicationInterface {
-    _mqttClient: MqttClient;
+    _mqttPublish: Function;
     _maxDistance: number;
     _debug: boolean;
     _robots: Robots;
 
-    constructor(
-        robots: Robots,
-        mqttClient: MqttClient,
-        maxDistance = 100,
-        debug = false
-    ) {
+    constructor(robots: Robots, mqttPublish: Function, maxDistance = 100, debug = false) {
         if (robots === undefined) throw new TypeError('robots unspecified');
-        if (mqttClient === undefined) throw new TypeError('mqttClient unspecified');
+        if (mqttPublish === undefined) throw new TypeError('mqttPublish unspecified');
         this._robots = robots;
-        this._mqttClient = mqttClient;
+        this._mqttPublish = mqttPublish;
         this._maxDistance = maxDistance;
         this._debug = debug;
     }

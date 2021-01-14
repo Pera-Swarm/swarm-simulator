@@ -1,12 +1,11 @@
-import { Client } from 'mqtt';
 import { Route } from '../../../mqtt-router';
 import { CoordinateValueInt } from '../coordinate';
 import { Robots } from '../robots';
 import { Communication } from './index';
 
 export class SimpleCommunication extends Communication {
-    constructor(robots: Robots, mqttClient: Client, maxDistance = 100, debug = false) {
-        super(robots, mqttClient, maxDistance, debug);
+    constructor(robots: Robots, mqttPublish: Function, maxDistance = 100, debug = false) {
+        super(robots, mqttPublish, maxDistance, debug);
         if (this._debug) {
             console.log('SimpleCommunication:Debug:', this._debug);
         }
@@ -36,10 +35,7 @@ export class SimpleCommunication extends Communication {
                         // within the distance range, so send the messaage
                         receivers++;
                         if (this._debug) console.log(`robot #${coordinate.id}: pass`);
-                        this._mqttClient.publish(
-                            `/communication/${coordinate.id}`,
-                            message
-                        );
+                        this._mqttPublish(`/communication/${coordinate.id}`, message);
                     }
                 }
             }

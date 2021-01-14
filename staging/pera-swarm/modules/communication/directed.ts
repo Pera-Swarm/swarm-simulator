@@ -1,5 +1,4 @@
 import { abs } from 'mathjs';
-import { MqttClient } from 'mqtt';
 import { Route } from '../../../mqtt-router';
 import { CoordinateValueInt } from '../coordinate';
 import { Robots } from '../robots';
@@ -10,12 +9,12 @@ export class DirectedCommunication extends Communication {
 
     constructor(
         robots: Robots,
-        mqttClient: MqttClient,
+        mqttPublish: Function,
         maxDistance: number,
         angleThreshold: number = 30,
         debug: boolean = false
     ) {
-        super(robots, mqttClient, maxDistance, debug);
+        super(robots, mqttPublish, maxDistance, debug);
         this._angleThreshold = angleThreshold;
         if (this._debug) {
             console.log('DirectedCommunication:Debug:', this._debug);
@@ -51,10 +50,7 @@ export class DirectedCommunication extends Communication {
                         // within the distance range & angle threshold, so send the messaage
                         receivers++;
                         if (this._debug) console.log(`robot #${coordinate.id}: pass`);
-                        this._mqttClient.publish(
-                            `/communication/${coordinate.id}`,
-                            message
-                        );
+                        this._mqttPublish(`/communication/${coordinate.id}`, message);
                     }
                 }
             }
