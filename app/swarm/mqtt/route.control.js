@@ -4,13 +4,13 @@
 const routes = [
     {
         topic: 'comm/out/simple',
+        type: 'JSON',
         allowRetained: false,
         subscribe: true,
+        publish: false,
         handler: (msg, swarm) => {
             //console.log('UpdatingHeartbeat > id:',msg.id,'x:',msg.x,'y:',msg.y);
             const id = msg.id;
-
-            console.log('');
             swarm.robots.simpleCommunication.broadcast(
                 id,
                 'This is a test ' + Date.now(),
@@ -18,49 +18,45 @@ const routes = [
                     console.log('Directed:Status', status);
                 }
             );
-
-            //swarm.robots.prune(10);
         }
     },
     {
         topic: 'robot/live',
+        type: 'JSON',
         allowRetained: false,
         subscribe: true,
+        publish: false,
         handler: (msg, swarm) => {
             console.log('Updating Heartbeat > ', msg);
-            //const id = msg.split(' ')[0];
             var robot = swarm.robots.findRobotById(msg.id);
-
             if (robot !== -1) {
                 const heartbeat = robot.updateHeartbeat();
                 console.log('Heatbeat of the robot', msg, 'is updated to', heartbeat);
             } else {
                 // No robot found.
-                // TODO: create robot if not already exists
-                swarm.robots.createIfNotExists(msg.id, ()=>{
-                    console.log("A robot created", msg.id);
+                swarm.robots.createIfNotExists(msg.id, () => {
+                    console.log('A robot created', msg.id);
                 });
-
             }
         }
     },
     {
         topic: 'robot/create',
+        type: 'JSON',
         allowRetained: true, // TODO: only in DEV mode
         subscribe: true,
         publish: false,
         handler: (msg, swarm) => {
             // Only create fresh robot units
-            console.log(msg);
-
+            // console.log(msg);
             const { id, heading, x, y } = msg;
             const resp = swarm.robots.addRobot(id, heading, x, y);
-
             console.log('MQTT_Robot:Create:', id);
         }
     },
     {
         topic: 'robot/delete',
+        type: 'JSON',
         allowRetained: false,
         subscribe: false,
         publish: true,
@@ -71,6 +67,7 @@ const routes = [
     },
     {
         topic: 'robot/msg/broadcast',
+        type: 'JSON',
         allowRetained: false,
         subscribe: false,
         publish: true,
@@ -86,7 +83,6 @@ const routes = [
             START -1
             STOP -1
             RESET -1
-
             */
         }
     }
