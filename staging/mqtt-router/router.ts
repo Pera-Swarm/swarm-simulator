@@ -54,7 +54,7 @@ const defaultSetup = function () {};
  * @param {any} error error object
  */
 const defaultOnError = function (error: any) {
-    throw new Error(`MQTT_Router Error: ${error}`);
+    console.error(`MQTT_Router Error: ${error}`);
 };
 
 export class MQTTRouter {

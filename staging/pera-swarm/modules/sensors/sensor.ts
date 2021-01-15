@@ -66,14 +66,15 @@ export abstract class Sensor<TId, TValueType> {
     protected _value: TValueType;
     protected _updated: number;
 
-    constructor(id: TId, value?: TValueType) {
+    constructor(id: TId, value: TValueType) {
         this._id = id;
         if (value !== undefined) {
             this._value = value;
         } else {
-            throw new Error(
+            console.error(
                 'Invalid argument. value argument must be one of number, number[] string or string[] types.'
             );
+            this._value = value;
         }
         this._updated = Date.now();
     }
