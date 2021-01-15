@@ -14,7 +14,7 @@ const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 const {
     localizationRoutes,
     sensorRoutes,
-    controlRoutes,
+    robotRoutes,
     communicationRoutes
 } = require('./mqtt/');
 
@@ -39,7 +39,7 @@ class Swarm {
             mqtt,
             wrapper(
                 [
-                    ...controlRoutes,
+                    ...robotRoutes,
                     ...localizationRoutes,
                     ...sensorRoutes,
                     //...communicationRoutes,
@@ -56,6 +56,12 @@ class Swarm {
         // TODO: define intervals as global variables
         cron.begin(cron.secondsInterval(360), this.prune);
         cron.begin(cron.secondsInterval(30), this.broadcastCheckALive);
+
+        // TODO: make a publish to topic '/localization/update'
+        // More Info: https://pera-swarm.ce.pdn.ac.lk/docs/communication/mqtt/localization#localizationupdate
+
+        // TODO: make a publish to topic 'robot/msg/broadcast'
+        // More Info: https://pera-swarm.ce.pdn.ac.lk/docs/communication/mqtt/robot#robotmsgbroadcast
     }
 
     prune = () => {

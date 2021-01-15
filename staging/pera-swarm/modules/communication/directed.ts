@@ -66,15 +66,18 @@ export class DirectedCommunication extends Communication {
     defaultSubscriptions = (): Route[] => {
         return [
             {
-                topic: 'comm/out/directed',
+                topic: 'comm/out/directional',
                 type: 'JSON',
                 allowRetained: false,
                 subscribe: true,
                 publish: false,
                 handler: (msg: any) => {
-                    console.log(`Comm:Directed > robot ${msg.id} transmitted ${msg.msg}`);
-                    this.broadcast(msg.id, msg.msg, () => {
-                        console.log('Directed broadcast');
+                    // The robots can transmit messages to other robots using a transmission protocol.
+                    // Server will decide the robots who can receive the message
+                    console.log('MQTT.Comm: comm/out/directional', msg);
+                    
+                    this.broadcast(msg.id, msg.msg, (data: any) => {
+                        console.log('Sent to', data.receivers, 'robots');
                     });
                 }
             }
