@@ -17,23 +17,27 @@ swarm(setup){
 
     // SimpleLocalizationSystem // deprecated
 
-    robots(this){
+    robots(this) {
+
         // configurations
         arenaConfig
 
         // objects
         robotList = {}
-            Robot(id, heading = 0, x = 0, y = 0){
-                +getData(key)
-                +setData(key, value)
-                +getCoordinates()
-                +setCoordinates(coordinate)
-                +setCoordinateValues(heading, x, y)
-                +updateHeartbeat()
-                +isAlive(interval)
-            }
 
-        DistanceSensor(arenaConfig, mqttClient, isObstacleThere, this.obstadistanceCheck){
+        Robot(id, heading = 0, x = 0, y = 0){
+            +getData(key)
+            +setData(key, value)
+            +getCoordinates()
+            +setCoordinates(coordinate)
+            +setCoordinateValues(heading, x, y)
+            +updateHeartbeat()
+            +isAlive(interval)
+        }
+
+        NeoPixel(mqttPublish)
+
+        DistanceSensor(arenaConfig, mqttPublish, obstacleController){
             // module isn't finalized
 	        +getReading(robot, callback)
 	        +setReading(robot, value)
@@ -45,7 +49,7 @@ swarm(setup){
 	        _getLineDistance(x, y, heading, line)  	// deprecated
         }
 
-        SimpleCommunication(this,mqttClient,maxDistance,debug){
+        SimpleCommunication(this,mqttPublish,maxDistance,debug){
             +broadcast(robotId, message, callback)
             +defaultSubscriptions()
 
@@ -54,7 +58,7 @@ swarm(setup){
 
         }
 
-        DirectedCommunication(this,mqttClient,maxDistance,angleThreshold,debug){
+        DirectedCommunication(this,mqttPublish,maxDistance,angleThreshold,debug){
             +broadcast(robotId, message, callback)
             +defaultSubscriptions()
 
@@ -82,7 +86,6 @@ swarm(setup){
 
         initRobots()
     }
-
 
     // objects
     Queue(mqttConnection, options){
@@ -135,10 +138,11 @@ swarm(setup){
         // Need to add following
         +defaultSubscriptions()
 
-        +findObstacleById(id: string)
-        +findObstaclesByType(type: string)
         +isObstacleThere(heading: number, x: number, y: number)
         +getDistance(heading: number, x: number, y: number)
+
+        +findObstacleById(id: string)
+        +findObstaclesByType(type: string)
         +removeObstacleById(id: string)
         +setMaterialById(id: string, materialType: string)
         +setColorById(id: string, color: string)

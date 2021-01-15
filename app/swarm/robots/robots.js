@@ -8,6 +8,8 @@ const { Robot } = require('../robot/robot');
 // TODO: need to move this to pera-swarm library
 const { DistanceSensor } = require('../../modules/distanceSensor');
 
+const { NeoPixel } = require('../../modules/neopixel');
+
 // Class for representing the robots level functionality
 class Robots {
     /**
@@ -42,6 +44,8 @@ class Robots {
             30,
             this.debug
         );
+
+        this.neopixel = new NeoPixel(this.mqttPublish);
     }
 
     /**
@@ -50,7 +54,9 @@ class Robots {
     get defaultSubscriptionRoutes() {
         const commRoutes = [
             ...this.simpleCommunication.defaultSubscriptions(),
-            ...this.directedCommunication.defaultSubscriptions()
+            ...this.directedCommunication.defaultSubscriptions(),
+            ...this.distanceSensor.defaultSubscriptions(),
+            ...this.neopixel.defaultSubscriptions()
         ];
         return commRoutes;
     }
