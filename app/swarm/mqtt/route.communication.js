@@ -9,7 +9,7 @@ const routes = [
         subscribe: true,
         publish: false,
         handler: (msg, swarm) => {
-            // this = SimpleCommunication
+            // call directed communication braodcast
             console.log(`Comm:Directed > robot ${msg.id} transmitted ${msg.msg}`);
             swarm.robots.directedCommunication.broadcast(
                 msg.id,
@@ -25,7 +25,7 @@ const routes = [
         subscribe: true,
         publish: false,
         handler: (msg, swarm) => {
-            // this = SimpleCommunication
+            // call simple communication braodcast
             console.log(`Comm:Simple > robot ${msg.id} transmitted ${msg.msg}`);
             swarm.robots.directedCommunication.broadcast(
                 msg.id,
