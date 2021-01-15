@@ -28,8 +28,8 @@ export class DirectedCommunication extends Communication {
      * @param callback {Function} callback function
      */
     broadcast = (robotId: string, message: string, callback: Function) => {
-        if (robotId === undefined) throw new TypeError('robotId unspecified');
-        if (message === undefined) throw new TypeError('message unspecified');
+        if (robotId === undefined) console.error('robotId unspecified');
+        if (message === undefined) console.error('message unspecified');
 
         const allCoordinates = this._robots.getCoordinatesAll();
         const thisCoordinate = this._robots.getCoordinatesById(Number(robotId));
@@ -90,8 +90,12 @@ export class DirectedCommunication extends Communication {
      * @param {number} angle angle value
      * @returns {boolean} the verification of angle
      */
-    angleCheck = (heading: number, angle: number): boolean => {
+    angleCheck = (heading: number, angle?: number): boolean => {
         // Get the absolute difference between robot heading and target robot's absolute angle
+        if (angle === undefined) {
+            console.error('Angle unspecified');
+            return false;
+        }
         var difference = (angle - heading) % 360;
         if (difference <= -180) difference += 360;
         if (difference > 180) difference -= 360;

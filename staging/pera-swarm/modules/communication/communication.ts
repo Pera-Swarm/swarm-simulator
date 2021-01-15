@@ -26,8 +26,8 @@ export abstract class AbstractCommunication<
     _robots: Robots;
 
     constructor(robots: Robots, mqttPublish: Function, maxDistance = 100, debug = false) {
-        if (robots === undefined) throw new TypeError('robots unspecified');
-        if (mqttPublish === undefined) throw new TypeError('mqttPublish unspecified');
+        if (robots === undefined) console.error('robots unspecified');
+        if (mqttPublish === undefined) console.error('mqttPublish unspecified');
         this._robots = robots;
         this._mqttPublish = mqttPublish;
         this._maxDistance = maxDistance;
@@ -45,7 +45,11 @@ export abstract class AbstractCommunication<
      * @param {number} dist distance value
      * @returns {boolean} whether a given distance is below the max distance or not
      */
-    distanceCheck = (dist: number): boolean => {
+    distanceCheck = (dist?: number): boolean => {
+        if (dist === undefined) {
+            console.error('Distance unspecified');
+            return false;
+        }
         return dist <= this._maxDistance;
     };
 }
@@ -60,7 +64,7 @@ export abstract class Communication extends AbstractCommunication<
     protected _getDistance = (
         from: CoordinateValueInt<number>,
         to: CoordinateValueInt<number>
-    ): number => {
+    ): number | undefined => {
         if (
             Object.prototype.hasOwnProperty.call(from, 'x') &&
             Object.prototype.hasOwnProperty.call(from, 'y') &&
@@ -71,7 +75,7 @@ export abstract class Communication extends AbstractCommunication<
             const yDiff = to.y - from.y;
             return round(sqrt(Number(pow(xDiff, 2)) + Number(pow(yDiff, 2))), 2);
         } else {
-            throw new TypeError('Both parameters require coordinate values');
+            console.error('Both parameters require coordinate values');
         }
     };
 
@@ -80,7 +84,7 @@ export abstract class Communication extends AbstractCommunication<
     protected _getAngle = (
         from: CoordinateValueInt<number>,
         to: CoordinateValueInt<number>
-    ): number => {
+    ): number | undefined => {
         if (
             Object.prototype.hasOwnProperty.call(from, 'x') &&
             Object.prototype.hasOwnProperty.call(from, 'y') &&
@@ -91,7 +95,7 @@ export abstract class Communication extends AbstractCommunication<
             const yDiff = to.y - from.y;
             return normalizeAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
         } else {
-            throw new TypeError('Both parameters require coordinate values');
+            console.error('Both parameters require coordinate values');
         }
     };
 }
