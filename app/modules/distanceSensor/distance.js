@@ -44,6 +44,25 @@ class DistanceSensor {
         return dist != undefined ? dist : NaN;
     };
 
+    defaultSubscriptions = () => {
+        return [
+            {
+                topic: 'sensor/distance',
+                type: 'JSON',
+                allowRetained: false,
+                subscribe: true,
+                publish: false,
+                handler: (msg, swarm) => {
+                    // Robots can request virtual dist. sensor reading through this
+                    console.log('MQTT.Dist: sensor/distance', msg);
+
+                    // TODO: publish the virtual distance reading to
+                    // sensor/distance/{robotId}
+                }
+            }
+        ];
+    };
+
     // Internal use only -------------------------------------------------------
 
     #normalizedAngle = (a) => {
