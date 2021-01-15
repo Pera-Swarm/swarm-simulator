@@ -79,7 +79,8 @@ export class ObstacleController
      */
     findObstacleById = (id: string): AbstractObject | -1 => {
         if (id === undefined) {
-            throw new TypeError('Invalid id');
+            console.error('Invalid id');
+            return -1;
         } else {
             const foundObjs = this._list.map((item) => {
                 if (item.id === id) {
@@ -102,7 +103,8 @@ export class ObstacleController
      */
     findObstaclesByType = (type: string): AbstractObject[] => {
         if (type === undefined) {
-            throw new TypeError('Invalid type');
+            console.error('Invalid type');
+            return [];
         } else {
             const foundObjs: AbstractObject[] = [];
             this._list.forEach((item) => {
@@ -169,7 +171,7 @@ export class ObstacleController
      */
     removeObstacleById = (id: string) => {
         if (typeof id !== 'string' || id !== undefined) {
-            throw new TypeError('Invalid id');
+            console.error('Invalid id');
         } else {
             const prevList = this._list;
             prevList.forEach((item, index) => {
@@ -187,7 +189,7 @@ export class ObstacleController
      */
     changeMaterial(obstacle: AbstractObject, materialType: string): void {
         if (materialType === undefined) {
-            throw new TypeError('Invalid material type');
+            console.error('Invalid material type');
         } else {
             for (let i = 0; i < this._list.length; i++) {
                 if (this._list[i].id === obstacle.id) {
@@ -204,7 +206,7 @@ export class ObstacleController
      */
     setMaterialById = (id: string, materialType: string) => {
         if (id === undefined && materialType === undefined) {
-            throw new TypeError('Invalid params');
+            console.error('Invalid params');
         } else {
             for (let i = 0; i < this._list.length; i++) {
                 if (this._list[i].id === id) {
@@ -221,7 +223,7 @@ export class ObstacleController
      */
     setColorById = (id: string, color: string) => {
         if (id === undefined && color === undefined) {
-            throw new TypeError('Invalid params');
+            console.error('Invalid params');
         } else {
             for (let i = 0; i < this._list.length; i++) {
                 if (this._list[i].id === id) {
