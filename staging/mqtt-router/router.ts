@@ -54,7 +54,7 @@ const defaultSetup = function () {};
  * @param {any} error error object
  */
 const defaultOnError = function (error: any) {
-    console.error(`MQTT_Router Error: ${error}`);
+    console.error(`MQTT_Router_Error: ${error}`);
 };
 
 export class MQTTRouter {
@@ -142,17 +142,16 @@ export class MQTTRouter {
                             );
                         }
                         try {
-                            try {
-                                msg =
-                                    this._routes[i].type == 'String'
-                                        ? message.toString()
-                                        : JSON.parse(message.toString());
-                            } catch (err) {
-                                console.error(
-                                    `JSON Parse error > topic: ${topic}, msg: ${message}`
-                                );
-                            }
+                            msg =
+                                this._routes[i].type === 'String'
+                                    ? message.toString()
+                                    : JSON.parse(message.toString());
+                            /*msg = message.toString();
 
+                            if(this._routes[i].type != 'String'){
+                            console.log('translating to JSON');
+                            msg = JSON.parse(msg);
+                        }*/
                             if (!packet.retain) {
                                 // Fresh messages
                                 this.callHandler(topic, msg, this._routes[i]);
@@ -178,7 +177,9 @@ export class MQTTRouter {
                             }
                         } catch (err) {
                             // No need to crash the app for syntax error on JSON, just ignore
-                            console.error(err);
+                            console.error(
+                                `JSON Parse error > topic: ${topic}, msg: ${message}`
+                            );
                             //this.errorHandler(err);
                         }
                     }
@@ -276,7 +277,7 @@ export class MQTTRouter {
      */
     addRoute = (route: Route) => {
         if (route === undefined) {
-            throw new TypeError('Invalid route');
+            console.error('Invalid route');
         } else {
             this._routes.push(route);
             if (route.subscribe !== false) {
@@ -306,7 +307,7 @@ export class MQTTRouter {
      */
     removeRoute = (topic: string) => {
         if (topic === undefined) {
-            throw new TypeError('Invalid topic');
+            console.error('Invalid topic');
         } else {
             const prevList = this._routes;
             prevList.forEach((item, index) => {
