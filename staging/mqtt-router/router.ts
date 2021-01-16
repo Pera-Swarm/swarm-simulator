@@ -134,7 +134,7 @@ export class MQTTRouter {
                 for (var i = 0; i < this._routes.length; i += 1) {
                     if (resolveChannelTopic(this._routes[i].topic) === topic) {
                         // convert message format
-                        var msg;
+                        var msg: string | JSON | undefined;
                         if (logLevel !== 'info') {
                             console.log(
                                 'MQTT_Message_To_Be_Handled:',
@@ -142,45 +142,37 @@ export class MQTTRouter {
                             );
                         }
                         try {
-                            msg =
-                                this._routes[i].type === 'String'
-                                    ? message.toString()
-                                    : JSON.parse(message.toString());
-                            /*msg = message.toString();
-
-                            if(this._routes[i].type != 'String'){
-                            console.log('translating to JSON');
-                            msg = JSON.parse(msg);
-                        }*/
-                            if (!packet.retain) {
-                                // Fresh messages
-                                this.callHandler(topic, msg, this._routes[i]);
-                            } else if (packet.retain && this._routes[i].allowRetained) {
-                                // Older/Retained messages
-                                // Note: Accept and handle 'retained true logic' only if both the packet is retained and the route allows retained packets
-                                this.callHandler(topic, msg, this._routes[i]);
-                            } else if (
-                                packet.retain &&
-                                !this._routes[i].allowRetained &&
-                                this._routes[i].fallbackRetainHandler !== undefined
-                            ) {
-                                // Older/Retained messages
-                                // Note: Accept and handle 'retained false logic' if both the packet is retained and the route doesn't allow retained packets
-                                this.callFallback(topic, msg, this._routes[i]);
-                            } else if (
-                                packet.retain &&
-                                !this._routes[i].allowRetained &&
-                                this._routes[i].fallbackRetainHandler === undefined
-                            ) {
-                                // Discard Older/Retained messages
-                                this.discard(topic, msg);
+                            msg = this.decodeMessage(this._routes[i].type, message);
+                            if (msg !== undefined) {
+                                if (!packet.retain) {
+                                    // Fresh messages
+                                    this.callHandler(topic, msg, this._routes[i]);
+                                } else if (
+                                    packet.retain &&
+                                    this._routes[i].allowRetained
+                                ) {
+                                    // Older/Retained messages
+                                    // Note: Accept and handle 'retained true logic' only if both the packet is retained and the route allows retained packets
+                                    this.callHandler(topic, msg, this._routes[i]);
+                                } else if (
+                                    packet.retain &&
+                                    !this._routes[i].allowRetained &&
+                                    this._routes[i].fallbackRetainHandler !== undefined
+                                ) {
+                                    // Older/Retained messages
+                                    // Note: Accept and handle 'retained false logic' if both the packet is retained and the route doesn't allow retained packets
+                                    this.callFallback(topic, msg, this._routes[i]);
+                                } else if (
+                                    packet.retain &&
+                                    !this._routes[i].allowRetained &&
+                                    this._routes[i].fallbackRetainHandler === undefined
+                                ) {
+                                    // Discard Older/Retained messages
+                                    this.discard(topic, msg);
+                                }
                             }
                         } catch (err) {
-                            // No need to crash the app for syntax error on JSON, just ignore
-                            console.error(
-                                `JSON Parse error > topic: ${topic}, msg: ${message}`
-                            );
-                            //this.errorHandler(err);
+                            this.errorHandler(err);
                         }
                     }
                 }
@@ -219,12 +211,36 @@ export class MQTTRouter {
     };
 
     /**
+     * method for decoding a message to a given type
+     * @param {string} type message decode type
+     * @param {Buffer} message mqtt message
+     */
+    decodeMessage = (type: string, message: Buffer) => {
+        var msg: string | JSON | undefined;
+        if (type === undefined || message === undefined) {
+            console.error('Invalid type or message');
+            return undefined;
+        }
+        try {
+            msg = type === 'String' ? message.toString() : JSON.parse(message.toString());
+            // msg = message.toString();
+            // if(type != 'String'){
+            // console.log('translating to JSON');
+            // msg = JSON.parse(msg);
+            // return msg;
+        } catch (error) {
+            console.error('Parse Error');
+            return;
+        }
+    };
+
+    /**
      * method for filtering retain true handling logic
      * @param {string} topic mqtt topic
-     * @param {string|number[]} message mqtt message object
+     * @param {string|JSON} message mqtt message object
      * @param {Route} route entry in the route definition
      */
-    callHandler = (topic: string, message: string | number[], route: Route) => {
+    callHandler = (topic: string, message: string | JSON, route: Route) => {
         route.handler(message);
         if (logLevel === 'debug') {
             console.log('MQTT_Msg_Handled: ', topic, '>', message);
@@ -234,10 +250,10 @@ export class MQTTRouter {
     /**
      * method for filtering retain false handling logic
      * @param {string} topic mqtt topic
-     * @param {string|number[]} message mqtt message object
+     * @param {string|JSON} message mqtt message object
      * @param {Route} route entry in the route definition
      */
-    callFallback = (topic: string, message: string | number[], route: Route) => {
+    callFallback = (topic: string, message: string | JSON, route: Route) => {
         if (route.fallbackRetainHandler !== undefined) {
             route.fallbackRetainHandler(message);
             if (logLevel === 'debug') {
@@ -249,9 +265,9 @@ export class MQTTRouter {
     /**
      * discard message
      * @param {string} topic mqtt topic
-     * @param {string|number[]} message mqtt message object
+     * @param {string|JSON} message mqtt message object
      */
-    discard = (topic: string, message: string | number[]) => {
+    discard = (topic: string, message: string | JSON) => {
         if (
             logLevel === 'debug' ||
             logLevel === 'info' ||
