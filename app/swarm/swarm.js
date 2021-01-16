@@ -7,6 +7,7 @@ const mqttConfig = require('../config/mqtt.config');
 const arenaConfig = require('../config/arena.config');
 
 const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router');
+const { obstacleController } = require('../../dist/pera-swarm');
 
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
@@ -15,7 +16,7 @@ const {
     localizationRoutes,
     sensorRoutes,
     robotRoutes,
-    communicationRoutes
+    obstacleRoutes
 } = require('./mqtt/');
 
 // TODO: make as a module
@@ -42,6 +43,7 @@ class Swarm {
                     ...robotRoutes,
                     ...localizationRoutes,
                     ...sensorRoutes,
+                    ...obstacleRoutes,
                     //...communicationRoutes,
                     ...this.robots.defaultSubscriptionRoutes
                 ],
@@ -63,7 +65,11 @@ class Swarm {
         // Make a publish to topic 'robot/msg/broadcast'
         this.broadcastCheckALive();
 
-        // TODO: build the environment using ObstacleBuilder
+        // build the environment using ObstacleBuilder
+        this.obstacleController = obstacleController();
+        // const c = new CylinderObstacle(1, radius, height, originX, originY, true);
+        this.obstacleController.createCylinder(10, 20, 15, 15, true);
+        // this.obstacleController.c
     }
 
     prune = () => {
