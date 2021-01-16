@@ -60,8 +60,10 @@ class Swarm {
         // TODO: make a publish to topic '/localization/update'
         // More Info: https://pera-swarm.ce.pdn.ac.lk/docs/communication/mqtt/localization#localizationupdate
 
-        // TODO: make a publish to topic 'robot/msg/broadcast'
-        // More Info: https://pera-swarm.ce.pdn.ac.lk/docs/communication/mqtt/robot#robotmsgbroadcast
+        // Make a publish to topic 'robot/msg/broadcast'
+        this.broadcastCheckALive();
+
+        // TODO: build the environment using ObstacleBuilder
     }
 
     prune = () => {

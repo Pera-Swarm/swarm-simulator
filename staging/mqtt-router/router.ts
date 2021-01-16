@@ -142,16 +142,17 @@ export class MQTTRouter {
                             );
                         }
                         try {
-                            msg =
-                                this._routes[i].type == 'String'
-                                    ? message.toString()
-                                    : JSON.parse(message.toString());
-                            /*msg = message.toString();
+                            try {
+                                msg =
+                                    this._routes[i].type == 'String'
+                                        ? message.toString()
+                                        : JSON.parse(message.toString());
+                            } catch (err) {
+                                console.error(
+                                    `JSON Parse error > topic: ${topic}, msg: ${message}`
+                                );
+                            }
 
-                            if(this._routes[i].type != 'String'){
-                            console.log('translating to JSON');
-                            msg = JSON.parse(msg);
-                        }*/
                             if (!packet.retain) {
                                 // Fresh messages
                                 this.callHandler(topic, msg, this._routes[i]);
@@ -177,9 +178,7 @@ export class MQTTRouter {
                             }
                         } catch (err) {
                             // No need to crash the app for syntax error on JSON, just ignore
-                            console.error(
-                                `JSON Parse error > topic: ${topic}, msg: ${message}`
-                            );
+                            console.error(err);
                             //this.errorHandler(err);
                         }
                     }
