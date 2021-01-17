@@ -10,7 +10,7 @@ const routes = [
         publish: false,
         handler: (msg, swarm) => {
             // Heartbeat signal from the robots to server
-            console.log('MQTT.Robot: robot/live', msg);
+            // console.log('MQTT.Robot: robot/live', msg);
 
             var robot = swarm.robots.findRobotById(msg.id);
             if (robot !== -1) {
@@ -59,10 +59,8 @@ const routes = [
         publish: true,
         handler: (msg, swarm) => {
             // This will instruct GUI to delete the robot instance
-            console.log('MQTT.:Robot: robot/msg/broadcast', msg);
-
+            // console.log('MQTT.:Robot: robot/msg/broadcast', msg);
             // No actions need to be here, just for representation
-
             // This is called by the server at the beginning
             // with the value of 'ID? -1'
             // and the robots will send their heartbeat pules to the server

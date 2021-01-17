@@ -109,6 +109,8 @@ class Robots {
             this.updated = Date.now();
             this.mqttPublish('robot/delete', { id });
             if (callback !== undefined) callback(id);
+
+            console.log(`robot:deleted > ${id}`);
             return true;
         }
         return false;
