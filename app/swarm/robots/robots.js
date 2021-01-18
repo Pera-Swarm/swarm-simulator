@@ -32,7 +32,7 @@ class Robots {
         this.simpleCommunication = new SimpleCommunication(
             this,
             this.mqttPublish,
-            100,
+            60,
             this.debug
         );
 
@@ -40,7 +40,7 @@ class Robots {
         this.directedCommunication = new DirectedCommunication(
             this,
             this.mqttPublish,
-            100,
+            60,
             30,
             this.debug
         );
@@ -226,8 +226,10 @@ class Robots {
         coordinates.forEach((item) => {
             const { id, x, y, heading } = item;
             if (this.isExistsRobot(id)) {
+                //console.log(id, this.isExistsRobot(id));
                 this.findRobotById(id).setCoordinateValues(heading, x, y);
             } else {
+                //console.log('robot added', id);
                 this.addRobot(id, heading, x, y);
             }
             this.updated = Date.now();
