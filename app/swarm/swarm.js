@@ -1,10 +1,8 @@
-// Base Models
-// const { Robot } = require('./robot');
+const arenaConfig = require('../config/arena.config');
 
 // MQTT
 const mqttClient = require('mqtt');
 const mqttConfig = require('../config/mqtt.config');
-const arenaConfig = require('../config/arena.config');
 
 const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router');
 
@@ -90,7 +88,13 @@ class Swarm {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
 
-        this.mqttRouter.pushToPublishQueue(topic, message.toString());
+        // TODO: there is an scheduling issue in following
+        //this.mqttRouter.pushToPublishQueue(topic, message.toString());
+
+        publishToTopic(mqtt, topic, message.toString(), options, () => {
+            //console.log(`MQTT_Publish > ${message} to topic ${topic}`);
+            //if (callback !== undefined) callback();
+        });
     };
 }
 
