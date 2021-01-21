@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { AbstractObject, AbstractObstacleController } from '../obstacles/';
+import { AbstractObject, AbstractObstacleController, VisualizeType } from '../obstacles/';
 
 export type ArenaType = {
     xMin: number;
@@ -121,6 +121,13 @@ export class Environment extends AbstractEnvironment {
             if (callback !== undefined)
                 callback(this._obstacleController.visualizeObstacles());
         }
+    };
+
+    /**
+     * method for obtaining all the obstacles in the environment configuration
+     */
+    getObstaclesAll = (): VisualizeType[] => {
+        return this.obstacleController.visualizeObstacles();
     };
 }
 

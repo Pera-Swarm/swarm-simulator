@@ -12,7 +12,7 @@ const routes = [
             // Heartbeat signal from the robots to server
             console.log('MQTT.Obstacles: obstacles/?', msg);
             // console.log(swarm.obstacleController.visualizeObstacles());
-            // swarm.mqttPublish('obstacles', swarm.obstacleController.visualizeObstacles());
+            swarm.mqttPublish('obstacles', swarm.environment.getObstaclesAll());
         }
     }
 ];

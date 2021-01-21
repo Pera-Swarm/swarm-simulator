@@ -77,6 +77,7 @@ class Swarm {
 
         this.environment.createObstacles((obstacles) => {
             // console.log('Created Obstacles:', obstacles);
+            // Callback for publishing each obstacle into the environment
             if (Array.isArray(obstacles)) {
                 obstacles.forEach((item) => {
                     this.mqttPublish('/obstacles', [item], mqttConfig.options);
