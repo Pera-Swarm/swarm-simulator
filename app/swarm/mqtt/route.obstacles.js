@@ -17,4 +17,12 @@ const routes = [
     }
 ];
 
+const initialPublishers = [
+    {
+        topic: '/obstacles/delete/all',
+        data: '?'
+    }
+];
+
 module.exports = routes;
+module.exports.initialPublishers = initialPublishers;

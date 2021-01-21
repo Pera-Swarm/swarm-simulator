@@ -15,11 +15,14 @@ const {
     robotRoutes,
     obstacleRoutes
 } = require('./mqtt/');
+const { obstacleInitialPublishers } = require('./mqtt/');
 
 // TODO: make as a module
 const cron = require('../services/cron.js');
 
 const { Robots } = require('./robots/robots');
+
+const initialPublishers = [...obstacleInitialPublishers];
 
 /**
  * @class Swarm Representation
@@ -51,6 +54,11 @@ class Swarm {
         );
         this.mqttRouter.start();
 
+        // Initial Publishers according to swarm configuration
+        initialPublishers.forEach((publisher) => {
+            this.mqttPublish(publisher.topic, publisher.data);
+        });
+
         // Cron Jobs with defined intervals,
         // TODO: define intervals as global variables
         cron.begin(cron.secondsInterval(360), this.prune);
@@ -66,7 +74,16 @@ class Swarm {
             obstacleController(),
             './app/config/env.config.json'
         );
-        this.environment.createObstacles();
+
+        this.environment.createObstacles((obstacles) => {
+            // console.log('Created Obstacles:', obstacles);
+            if (Array.isArray(obstacles)) {
+                obstacles.forEach((item) => {
+                    this.mqttPublish('/obstacles', [item], mqttConfig.options);
+                });
+            }
+        });
+
         // build the environment using ObstacleBuilder
         // this.obstacleController = obstacleController();
         // const c = new CylinderObstacle(1, radius, height, originX, originY, true);
@@ -92,7 +109,8 @@ class Swarm {
     mqttPublish = (topic, message, options = mqttConfig.mqttOptions) => {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
-        this.mqttRouter.pushToPublishQueue(topic, message.toString());
+        // this.mqttRouter.pushToPublishQueue(topic, message.toString());
+        publishToTopic(mqtt, topic, message.toString());
     };
 }
 

@@ -65,9 +65,11 @@ export abstract class AbstractEnvironment {
 }
 
 export class Environment extends AbstractEnvironment {
-    constructor(obstacleController: AbstractObstacleController, file: string) {
+    constructor(obstacleController: AbstractObstacleController, file: string = '') {
         super(obstacleController);
-        this._config = this.readConfig(file);
+        if (file !== '') {
+            this._config = this.readConfig(file);
+        }
     }
 
     /**
@@ -109,11 +111,15 @@ export class Environment extends AbstractEnvironment {
 
     /**
      * method for creating obstacles in the environment according to the config
+     * @param {Function} callback callback function
      */
-    createObstacles = () => {
+    createObstacles = (callback: Function) => {
         if (validateEnvConfig(this.config) === true) {
             // TODO: create obstacles in the env
             console.log('create obstacles', this.config);
+            this.obstacleController.createObstaclesJSON(this.config?.obstacles);
+            if (callback !== undefined)
+                callback(this._obstacleController.visualizeObstacles());
         }
     };
 }
