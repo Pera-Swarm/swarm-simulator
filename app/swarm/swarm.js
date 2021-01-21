@@ -78,11 +78,15 @@ class Swarm {
         this.environment.createObstacles((obstacles) => {
             // console.log('Created Obstacles:', obstacles);
             // Callback for publishing each obstacle into the environment
-            if (Array.isArray(obstacles)) {
-                obstacles.forEach((item) => {
-                    this.mqttPublish('/obstacles', [item], mqttConfig.options);
-                });
-            }
+            this.mqttPublish('/obstacles', obstacles, {
+                ...mqttConfig.options,
+                retain: false
+            });
+            // if (Array.isArray(obstacles)) {
+            //     obstacles.forEach((item) => {
+            //         this.mqttPublish('/obstacles', [item], {...mqttConfig.options, retain: true});
+            //     });
+            // }
         });
 
         // build the environment using ObstacleBuilder
@@ -111,7 +115,7 @@ class Swarm {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
         // this.mqttRouter.pushToPublishQueue(topic, message.toString());
-        publishToTopic(mqtt, topic, message.toString());
+        publishToTopic(mqtt, topic, message.toString(), options);
     };
 }
 
