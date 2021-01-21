@@ -1,10 +1,11 @@
-import { AbstractCylinder } from './cylinder';
+import { AbstractCylinder, CylinderPropType } from './cylinder';
 import { AbstractObject, VisualizeType } from './obstacle';
 import { obstacleBuilder, AbstractObstacleBuilder } from './obstacleBuilder';
-import { AbstractWall } from './wall';
+import { AbstractWall, WallPropType } from './wall';
 
 export interface AbstractObstacleController {
     _list: AbstractObject[];
+    createObstaclesJSON: Function;
     setMaterialById: Function;
     setColorById: Function;
     findObstacleById: Function;
@@ -86,12 +87,31 @@ export class ObstacleController
         }
     };
 
-    createWallJSON = (data: JSON) => {
-        console.log(data);
+    /**
+     * create a wall obstacle from JSON data
+     * @param {VisualizeType} data obstacle JSON data
+     */
+    createWallJSON = (data: VisualizeType) => {
+        console.log('Create Wall Obstacle', data);
+        const decodedProps = this._decodeWallPropsFromJSON(data);
+        if (decodedProps !== -1) {
+            const { width, height, x, y, z, depth } = decodedProps;
+            this.createWall(width, height, z, x, y, depth, true);
+            // this.createWall(width, height, orientation, originX, originY, depth, debug);
+        }
     };
 
-    createCylinderJSON = (data: JSON) => {
-        console.log(data);
+    /**
+     * create a cylinder obstacle from JSON data
+     * @param {VisualizeType} data obstacle JSON data
+     */
+    createCylinderJSON = (data: VisualizeType) => {
+        console.log('Create Cylinder Obstacle', data);
+        const decodedProps = this._decodeCylinderPropsFromJSON(data);
+        if (decodedProps !== -1) {
+            const { radius, height, x, y } = decodedProps;
+            this.createCylinder(radius, height, x, y, true);
+        }
     };
 
     /**
@@ -276,6 +296,65 @@ export class ObstacleController
         });
         // return a list of Obstacle API defined objects
         return visualizeList;
+    };
+
+    /**
+     * decode properties required to create a wall from a given JSON data
+     * @param { WallPropType | -1} data wall JSON data
+     */
+    _decodeWallPropsFromJSON = (data: VisualizeType): WallPropType | -1 => {
+        var { geometry, position, rotation } = data;
+        var { width, height, depth } = geometry;
+        var { x, y } = position;
+        var { z } = rotation;
+        var i = 0;
+        if (width === undefined) i += 1;
+        if (height === undefined) i += 1;
+        if (depth === undefined) i += 1;
+        if (x === undefined) i += 1;
+        if (y === undefined) i += 1;
+        if (z === undefined) i += 1;
+        if (i !== 0) {
+            console.error('Failed_To_Derive_Wall_Properties');
+            return -1;
+        }
+        return {
+            width,
+            height,
+            depth,
+            x,
+            y,
+            z
+        };
+    };
+
+    /**
+     * decode properties required to create a cylinder from a given JSON data
+     * @param { CylinderPropType | -1} data cylinder JSON data
+     */
+    _decodeCylinderPropsFromJSON = (data: VisualizeType): CylinderPropType | -1 => {
+        var { geometry, position, rotation } = data;
+        var { radius, radiusTop, radiusBottom, height } = geometry;
+        var { x, y } = position;
+        // var { z } = rotation;
+        var i = 0;
+        if (radiusTop === undefined && radiusBottom === undefined && radius === undefined)
+            i += 1;
+        if (height === undefined) i += 1;
+        if (x === undefined) i += 1;
+        if (y === undefined) i += 1;
+        if (i !== 0) {
+            console.error('Failed_To_Derive_Wall_Properties');
+            return -1;
+        }
+        return {
+            radius,
+            radiusTop,
+            radiusBottom,
+            height,
+            x,
+            y
+        };
     };
 }
 
