@@ -84,7 +84,7 @@ export class Environment extends AbstractEnvironment {
             console.log('Config_Found!');
             // Validating configuration
             if (validateEnvConfig(config) === true) {
-                console.log('Valid config:', config);
+                console.log('Config validated!');
                 return config;
             } else {
                 throw new Error('Invalid config');

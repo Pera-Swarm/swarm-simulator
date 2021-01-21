@@ -1,13 +1,10 @@
-// Base Models
-// const { Robot } = require('./robot');
-
 // MQTT
 const mqttClient = require('mqtt');
 const mqttConfig = require('../config/mqtt.config');
-const arenaConfig = require('../config/arena.config');
+// const arenaConfig = require('../config/arena.config');
 
 const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router');
-const { obstacleController } = require('../../dist/pera-swarm');
+const { obstacleController, Environment } = require('../../dist/pera-swarm');
 
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
@@ -34,7 +31,7 @@ class Swarm {
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-        this.arenaConfig = arenaConfig;
+        // this.arenaConfig = arenaConfig;
         this.robots = new Robots(this, this.mqttPublish);
         this.mqttRouter = new MQTTRouter(
             mqtt,
@@ -65,10 +62,15 @@ class Swarm {
         // Make a publish to topic 'robot/msg/broadcast'
         this.broadcastCheckALive();
 
+        this.environment = new Environment(
+            obstacleController(),
+            './app/config/env.config.json'
+        );
+        this.environment.createObstacles();
         // build the environment using ObstacleBuilder
-        this.obstacleController = obstacleController();
+        // this.obstacleController = obstacleController();
         // const c = new CylinderObstacle(1, radius, height, originX, originY, true);
-        this.obstacleController.createCylinder(10, 20, 15, 15, true);
+        // this.obstacleController.createCylinder(10, 20, 15, 15, true);
         // this.obstacleController.c
     }
 
@@ -79,7 +81,6 @@ class Swarm {
 
     broadcastCheckALive = () => {
         // Publish with retain:true, qos:atLeastOnce
-        //console.log('Swarm_Check_a_Live');
         this.robots.broadcast('ID?', -1, { qos: 1, rap: true });
     };
 
@@ -91,7 +92,6 @@ class Swarm {
     mqttPublish = (topic, message, options = mqttConfig.mqttOptions) => {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
-
         this.mqttRouter.pushToPublishQueue(topic, message.toString());
     };
 }
