@@ -66,6 +66,35 @@ export class ObstacleController
     }
 
     /**
+     * @param {JSON} data json config data for the arena
+     */
+    createObstaclesJSON = (data: JSON) => {
+        if (Array.isArray(data)) {
+            data.forEach((element) => {
+                const { geometry } = element;
+                switch (geometry.type) {
+                    case 'BoxGeometry':
+                        this.createWallJSON(element);
+                        break;
+                    case 'CylinderGeometry':
+                        this.createCylinderJSON(element);
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    };
+
+    createWallJSON = (data: JSON) => {
+        console.log(data);
+    };
+
+    createCylinderJSON = (data: JSON) => {
+        console.log(data);
+    };
+
+    /**
      * get obstacle list
      */
     get list(): AbstractObject[] {

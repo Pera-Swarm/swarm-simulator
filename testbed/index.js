@@ -11,59 +11,6 @@ const x = 0;
 const y = 0;
 const heading = 140;
 
-// --------- Start Obstacle Controller Helper Methods --------- //
-/**
- * this will be implemented on swarm server
- */
-var config;
-// Read config.json file
-try {
-    const jsonString = fs.readFileSync('./testbed/config.json');
-    // Converting to JSON
-    config = JSON.parse(jsonString);
-    console.log('Found_Config:', config);
-} catch (err) {
-    // Check for errors
-    console.error('Config_File_Error', err);
-    return;
-}
-
-console.log(config.length);
-
-/**
- * this will be implemented on pera-swarm/obstacleController
- */
-
-/**
- * @param {JSON} data json config data for the arena
- */
-const createArenaFromJSON = (data) => {
-    if (Array.isArray(data)) {
-        data.forEach((element) => {
-            const { geometry } = element;
-            switch (geometry.type) {
-                case 'BoxGeometry':
-                    createWallFromJSON(element);
-                    break;
-                case 'CylinderGeometry':
-                    createCylinderFromJSON(element);
-                    break;
-                default:
-                    break;
-            }
-        });
-    }
-};
-
-const createWallFromJSON = (data) => {
-    console.log(data);
-};
-
-const createCylinderFromJSON = (data) => {
-    console.log(data);
-};
-// --------- End Obstacle Controller Helper Methods --------- //
-
 // width, height, orientation, originX, originY, debug = false
 // const obs = new WallObstacle(wallWidth, 20, wallOrietation, wallX, wallY, true);
 // const obs = new Wall(wallWidth, 20, wallOrietation, wallX, wallY, true);
