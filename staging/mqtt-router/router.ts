@@ -223,11 +223,7 @@ export class MQTTRouter {
         }
         try {
             msg = type === 'String' ? message.toString() : JSON.parse(message.toString());
-            // msg = message.toString();
-            // if(type != 'String'){
-            // console.log('translating to JSON');
-            // msg = JSON.parse(msg);
-            // return msg;
+            return msg;
         } catch (error) {
             console.error('Parse Error');
             return;
