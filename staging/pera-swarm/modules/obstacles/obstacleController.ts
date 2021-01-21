@@ -306,7 +306,7 @@ export class ObstacleController
         var { geometry, position, rotation } = data;
         var { width, height, depth } = geometry;
         var { x, y } = position;
-        var { z } = rotation;
+        var { y: z } = rotation;
         var i = 0;
         if (width === undefined) i += 1;
         if (height === undefined) i += 1;
