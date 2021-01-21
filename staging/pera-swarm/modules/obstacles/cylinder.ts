@@ -7,6 +7,15 @@ import {
 } from './obstacle';
 const { sqrt, pow, abs, round, cos, sin, atan2, max, asin } = require('mathjs');
 
+export type CylinderPropType = {
+    radius: number;
+    radiusTop?: number;
+    radiusBottom?: number;
+    height: number;
+    x: number;
+    y: number;
+};
+
 export abstract class AbstractCylinder extends AbstractObject {
     protected _radius: number;
 

@@ -7,6 +7,15 @@ import {
 } from './obstacle';
 const { abs, round, cos, sin, tan, atan2, sqrt, pow, distance } = require('mathjs');
 
+export type WallPropType = {
+    width: number;
+    height: number;
+    depth: number;
+    x: number;
+    y: number;
+    z: number;
+};
+
 export abstract class AbstractWall extends AbstractObject {
     protected _width: number;
     protected _depth: number;
