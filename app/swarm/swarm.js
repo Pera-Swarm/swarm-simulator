@@ -1,3 +1,4 @@
+
 const arenaConfig = require('../config/arena.config');
 
 // MQTT
@@ -5,6 +6,7 @@ const mqttClient = require('mqtt');
 const mqttConfig = require('../config/mqtt.config');
 
 const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router');
+const { obstacleController, Environment } = require('../../dist/pera-swarm');
 
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
@@ -13,13 +15,16 @@ const {
     localizationRoutes,
     sensorRoutes,
     robotRoutes,
-    communicationRoutes
+    obstacleRoutes
 } = require('./mqtt/');
+const { obstacleInitialPublishers } = require('./mqtt/');
 
 // TODO: make as a module
 const cron = require('../services/cron.js');
 
 const { Robots } = require('./robots/robots');
+
+const initialPublishers = [...obstacleInitialPublishers];
 
 /**
  * @class Swarm Representation
@@ -31,7 +36,7 @@ class Swarm {
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-        this.arenaConfig = arenaConfig;
+        // this.arenaConfig = arenaConfig;
         this.robots = new Robots(this, this.mqttPublish);
         this.mqttRouter = new MQTTRouter(
             mqtt,
@@ -40,6 +45,7 @@ class Swarm {
                     ...robotRoutes,
                     ...localizationRoutes,
                     ...sensorRoutes,
+                    ...obstacleRoutes,
                     //...communicationRoutes,
                     ...this.robots.defaultSubscriptionRoutes
                 ],
@@ -49,6 +55,11 @@ class Swarm {
             setup
         );
         this.mqttRouter.start();
+
+        // Initial Publishers according to swarm configuration
+        initialPublishers.forEach((publisher) => {
+            this.mqttPublish(publisher.topic, publisher.data);
+        });
 
         // Cron Jobs with defined intervals,
         // TODO: define intervals as global variables
@@ -64,7 +75,30 @@ class Swarm {
         // Make a publish to topic 'robot/msg/broadcast'
         this.broadcastCheckALive();
 
-        // TODO: build the environment using ObstacleBuilder
+        this.environment = new Environment(
+            obstacleController(),
+            './app/config/env.config.json'
+        );
+
+        this.environment.createObstacles((obstacles) => {
+            // console.log('Created Obstacles:', obstacles);
+            // Callback for publishing each obstacle into the environment
+            this.mqttPublish('/obstacles', obstacles, {
+                ...mqttConfig.options,
+                retain: false
+            });
+            // if (Array.isArray(obstacles)) {
+            //     obstacles.forEach((item) => {
+            //         this.mqttPublish('/obstacles', [item], {...mqttConfig.options, retain: true});
+            //     });
+            // }
+        });
+
+        // build the environment using ObstacleBuilder
+        // this.obstacleController = obstacleController();
+        // const c = new CylinderObstacle(1, radius, height, originX, originY, true);
+        // this.obstacleController.createCylinder(10, 20, 15, 15, true);
+        // this.obstacleController.c
     }
 
     prune = () => {
@@ -75,7 +109,6 @@ class Swarm {
 
     broadcastCheckALive = () => {
         // Publish with retain:true, qos:atLeastOnce
-        //console.log('Swarm_Check_a_Live');
         this.robots.broadcast('ID?', -1, { qos: 1, rap: true });
     };
 
@@ -87,14 +120,9 @@ class Swarm {
     mqttPublish = (topic, message, options = mqttConfig.mqttOptions) => {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
+        // this.mqttRouter.pushToPublishQueue(topic, message.toString());
+        publishToTopic(mqtt, topic, message.toString(), options);
 
-        // TODO: there is an scheduling issue in following
-        //this.mqttRouter.pushToPublishQueue(topic, message.toString());
-
-        publishToTopic(mqtt, topic, message.toString(), options, () => {
-            //console.log(`MQTT_Publish > ${message} to topic ${topic}`);
-            //if (callback !== undefined) callback();
-        });
     };
 }
 

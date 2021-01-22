@@ -1,6 +1,7 @@
 export * from './helpers/index';
 export * from './modules/communication/';
 export * from './modules/coordinate/';
+export * from './modules/environment';
 export * from './modules/localization/';
 export * from './modules/obstacles/';
 export * from './modules/robot/';

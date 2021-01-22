@@ -7,31 +7,37 @@ import {
 } from './obstacle';
 const { abs, round, cos, sin, tan, atan2, sqrt, pow, distance } = require('mathjs');
 
+export type WallPropType = {
+    width: number;
+    height: number;
+    depth: number;
+    x: number;
+    y: number;
+    z: number;
+};
+
 export abstract class AbstractWall extends AbstractObject {
     protected _width: number;
     protected _depth: number;
     protected _orientation: number;
     protected _theta: number;
-    protected _p1: ObjectCoordinate;
     protected _p2: ObjectCoordinate;
 
     constructor(
         width: number,
         height: number,
         orientation: number,
-        center: ObjectCoordinate,
+        position: ObjectCoordinate,
         depth: number = 5,
         debug: boolean
     ) {
-        super(height, center, debug);
+        super(height, position, debug);
         this._width = width;
         this._orientation = orientation;
         this._theta = (orientation / 360) * 2 * Math.PI;
-
-        this._p1 = center;
         this._p2 = {
-            x: this._p1.x + this._width * cos(this._theta),
-            y: this._p1.y + this._width * sin(this._theta)
+            x: this.position.x + this._width * cos(this._theta),
+            y: this.position.y + this._width * sin(this._theta)
         };
         this._depth = depth;
         this._type = 'Wall';
@@ -42,7 +48,7 @@ export abstract class AbstractWall extends AbstractObject {
      * Wall Object string representation
      */
     public toString = (): string => {
-        return `  ${this._type} Obstacle\n   width : ${this._width} height: ${this._height}\n   depth: ${this._depth} orientation: ${this._orientation}\n p1: { x: ${this._p1.x}, y: ${this._p1.y}} p2: { x: ${this._p2.x}, y: ${this._p2.y}}\n`;
+        return `  ${this._type} Obstacle\n   width : ${this._width} height: ${this._height}\n   depth: ${this._depth} orientation: ${this._orientation}\n p1: { x: ${this.position.x}, y: ${this.position.y}} p2: { x: ${this._p2.x}, y: ${this._p2.y}}\n`;
     };
 }
 
@@ -76,7 +82,7 @@ export class Wall extends AbstractWall {
 
     geometric = () => {
         return {
-            center1: this._p1,
+            position: this.position,
             center2: this._p2,
             width: this._width,
             height: this._height,
@@ -92,7 +98,11 @@ export class Wall extends AbstractWall {
             return undefined;
         } else {
             const headingLine = this._getLine(x, y, heading * (Math.PI / 180));
-            const obstacleLine = this._getLine(this._p1.x, this._p1.y, this._theta);
+            const obstacleLine = this._getLine(
+                this.position.x,
+                this.position.y,
+                this._theta
+            );
 
             console.log('headingLine:', headingLine);
             console.log('obstacleLine:', obstacleLine);
@@ -114,7 +124,7 @@ export class Wall extends AbstractWall {
         const from = { x: x, y: y };
 
         // Lets check the heading in between two center points
-        const pA1 = this._getAngle(from, this._p1);
+        const pA1 = this._getAngle(from, this.position);
         const pA2 = this._getAngle(from, this._p2);
 
         //console.log(`Calculated Angles: ${pA1}, ${pA2}`);
@@ -139,10 +149,7 @@ export class Wall extends AbstractWall {
                     type: this.materialType,
                     properties: this.appearance
                 },
-                position: {
-                    x: (this._p1.x + this._p2.x) / 2,
-                    y: (this._p1.y + this._p2.y) / 2
-                },
+                position: this.position,
                 rotation: {
                     x: 0,
                     y: this._orientation,

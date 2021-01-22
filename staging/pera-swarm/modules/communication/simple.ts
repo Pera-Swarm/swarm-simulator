@@ -18,8 +18,8 @@ export class SimpleCommunication extends Communication {
      * @param callback {Function} callback function
      */
     broadcast = (robotId: number, message: string, callback: Function) => {
-        if (robotId === undefined) throw new TypeError('robotId unspecified');
-        if (message === undefined) throw new TypeError('message unspecified');
+        if (robotId === undefined) console.error('robotId unspecified');
+        if (message === undefined) console.error('message unspecified');
 
         const allCoordinates = this._robots.getCoordinatesAll();
         const thisCoordinate = this._robots.getCoordinatesById(robotId);
