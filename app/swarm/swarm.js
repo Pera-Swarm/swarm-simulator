@@ -1,7 +1,9 @@
+
+const arenaConfig = require('../config/arena.config');
+
 // MQTT
 const mqttClient = require('mqtt');
 const mqttConfig = require('../config/mqtt.config');
-// const arenaConfig = require('../config/arena.config');
 
 const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router');
 const { obstacleController, Environment } = require('../../dist/pera-swarm');
@@ -61,11 +63,14 @@ class Swarm {
 
         // Cron Jobs with defined intervals,
         // TODO: define intervals as global variables
-        cron.begin(cron.secondsInterval(360), this.prune);
+        cron.begin(cron.secondsInterval(30), this.prune);
         cron.begin(cron.secondsInterval(30), this.broadcastCheckALive);
 
         // TODO: make a publish to topic '/localization/update'
         // More Info: https://pera-swarm.ce.pdn.ac.lk/docs/communication/mqtt/localization#localizationupdate
+        // Note: added it like this because of the urgent requirement.
+        // Better to move into a propper place later
+        this.mqttPublish('localization/update', '?');
 
         // Make a publish to topic 'robot/msg/broadcast'
         this.broadcastCheckALive();
@@ -97,7 +102,8 @@ class Swarm {
     }
 
     prune = () => {
-        console.log('Swarm_Prune');
+        //console.log('Swarm_Prune');
+        // Delete robots who are not active on last 5 mins (360 seconds)
         this.robots.prune(360); // TODO: define this as a global variable
     };
 
@@ -116,6 +122,7 @@ class Swarm {
         if (typeof message === 'object') message = JSON.stringify(message);
         // this.mqttRouter.pushToPublishQueue(topic, message.toString());
         publishToTopic(mqtt, topic, message.toString(), options);
+
     };
 }
 

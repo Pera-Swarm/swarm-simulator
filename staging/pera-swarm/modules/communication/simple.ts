@@ -24,6 +24,7 @@ export class SimpleCommunication extends Communication {
         const allCoordinates = this._robots.getCoordinatesAll();
         const thisCoordinate = this._robots.getCoordinatesById(robotId);
         var receivers = 0;
+        var receiveList = [];
 
         allCoordinates.forEach(
             (coordinate: CoordinateValueInt<number>, index?: number) => {
@@ -34,12 +35,20 @@ export class SimpleCommunication extends Communication {
                     if (withinRange) {
                         // within the distance range, so send the messaage
                         receivers++;
-                        if (this._debug) console.log(`robot #${coordinate.id}: pass`);
-                        this._mqttPublish(`/communication/${coordinate.id}`, message);
+                        receiveList.push(coordinate.id);
+                        //if (this._debug) console.log(`robot #${coordinate.id}: pass`);
+                        //this._mqttPublish(`/comm/in/${coordinate.id}`, message);
                     }
                 }
             }
         );
+
+        console.log(`robot ${robotId} sending to`, receiveList);
+        receiveList.forEach((id) => {
+            //console.log('sending to', id);
+            this._mqttPublish(`/comm/in/${id}`, message);
+        });
+
         if (callback != undefined) callback({ receivers: receivers });
     };
 
