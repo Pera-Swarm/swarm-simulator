@@ -1,16 +1,24 @@
-// const { Wall } = require('../dist/wall');
-// const { Cylinder } = require('../dist/cylinder');
-// const { WallObstacle, CylinderObstacle } = require('../app/modules/obstacles/');
-const { obstacleBuilder } = require('../dist/obstaclebuilder');
+const {
+    obstacleBuilder
+} = require('../dist/pera-swarm/modules/obstacles/obstacleBuilder');
 const {
     ObstacleController,
-    obstacleList,
     obstacleController
-} = require('../dist/obstacleController');
+} = require('../dist/pera-swarm/modules/obstacles/obstacleController');
+const fs = require('fs');
 
 const x = 0;
 const y = 0;
 const heading = 140;
+
+// width, height, orientation, originX, originY, debug = false
+// const obs = new WallObstacle(wallWidth, 20, wallOrietation, wallX, wallY, true);
+// const obs = new Wall(wallWidth, 20, wallOrietation, wallX, wallY, true);
+
+// var range = obs.isInRange(heading, x, y, 5);
+// var ans = obs.getDistance(heading, x, y);
+
+// console.log(range, ans);
 
 // For cylinder obstacle
 

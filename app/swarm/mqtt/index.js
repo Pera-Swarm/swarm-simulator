@@ -1,9 +1,15 @@
-const sensorRoutes = require('./route.sensors');
+const communicationRoutes = require('./route.communication');
 const localizationRoutes = require('./route.localization');
-const controlRoutes = require('./route.control');
+const obstacleRoutes = require('./route.obstacles');
+const { initialPublishers: obstacleInitialPublishers } = require('./route.obstacles');
+const robotRoutes = require('./route.robots');
+const sensorRoutes = require('./route.sensors');
 
 module.exports = {
-    sensorRoutes,
+    communicationRoutes,
     localizationRoutes,
-    controlRoutes
+    obstacleRoutes,
+    obstacleInitialPublishers,
+    robotRoutes,
+    sensorRoutes
 };

@@ -34,6 +34,21 @@ Production environment [TBD]
 npm start
 ```
 
+### Setup Staging environment
+
+You need to install typescript as a global npm package in order to use the staging versions of pera-swarm typescript libraries.
+
+```js
+npm install -g typescript
+```
+
+After that, you can use either one of following command line instructions to build the *./dist* folder
+
+```
+npm run dev:staging
+npm run compile:staging
+```
+
 ### Read More
 - [Sequelize](https://sequelize.org/master/index.html)
 - [Express](https://expressjs.com/)

@@ -1,6 +1,20 @@
 import { normalizeAngle } from 'pera-swarm/lib';
-import { AbstractObject, ObjectCoordinate, validateObjectCoordinate } from './obstacle';
+import {
+    AbstractObject,
+    ObjectCoordinate,
+    validateObjectCoordinate,
+    VisualizeType
+} from './obstacle';
 const { sqrt, pow, abs, round, cos, sin, atan2, max, asin } = require('mathjs');
+
+export type CylinderPropType = {
+    radius: number;
+    radiusTop?: number;
+    radiusBottom?: number;
+    height: number;
+    x: number;
+    y: number;
+};
 
 export abstract class AbstractCylinder extends AbstractObject {
     protected _radius: number;
@@ -21,7 +35,7 @@ export abstract class AbstractCylinder extends AbstractObject {
      * Cylinder Object string representation
      */
     public toString = (): string => {
-        return `  ${this._type} Obstacle\n   radius: ${this._radius} height: ${this._height}\n   center: { x: ${this._center.x}, y: ${this._center.y}}\n`;
+        return `  ${this._type} Obstacle\n   radius: ${this._radius} height: ${this._height}\n   position: { x: ${this._position.x}, y: ${this._position.y}}\n`;
     };
 }
 
@@ -42,7 +56,7 @@ export class Cylinder extends AbstractCylinder {
 
     geometric = () => {
         return {
-            center: this.center,
+            center: this.position,
             height: this.height,
             radius: this._radius
         };
@@ -57,7 +71,7 @@ export class Cylinder extends AbstractCylinder {
     getDistance = (heading: number, x: number, y: number) => {
         // Return
         const from = { x: x, y: y };
-        const dist = this._point2PointDistance(from, this.center);
+        const dist = this._point2PointDistance(from, this.position);
         return max(dist - this._radius, 0);
     };
 
@@ -66,10 +80,10 @@ export class Cylinder extends AbstractCylinder {
         const head = normalizeAngle(heading);
 
         // Angle from robot to obstacle
-        const angle = this._getAngle(from, this.center);
+        const angle = this._getAngle(from, this.position);
 
         // Distance from robot to obstacle center
-        const dist = this._point2PointDistance(from, this.center);
+        const dist = this._point2PointDistance(from, this.position);
 
         // Angle difference of the tangents of the cylinder from its center
         const deltaT = dist > 0 ? abs(asin(this._radius / dist) * (180 / Math.PI)) : 0;
@@ -96,7 +110,7 @@ export class Cylinder extends AbstractCylinder {
         return aCW <= aHeading && aHeading <= aCCW;
     };
 
-    visualize = () => {
+    visualize = (): VisualizeType[] => {
         return [
             {
                 id: this.id,
@@ -111,8 +125,8 @@ export class Cylinder extends AbstractCylinder {
                     properties: this.appearance
                 },
                 position: {
-                    x: this.center.x,
-                    y: this.center.y
+                    x: this.position.x,
+                    y: this.position.y
                 },
                 rotation: {
                     x: 0,

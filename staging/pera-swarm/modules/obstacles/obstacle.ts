@@ -35,7 +35,7 @@ export type VisualizeType = {
 export abstract class AbstractObject {
     protected _id: string;
     protected _height: number;
-    protected _center: ObjectCoordinate;
+    protected _position: ObjectCoordinate;
     protected _type: string;
     protected _geometryType: string;
     protected _color: string;
@@ -44,10 +44,10 @@ export abstract class AbstractObject {
     protected _created: Date;
     protected _updated: number;
 
-    constructor(height: number, center: ObjectCoordinate, debug: boolean = false) {
+    constructor(height: number, position: ObjectCoordinate, debug: boolean = false) {
         this._id = uuid();
         this._height = height;
-        this._center = center;
+        this._position = position;
         this._debug = debug;
         this._type = 'Object';
         this._geometryType = 'Geometry';
@@ -72,10 +72,10 @@ export abstract class AbstractObject {
     }
 
     /**
-     * get center coordinate
+     * get position coordinate
      */
-    get center(): ObjectCoordinate {
-        return this._center;
+    get position(): ObjectCoordinate {
+        return this._position;
     }
 
     /**
