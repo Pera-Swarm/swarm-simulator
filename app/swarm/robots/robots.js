@@ -1,47 +1,64 @@
 const {
-    Coordinate,
-    DistanceSensor,
     SimpleCommunication,
     DirectedCommunication
-} = require('pera-swarm');
+} = require('../../../dist/pera-swarm');
+
 const { Robot } = require('../robot/robot');
 
-// const { DistanceSensor } = require('../../modules/distanceSensor');
+// TODO: need to move this to pera-swarm library
+const { DistanceSensor } = require('../../modules/distanceSensor');
+
+const { NeoPixel } = require('../../modules/neopixel');
 
 // Class for representing the robots level functionality
-
 class Robots {
     /**
      * Robots constructor
      */
-    constructor(swarm) {
+    constructor(swarm, mqttPublish) {
         if (swarm === undefined) throw new TypeError('Swarm unspecified');
 
         this.robotList = {};
         this.size = 0;
         this.updated = Date.now();
         this.swarm = swarm;
+        this.mqttPublish = mqttPublish;
         this.debug = true;
 
         // Attach distance sensor with giving access to arenaConfig data and MQTT publish
-        this.distanceSensor = new DistanceSensor(swarm.arenaConfig, swarm.mqttPublish);
+        this.distanceSensor = new DistanceSensor(swarm.arenaConfig, this.mqttPublish);
 
         // Simple communication
         this.simpleCommunication = new SimpleCommunication(
             this,
-            swarm.mqttPublish,
-            100,
+            this.mqttPublish,
+            60,
             this.debug
         );
 
         // Directed communication
         this.directedCommunication = new DirectedCommunication(
             this,
-            swarm.mqttPublish,
-            100,
+            this.mqttPublish,
+            60,
             30,
             this.debug
         );
+
+        this.neopixel = new NeoPixel(this.mqttPublish);
+    }
+
+    /**
+     * method for obtaining default routes
+     */
+    get defaultSubscriptionRoutes() {
+        const commRoutes = [
+            ...this.simpleCommunication.defaultSubscriptions(),
+            ...this.directedCommunication.defaultSubscriptions(),
+            ...this.distanceSensor.defaultSubscriptions(),
+            ...this.neopixel.defaultSubscriptions()
+        ];
+        return commRoutes;
     }
 
     robotBuilder = (id, heading, x, y) => {
@@ -76,6 +93,30 @@ class Robots {
     };
 
     /**
+     * method for removing the robot by id
+     * @param {number} id robot id
+     * @param {function} callback a callback function
+     * @returns {boolean} true : if successful
+     * @returns false : if it fails
+     */
+    removeRobot = (id, callback) => {
+        if (id === undefined) throw new TypeError('id unspecified');
+
+        if (this.isExistsRobot(id)) {
+            // remove the key along with the value.
+            delete this.robotList[id];
+            this.size--;
+            this.updated = Date.now();
+            this.mqttPublish('robot/delete', { id });
+            if (callback !== undefined) callback(id);
+
+            console.log(`robot:deleted > ${id}`);
+            return true;
+        }
+        return false;
+    };
+
+    /**
      * method for getting the size of the robot robotList
      * @returns {number} the size of the robot instances : are in the list
      */
@@ -86,21 +127,24 @@ class Robots {
     /**
      * method for finding a robot exists in the robotList or not
      * @param {number} id robot id
-     * @returns {boolean} true : if it exists with the id
-     * @returns false : if a robot doesn't exist with the id
+     * @returns nothing
      */
 
     createIfNotExists = (id, callback) => {
         if (id === undefined) throw new TypeError('id unspecified');
-
         if (this.isExistsRobot(id) == false) {
             this.addRobot(id); // robot doesn't exists
         }
 
         if (callback !== undefined) callback();
-        return true;
+        return;
     };
 
+    /**
+     * method for finding a robot exists or not
+     * @param {number} id robot id
+     * @returns {boolean} true : if robot exists
+     */
     isExistsRobot = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
         return this.robotList[id] != undefined;
@@ -130,29 +174,6 @@ class Robots {
 
         var result = this.robotList[id];
         return result !== undefined ? result : -1;
-    };
-
-    /**
-     * method for removing the robot by id
-     * @param {number} id robot id
-     * @param {function} callback a callback function
-     * @returns {boolean} true : if successful
-     * @returns false : if it fails
-     */
-    removeRobot = (id, callback) => {
-        if (id === undefined) throw new TypeError('id unspecified');
-
-        if (this.isExistsRobot(id)) {
-            // remove the key along with the value.
-            delete this.robotList[id];
-            this.size--;
-            this.updated = Date.now();
-            this.swarm.mqttPublish('robot/delete', { id }, () => {
-                if (callback !== undefined) callback(id);
-            });
-            return true;
-        }
-        return false;
     };
 
     /**
@@ -205,8 +226,10 @@ class Robots {
         coordinates.forEach((item) => {
             const { id, x, y, heading } = item;
             if (this.isExistsRobot(id)) {
-                this.findRobotById(id).setCoordinates(heading, x, y);
+                //console.log(id, this.isExistsRobot(id));
+                this.findRobotById(id).setCoordinateValues(heading, x, y);
             } else {
+                //console.log('robot added', id);
                 this.addRobot(id, heading, x, y);
             }
             this.updated = Date.now();
@@ -233,21 +256,15 @@ class Robots {
         if (value === undefined) throw new TypeError('value unspecified');
 
         const msg = `${instType} ${value}`;
-        this.swarm.mqttPublish('robot/msg/broadcast', msg, options);
+        this.mqttPublish('robot/msg/broadcast', msg, options);
     };
 
     changeMode = (mode, options = {}) => {
         this.broadcast('MODE', value);
     };
-
-    // TODO: add swarm functionality here
-    // getSensorReadings
-    // stopRobot
-    // resetRobot
 }
 
 const initRobots = () => {
-    // TODO: Fix this, in testings
     return new Robots(this.swarm);
 };
 

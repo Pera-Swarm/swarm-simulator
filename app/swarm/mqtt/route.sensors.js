@@ -4,19 +4,22 @@
 const routes = [
     {
         topic: 'sensor/distance',
+        type: 'JSON',
         allowRetained: true,
         subscribe: true,
+        publish: false,
         handler: (msg, swarm) => {
-            //console.log('MQTT_Sensor:Distance_Handler: ', msg);
+            // Robot sends its own distance sensor readings to the simulator,
+            // as reply to the ‘{channal}/sensor/distance/{robotID}/?’ request
+            console.log('MQTT.Sensor: sensor/distance', msg);
 
             var robot = swarm.robots.findRobotById(msg.id);
             if (robot != -1) {
                 swarm.robots.distanceSensor.getReading(robot, (dist) => {
-                    console.log('MQTT_Sensor:Distance_Handler', dist);
+                    console.log('MQTT:Sensor:Distance_Handler', dist);
                 });
             } else {
                 // No robot found. Just echo the message, because this is a blocking call for the robot
-                // TODO: register the robot into system
 
                 console.log('MQTT_Sensor:Distance_Handler', 'Robot not found');
                 //console.log(swarm.robots.robotList);
@@ -25,21 +28,39 @@ const routes = [
     },
     {
         topic: 'sensor/color',
+        type: 'JSON',
         allowRetained: true,
         subscribe: true,
+        publish: false,
         handler: (msg, swarm) => {
-            console.log('MQTT_Sensor:Color_Handler: ', msg);
+            // Robot sends its own sensor readings to the server,
+            // as a reply to the ‘{channal}/sensor/color/{robotID}/?’ request
+            console.log('MQTT.Sensor: sensor/color', msg);
 
             var robot = swarm.robots.findRobotById(msg.id);
-
             if (robot != undefined) {
-                //var returnValue = robot.sensors.distance.syncReading(msg.distance);
+                // TODO: implement return value
+                const returnValue = 10; //robot.sensors.distance.syncReading(msg.distance);
                 swarm.mqttPublish('sensor/color/' + robot.id, returnValue);
             } else {
                 // No robot found. Just echo the message, because this is a blocking call for the robot
-                // TODO: register the robot into system
                 swarm.mqttPublish('sensor/color/' + msg.id, msg.distance);
             }
+        }
+    },
+    {
+        topic: 'sensor/proximity',
+        type: 'JSON',
+        allowRetained: true,
+        subscribe: true,
+        publish: false,
+        handler: (msg, swarm) => {
+            // Robot sends its own sensor readings to the server,
+            // as a reply to the ‘{channal}/sensor/proximity/{robotID}/?’ request
+            console.log('MQTT.Sensor: sensor/proximity', msg);
+
+            // No actions need to be here,
+            // since there no any physical sensor for now.
         }
     }
 ];

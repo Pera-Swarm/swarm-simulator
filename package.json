@@ -26,7 +26,7 @@
     "author": "Pera-Swarm",
     "license": "MIT",
     "dependencies": {
-        "@pera-swarm/mqtt-router": "^1.1.4",
+        "@pera-swarm/mqtt-router": "^1.2.0",
         "@pera-swarm/types": "^1.0.1",
         "axios": "^0.21.1",
         "body-parser": "^1.19.0",
@@ -41,9 +41,12 @@
         "node-cron": "^2.0.3",
         "pera-swarm": "^1.2.3",
         "prettier": "^2.1.2",
+        "queue": "^6.0.2",
         "sequelize": "^5.21.2"
     },
     "devDependencies": {
+        "@types/mathjs": "^6.0.9",
+        "@types/node-cron": "^2.0.3",
         "@types/uuid": "^8.3.0",
         "nodemon": "^2.0.4"
     },

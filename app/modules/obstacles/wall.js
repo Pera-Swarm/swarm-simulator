@@ -142,18 +142,18 @@ class WallObstacle {
 
     _getLine = (x, y, angle) => {
         var a, b, c;
-        if ((angle == 90 * (Math.PI / 180)) || (angle == -90 * (Math.PI / 180))) {
+        if (angle == 90 * (Math.PI / 180) || angle == -90 * (Math.PI / 180)) {
             a = 0;
             b = -1 * sin(angle);
-            c = (sin(angle) * x) - (cos(angle) * y);
-        } else if ((angle == 0) || (angle == 1 * Math.PI)) {
+            c = sin(angle) * x - cos(angle) * y;
+        } else if (angle == 0 || angle == 1 * Math.PI) {
             a = cos(angle);
             b = 0;
-            c = (sin(angle) * x) - (cos(angle) * y);
+            c = sin(angle) * x - cos(angle) * y;
         } else {
             a = cos(angle);
             b = -1 * sin(angle);
-            c = (sin(angle) * x) - (cos(angle) * y);
+            c = sin(angle) * x - cos(angle) * y;
         }
         return { a, b, c };
     };
