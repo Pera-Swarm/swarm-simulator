@@ -114,8 +114,8 @@ class Swarm {
     mqttPublish = (topic, message, options = mqttConfig.mqttOptions) => {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
-        // this.mqttRouter.pushToPublishQueue(topic, message.toString());
-        publishToTopic(mqtt, topic, message.toString(), options);
+        this.mqttRouter.pushToPublishQueue(topic, message.toString(), options);
+        // publishToTopic(mqtt, topic, message.toString(), options);
     };
 }
 
