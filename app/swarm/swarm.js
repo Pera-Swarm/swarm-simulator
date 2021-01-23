@@ -1,18 +1,18 @@
-const arenaConfig = require('../config/arena.config');
-
-// MQTT
-const mqttClient = require('mqtt');
-const mqttConfig = require('../config/mqtt.config');
-
-const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router');
+// Main pera-swarm library components
 const {
     obstacleController,
     Environment,
     DEFAULT_ROBOT_ALIVE_INTERVAL
 } = require('../../dist/pera-swarm');
 
+// MQTT
+const mqttClient = require('mqtt');
+const mqttConfig = require('../config/mqtt.config');
+const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router');
+
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
+
 // MQTT routes
 const {
     localizationRoutes,
@@ -20,11 +20,14 @@ const {
     robotRoutes,
     obstacleRoutes
 } = require('./mqtt/');
+
+
+
 const { obstacleInitialPublishers } = require('./mqtt/');
 
-const { schedulerService } = require('../services/cron.js');
-
+// Customized components
 const { Robots } = require('./robots/robots');
+const { schedulerService } = require('../services/cron.js');
 
 const initialPublishers = [...obstacleInitialPublishers];
 
@@ -38,7 +41,6 @@ class Swarm {
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-        // this.arenaConfig = arenaConfig;
         this.robots = new Robots(this, this.mqttPublish);
         this.mqttRouter = new MQTTRouter(
             mqtt,
@@ -63,8 +65,7 @@ class Swarm {
             this.mqttPublish(publisher.topic, publisher.data);
         });
 
-        // Cron Jobs with defined intervals,
-        // TODO: define intervals as global variables
+        // Cron Jobs with defined intervals
         schedulerService(this.prune);
         schedulerService(this.broadcastCheckALive);
 
@@ -89,12 +90,6 @@ class Swarm {
                 retain: false
             });
         });
-
-        // build the environment using ObstacleBuilder
-        // this.obstacleController = obstacleController();
-        // const c = new CylinderObstacle(1, radius, height, originX, originY, true);
-        // this.obstacleController.createCylinder(10, 20, 15, 15, true);
-        // this.obstacleController.c
     }
 
     prune = () => {
