@@ -1,5 +1,19 @@
 [
     {
+        "id": "79337c9b-df49-4592-a456-911c9251a266",
+        "geometry": {
+            "type": "CylinderGeometry",
+            "radius": 10,
+            "height": 20
+        },
+        "material": {
+            "type": "MeshStandardMaterial",
+            "properties": { "color": "#505050" }
+        },
+        "position": { "x": 15, "y": 15 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+    },
+    {
         "id": "a4105cc8-2223-4ee2-9edd-4de917ab1e85",
         "geometry": {
             "type": "BoxGeometry",
