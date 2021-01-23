@@ -24,7 +24,7 @@ class NeoPixel {
                 publish: false,
                 handler: (msg, swarm) => {
                     // Robots can info the server about neopixel strip through this topic
-                    console.log('MQTT.Neopixel: output/neopixel', msg);
+                    // console.log('MQTT.Neopixel: output/neopixel', msg);
 
                     const { id, R, G, B } = msg;
                     const robot = swarm.robots.findRobotById(id);
