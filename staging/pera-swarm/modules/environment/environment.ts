@@ -86,7 +86,7 @@ export class Environment extends AbstractEnvironment {
             console.log('Config_Found!');
             // Validating configuration
             if (validateEnvConfig(config) === true) {
-                console.log('Config validated!', config);
+                console.log('Config validated!');
                 return config;
             } else {
                 throw new Error('Invalid config');
@@ -115,7 +115,6 @@ export class Environment extends AbstractEnvironment {
      */
     createObstacles = (callback: Function) => {
         if (validateEnvConfig(this.config) === true) {
-            // TODO: create obstacles in the env
             this.obstacleController.createObstaclesJSON(this.config?.obstacles);
             if (callback !== undefined)
                 callback(this._obstacleController.visualizeObstacles());

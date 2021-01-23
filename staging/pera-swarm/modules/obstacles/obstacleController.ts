@@ -92,7 +92,6 @@ export class ObstacleController
      * @param {VisualizeType} data obstacle JSON data
      */
     createWallJSON = (data: VisualizeType) => {
-        console.log('Create Wall Obstacle', data);
         const decodedProps = this._decodeWallPropsFromJSON(data);
         if (decodedProps !== -1) {
             const { width, height, x, y, z, depth } = decodedProps;
@@ -106,7 +105,6 @@ export class ObstacleController
      * @param {VisualizeType} data obstacle JSON data
      */
     createCylinderJSON = (data: VisualizeType) => {
-        console.log('Create Cylinder Obstacle', data);
         const decodedProps = this._decodeCylinderPropsFromJSON(data);
         if (decodedProps !== -1) {
             const { radius, height, x, y } = decodedProps;
