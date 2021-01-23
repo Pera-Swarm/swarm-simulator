@@ -5,7 +5,11 @@ const mqttClient = require('mqtt');
 const mqttConfig = require('../config/mqtt.config');
 
 const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router');
-const { obstacleController, Environment } = require('../../dist/pera-swarm');
+const {
+    obstacleController,
+    Environment,
+    DEFAULT_ROBOT_ALIVE_INTERVAL
+} = require('../../dist/pera-swarm');
 
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
@@ -94,9 +98,9 @@ class Swarm {
     }
 
     prune = () => {
-        // console.log('Swarm_Prune');
+        console.log('Swarm_Prune');
         // Delete robots who are not active on last 5 mins (360 seconds)
-        this.robots.prune(360); // TODO: define this as a global variable
+        this.robots.prune(DEFAULT_ROBOT_ALIVE_INTERVAL);
     };
 
     broadcastCheckALive = () => {
@@ -113,8 +117,8 @@ class Swarm {
     mqttPublish = (topic, message, options = mqttConfig.mqttOptions) => {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
-        // this.mqttRouter.pushToPublishQueue(topic, message.toString());
-        publishToTopic(mqtt, topic, message.toString(), options);
+        this.mqttRouter.pushToPublishQueue(topic, message.toString());
+        // publishToTopic(mqtt, topic, message.toString(), options);
     };
 }
 

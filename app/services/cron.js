@@ -1,4 +1,8 @@
 var cron = require('node-cron');
+const {
+    DEFAULT_SWARM_PRUNE_INTERVAL,
+    DEFAULT_SWARM_PRUNE_INTERVAL_EXTENDED
+} = require('../../dist/pera-swarm');
 
 // Scheduler service class
 class Scheduler {
@@ -48,8 +52,8 @@ const minutesInterval = (freq) => {
 };
 
 // Service level interval declaration
-const THIRTY_SECONDS = secondsInterval(30);
-const SIXTY_SECONDS = secondsInterval(60);
+const THIRTY_SECONDS = secondsInterval(DEFAULT_SWARM_PRUNE_INTERVAL);
+const SIXTY_SECONDS = secondsInterval(DEFAULT_SWARM_PRUNE_INTERVAL_EXTENDED);
 
 module.exports.Scheduler = Scheduler;
 module.exports.schedulerService = schedulerService;
