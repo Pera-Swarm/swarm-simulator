@@ -18,8 +18,7 @@ const {
 } = require('./mqtt/');
 const { obstacleInitialPublishers } = require('./mqtt/');
 
-// TODO: make as a module
-const cron = require('../services/cron.js');
+const { schedulerService } = require('../services/cron.js');
 
 const { Robots } = require('./robots/robots');
 
@@ -62,8 +61,8 @@ class Swarm {
 
         // Cron Jobs with defined intervals,
         // TODO: define intervals as global variables
-        cron.begin(cron.secondsInterval(30), this.prune);
-        cron.begin(cron.secondsInterval(30), this.broadcastCheckALive);
+        schedulerService(this.prune);
+        schedulerService(this.broadcastCheckALive);
 
         // TODO: make a publish to topic '/localization/update'
         // More Info: https://pera-swarm.ce.pdn.ac.lk/docs/communication/mqtt/localization#localizationupdate
@@ -80,17 +79,11 @@ class Swarm {
         );
 
         this.environment.createObstacles((obstacles) => {
-            // console.log('Created Obstacles:', obstacles);
             // Callback for publishing each obstacle into the environment
             this.mqttPublish('/obstacles', obstacles, {
                 ...mqttConfig.options,
                 retain: false
             });
-            // if (Array.isArray(obstacles)) {
-            //     obstacles.forEach((item) => {
-            //         this.mqttPublish('/obstacles', [item], {...mqttConfig.options, retain: true});
-            //     });
-            // }
         });
 
         // build the environment using ObstacleBuilder
@@ -101,12 +94,13 @@ class Swarm {
     }
 
     prune = () => {
-        //console.log('Swarm_Prune');
+        // console.log('Swarm_Prune');
         // Delete robots who are not active on last 5 mins (360 seconds)
         this.robots.prune(360); // TODO: define this as a global variable
     };
 
     broadcastCheckALive = () => {
+        // console.log('Robot_ID_Broadcast');
         // Publish with retain:true, qos:atLeastOnce
         this.robots.broadcast('ID?', -1, { qos: 1, rap: true });
     };
