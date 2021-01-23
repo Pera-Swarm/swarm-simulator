@@ -21,8 +21,6 @@ const {
     obstacleRoutes
 } = require('./mqtt/');
 
-
-
 const { obstacleInitialPublishers } = require('./mqtt/');
 
 // Customized components

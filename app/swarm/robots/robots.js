@@ -5,10 +5,7 @@ const {
 
 const { Robot } = require('../robot/robot');
 
-// TODO: need to move this to pera-swarm library
-const { DistanceSensor } = require('../../modules/distanceSensor');
-
-const { NeoPixel } = require('../../modules/neopixel');
+const { CentralDistanceSensorModule, NeoPixel } = require('../modules/virtual-sensors/');
 
 // Class for representing the robots level functionality
 class Robots {
@@ -26,7 +23,10 @@ class Robots {
         this.debug = true;
 
         // Attach distance sensor with giving access to arenaConfig data and MQTT publish
-        this.distanceSensor = new DistanceSensor(swarm.arenaConfig, this.mqttPublish);
+        this.distanceSensor = new CentralDistanceSensorModule(
+            swarm.arenaConfig,
+            this.mqttPublish
+        );
 
         // Simple communication
         this.simpleCommunication = new SimpleCommunication(
