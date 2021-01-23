@@ -1,4 +1,3 @@
-
 const arenaConfig = require('../config/arena.config');
 
 // MQTT
