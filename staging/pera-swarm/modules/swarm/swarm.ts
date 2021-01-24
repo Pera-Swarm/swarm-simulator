@@ -1,5 +1,4 @@
-import { SimpleLocalizationSystem } from '../..';
-import { LocalizationSystem } from '../localization';
+import { SimpleLocalizationSystem, LocalizationSystem } from '../';
 import { AbstractRobots, Robots, RobotListType } from '../robots';
 
 /**

@@ -1,4 +1,4 @@
-import { VRobot as Robot, Coordinate } from '../../';
+import { VRobot as Robot, Coordinate } from '../';
 import { CoordinateValueInt } from '../coordinate';
 
 export type RobotListType = {
