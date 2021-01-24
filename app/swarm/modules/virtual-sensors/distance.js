@@ -10,7 +10,7 @@ class CentralDistanceSensorModule extends VServerDistanceSensor {
         const { x, y, heading } = robot.getCoordinates();
         robot.updateHeartbeat();
         console.log(x, y, heading);
-        var dist = round(this._getBorderDistance(x, y, heading) * 10); // return in mm
+        let dist = round(this._getBorderDistance(x, y, heading) * 10); // return in mm
 
         this.publish(`sensor/distance/${robot.id}`, dist);
         this.setReading(robot, dist);

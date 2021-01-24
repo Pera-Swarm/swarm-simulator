@@ -37,7 +37,7 @@ export class VServerDistanceSensor extends DistanceSensor {
         const { x, y, heading } = robot.coordinates;
         robot.updateHeartbeat();
         console.log(x, y, heading);
-        var dist = round(this._getBorderDistance(x, y, heading) * 10) / 10;
+        let dist = round(this._getBorderDistance(x, y, heading) * 10) / 10;
         this.publish(dist, suffix);
         this.setReading(dist);
         if (callback != undefined) callback(dist);
@@ -64,18 +64,18 @@ export class VServerDistanceSensor extends DistanceSensor {
     _getBorderDistance = (x: number, y: number, heading: number) => {
         //console.log( this._arena);
         const { xMin, xMax, yMin, yMax } = this._arena;
-        var normalizedHeading: number = normalizeAngle(heading);
+        let normalizedHeading: number = normalizeAngle(heading);
 
-        var p1 = { x: xMax, y: yMin }; // lower right
-        var p2 = { x: xMax, y: yMax }; // upper right
-        var p3 = { x: xMin, y: yMin }; // lower left
-        var p4 = { x: xMin, y: yMax }; // upper right
+        let p1 = { x: xMax, y: yMin }; // lower right
+        let p2 = { x: xMax, y: yMax }; // upper right
+        let p3 = { x: xMin, y: yMin }; // lower left
+        let p4 = { x: xMin, y: yMax }; // upper right
 
         // x and y interchanged due to coordinate system transform ???
-        var angle1 = (-1 * Math.atan2(p1.y - y, p1.x - x) * 180) / Math.PI;
-        var angle2 = (-1 * Math.atan2(p2.y - y, p2.x - x) * 180) / Math.PI;
-        var angle3 = (-1 * Math.atan2(p3.y - y, p3.x - x) * 180) / Math.PI;
-        var angle4 = (-1 * Math.atan2(p4.y - y, p4.x - x) * 180) / Math.PI;
+        let angle1 = (-1 * Math.atan2(p1.y - y, p1.x - x) * 180) / Math.PI;
+        let angle2 = (-1 * Math.atan2(p2.y - y, p2.x - x) * 180) / Math.PI;
+        let angle3 = (-1 * Math.atan2(p3.y - y, p3.x - x) * 180) / Math.PI;
+        let angle4 = (-1 * Math.atan2(p4.y - y, p4.x - x) * 180) / Math.PI;
 
         //console.log(`Pos x:${x} y:${y} Heading:${heading}`);
         //console.log('Ang:',angle1, angle2, angle3, angle4);

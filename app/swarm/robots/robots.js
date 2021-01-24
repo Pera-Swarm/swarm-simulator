@@ -172,7 +172,7 @@ class Robots {
     findRobotById = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
-        var result = this.robotList[id];
+        let result = this.robotList[id];
         return result !== undefined ? result : -1;
     };
 
@@ -209,7 +209,7 @@ class Robots {
      * @returns {Coordinate[]} current robot coordinates : that are existing in the list
      */
     getCoordinatesAll = () => {
-        var result = [];
+        let result = [];
         for (const key in this.robotList) {
             result.push(this.robotList[key].getCoordinates());
         }
@@ -244,7 +244,7 @@ class Robots {
     prune = (interval, callback) => {
         if (interval === undefined) throw new TypeError('interval unspecified');
 
-        for (var id in this.robotList) {
+        for (let id in this.robotList) {
             if (this.isAliveRobot(id, interval) == false) {
                 this.removeRobot(id, callback);
             }

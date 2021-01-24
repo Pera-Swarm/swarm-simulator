@@ -10,7 +10,7 @@ const routes = [
         publish: false,
         handler: (msg, swarm) => {
             // Robot will call this method to get it's own localization values; x,y,heading
-            console.log('MQTT.Localization: /localization', msg);
+            // console.log('MQTT.Localization: /localization', msg);
 
             const { id, x, y, heading } = msg;
             const robotCoordinateString = swarm.robots.getCoordinateStringById(id);
@@ -38,7 +38,7 @@ const routes = [
         handler: (msg, swarm) => {
             // This will be called by Localization System and the virtual robots,
             // to inform the updates on their coordinates
-            console.log('MQTT.Localization: /localization/info ', msg);
+            // console.log('MQTT.Localization: /localization/info ', msg);
 
             // Update robot coordinates (& create, if not exists) using received list of coordinates
             swarm.robots.updateCoordinates(msg);
@@ -52,8 +52,7 @@ const routes = [
         publish: true,
         handler: (msg, swarm) => {
             // This will request coordinate updates from the Localization System, and virtual robots
-            console.log('MQTT.Localization: /localization/update', msg);
-
+            // console.log('MQTT.Localization: /localization/update', msg);
             // No actions need to be here, just for representation
         }
     },
@@ -66,9 +65,9 @@ const routes = [
         publish: false,
         handler: (msg, swarm) => {
             // This will print all available localization detail into topic 'localization/info'
-            console.log('MQTT.Localization: localization/?', msg);
+            // console.log('MQTT.Localization: localization/?', msg);
 
-            var coordinates = JSON.stringify(swarm.robots.getCoordinatesAll());
+            let coordinates = JSON.stringify(swarm.robots.getCoordinatesAll());
             swarm.mqttPublish('localization/info', coordinates);
         }
     }

@@ -176,9 +176,9 @@ export class ObstacleController
      */
     isObstacleThere = (heading: number, x: number, y: number) => {
         // TODO: @luk3Sky please review this
-        var found = false;
+        let found = false;
 
-        for (var i = 0; i < this._list.length; i++) {
+        for (let i = 0; i < this._list.length; i++) {
             found = this._list[i].isInRange(heading, x, y);
             //console.log(found);
             if (found == true) return true;
@@ -195,9 +195,9 @@ export class ObstacleController
      */
     getDistance = (heading: number, x: number, y: number) => {
         // TODO: @luk3Sky please review this
-        var minDist = Infinity;
+        let minDist = Infinity;
 
-        for (var i = 0; i < this._list.length; i++) {
+        for (let i = 0; i < this._list.length; i++) {
             const found = this._list[i].isInRange(heading, x, y);
             //console.log(found);
             if (found == true) {
@@ -285,7 +285,7 @@ export class ObstacleController
      * @returns {any} ObstacleAPI defined Objects
      */
     visualizeObstacles = (): VisualizeType[] => {
-        var visualizeList: VisualizeType[] = [];
+        let visualizeList: VisualizeType[] = [];
         this._list.forEach((item: AbstractObject) => {
             // one obstacle object can have multiple geometrics.
             item.visualize().forEach((itemChild: VisualizeType) => {
@@ -301,11 +301,11 @@ export class ObstacleController
      * @param { WallPropType | -1} data wall JSON data
      */
     private _decodeWallPropsFromJSON = (data: VisualizeType): WallPropType | -1 => {
-        var { geometry, position, rotation } = data;
-        var { width, height, depth } = geometry;
-        var { x, y } = position;
-        var { y: z } = rotation;
-        var i = 0;
+        let { geometry, position, rotation } = data;
+        let { width, height, depth } = geometry;
+        let { x, y } = position;
+        let { y: z } = rotation;
+        let i = 0;
         if (width === undefined) i += 1;
         if (height === undefined) i += 1;
         if (depth === undefined) i += 1;
@@ -333,11 +333,11 @@ export class ObstacleController
     private _decodeCylinderPropsFromJSON = (
         data: VisualizeType
     ): CylinderPropType | -1 => {
-        var { geometry, position, rotation } = data;
-        var { radius, radiusTop, radiusBottom, height } = geometry;
-        var { x, y } = position;
-        // var { z } = rotation;
-        var i = 0;
+        let { geometry, position, rotation } = data;
+        let { radius, radiusTop, radiusBottom, height } = geometry;
+        let { x, y } = position;
+        // let { z } = rotation;
+        let i = 0;
         if (radiusTop === undefined && radiusBottom === undefined && radius === undefined)
             i += 1;
         if (height === undefined) i += 1;

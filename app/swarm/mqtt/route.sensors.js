@@ -13,7 +13,7 @@ const routes = [
             // as reply to the ‘{channal}/sensor/distance/{robotID}/?’ request
             console.log('MQTT.Sensor: sensor/distance', msg);
 
-            var robot = swarm.robots.findRobotById(msg.id);
+            let robot = swarm.robots.findRobotById(msg.id);
             if (robot != -1) {
                 swarm.robots.distanceSensor.getReading(robot, (dist) => {
                     console.log('MQTT:Sensor:Distance_Handler', dist);
@@ -37,7 +37,7 @@ const routes = [
             // as a reply to the ‘{channal}/sensor/color/{robotID}/?’ request
             console.log('MQTT.Sensor: sensor/color', msg);
 
-            var robot = swarm.robots.findRobotById(msg.id);
+            let robot = swarm.robots.findRobotById(msg.id);
             if (robot != undefined) {
                 // TODO: implement return value
                 const returnValue = 10; //robot.sensors.distance.syncReading(msg.distance);

@@ -173,7 +173,7 @@ export class Wall extends AbstractWall {
     // angle: in degrees
     _angleDifference = (heading: number, angle: number) => {
         // Get the absolute difference between heading and target angle
-        var difference = (angle - heading) % 360;
+        let difference = (angle - heading) % 360;
         if (difference <= -180) difference += 360;
         if (difference > 180) difference -= 360;
 
@@ -182,7 +182,7 @@ export class Wall extends AbstractWall {
 
     // angle: radians
     _getLine = (x: number, y: number, angle: number) => {
-        var a, b, c;
+        let a, b, c;
 
         if (angle == 90 * (Math.PI / 180) || angle == -90 * (Math.PI / 180)) {
             // line which parallel to y axis

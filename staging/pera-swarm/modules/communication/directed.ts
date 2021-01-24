@@ -33,7 +33,7 @@ export class DirectedCommunication extends Communication {
 
         const allCoordinates = this._robots.getCoordinatesAll();
         const thisCoordinate = this._robots.getCoordinatesById(Number(robotId));
-        var receivers = 0;
+        let receivers = 0;
 
         allCoordinates.forEach(
             (coordinate: CoordinateValueInt<number>, index: number) => {
@@ -96,7 +96,7 @@ export class DirectedCommunication extends Communication {
             console.error('Angle unspecified');
             return false;
         }
-        var difference = (angle - heading) % 360;
+        let difference = (angle - heading) % 360;
         if (difference <= -180) difference += 360;
         if (difference > 180) difference -= 360;
 

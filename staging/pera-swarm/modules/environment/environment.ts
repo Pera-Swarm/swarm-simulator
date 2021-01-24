@@ -78,7 +78,7 @@ export class Environment extends AbstractEnvironment {
      */
     readConfig = (file: string): EnvironmentConfig | undefined => {
         // Read config.json file
-        var config: EnvironmentConfig;
+        let config: EnvironmentConfig;
         try {
             const jsonString = fs.readFileSync(file);
             // Converting to JSON
@@ -141,8 +141,8 @@ export const validateEnvConfig = (
         console.error('Invalid config!');
         return -1;
     }
-    var validity: boolean | -1;
-    var i: number;
+    let validity: boolean | -1;
+    let i: number;
     validity = -1;
     i = 0;
     if (Object.prototype.hasOwnProperty.call(config, 'arena')) {

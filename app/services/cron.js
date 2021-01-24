@@ -1,4 +1,4 @@
-var cron = require('node-cron');
+let cron = require('node-cron');
 const {
     DEFAULT_SWARM_PRUNE_INTERVAL,
     DEFAULT_SWARM_PRUNE_INTERVAL_EXTENDED

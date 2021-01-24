@@ -183,8 +183,8 @@ export abstract class AbstractObject {
 export function validateObjectCoordinate<TId>(
     coordinate: ObjectCoordinate
 ): boolean | -1 {
-    var validity: boolean | -1;
-    var i: number;
+    let validity: boolean | -1;
+    let i: number;
     validity = -1;
     i = 0;
     if (Object.prototype.hasOwnProperty.call(coordinate, 'x')) {

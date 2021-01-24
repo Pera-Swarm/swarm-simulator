@@ -12,7 +12,7 @@ const routes = [
             // Heartbeat signal from the robots to server
             // console.log('MQTT.Robot: robot/live', msg);
 
-            var robot = swarm.robots.findRobotById(msg.id);
+            let robot = swarm.robots.findRobotById(msg.id);
             if (robot !== -1) {
                 const heartbeat = robot.updateHeartbeat();
                 //console.log('Heatbeat of the robot', msg, 'is updated to', heartbeat);

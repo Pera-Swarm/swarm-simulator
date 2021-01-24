@@ -169,7 +169,7 @@ export class Robots extends AbstractRobots<number> {
      */
     findRobotById = (id: number): Robot | -1 => {
         if (id === undefined) throw new TypeError('id unspecified');
-        var result = this._robotList[id];
+        let result = this._robotList[id];
         return result !== undefined ? result : -1;
     };
 
@@ -232,7 +232,7 @@ export class Robots extends AbstractRobots<number> {
      * @returns {Coordinate[]} current robot coordinates : that are existing in the list
      */
     getCoordinatesAll = (): CoordinateValueInt<number>[] => {
-        var result = [];
+        let result = [];
         for (const key in this._robotList) {
             const robot = this.findRobotById(Number(key));
             if (robot !== -1) {

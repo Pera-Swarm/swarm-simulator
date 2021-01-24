@@ -26,7 +26,7 @@ export const wrapper = (routes: Route[], property: any) => {
  */
 export const resolveChannelTopic = (topic: string) => {
     const mergedTopic = channel + topic;
-    var result: string;
+    let result: string;
     if (typeof topic !== 'string') {
         console.error('Invalid topic');
         return channel;
