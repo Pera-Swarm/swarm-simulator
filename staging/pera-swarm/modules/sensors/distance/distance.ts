@@ -16,10 +16,9 @@ P3  L2  P4
 Axises: ↑ Y, → X
 ------------------------------------------------------ */
 
-export class DistanceSensorModule extends DistanceSensor {
+export class VServerDistanceSensor extends DistanceSensor {
     protected _arena: any;
     protected _mqttClient: MqttClient;
-    protected _publishTopic: string;
 
     constructor(
         id: number,
@@ -39,11 +38,20 @@ export class DistanceSensorModule extends DistanceSensor {
         robot.updateHeartbeat();
         console.log(x, y, heading);
         var dist = round(this._getBorderDistance(x, y, heading) * 10) / 10;
-        if (this._publishTopic !== '') {
-            this._mqttClient.publish(`${this._publishTopic}/${suffix}`, String(dist));
-        }
+        this.publish(dist, suffix);
         this.setReading(dist);
         if (callback != undefined) callback(dist);
+    };
+
+    /**
+     * method for publishing the sensor readings
+     * @param {number} value message value
+     * @param {string} suffix an optional mqtt topic suffix
+     */
+    publish = (value: number, suffix: string = '') => {
+        if (this.publishTopic !== '') {
+            this._mqttClient.publish(`${this.publishTopic}/${suffix}`, String(value));
+        }
     };
 
     viewReading = (robot: { getData: (arg0: string) => any } | undefined) => {
@@ -53,7 +61,6 @@ export class DistanceSensorModule extends DistanceSensor {
     };
 
     // Internal use only -------------------------------------------------------
-
     _getBorderDistance = (x: number, y: number, heading: number) => {
         //console.log( this._arena);
         const { xMin, xMax, yMin, yMax } = this._arena;
@@ -95,7 +102,6 @@ export class DistanceSensorModule extends DistanceSensor {
                 return this._getLineDistance(x, y, normalizedHeading, 3);
             }
         }
-
         return 0;
     };
 

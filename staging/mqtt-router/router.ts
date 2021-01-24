@@ -119,7 +119,7 @@ export class MQTTRouter {
             console.log('MQTT_Connecting...\n');
             this.setup();
             this.handleRouteSubscriptions();
-            this._publishQueue.begin();
+            this._publishQueue.start();
             console.log(`MQTT_Router: Connected to channel [${channel}]\n`);
         });
 
