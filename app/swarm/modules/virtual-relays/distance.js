@@ -1,7 +1,19 @@
 const { abs, round, cos, sin } = require('mathjs');
-const { VServerDistanceSensor } = require('../../../../dist/pera-swarm');
+const { VirtualDistanceRelayModule } = require('../../../../dist/pera-swarm');
 
-class CentralDistanceSensorModule extends VServerDistanceSensor {
+/* ------------------------------------------------------
+Arena coordinate system (top view)
+
+P1   L4  P2
+┍━━━┑
+L3 ┃   ┃ L1
+┕━━━┛
+P3  L2  P4
+
+Axises: ↑ Y, → X
+------------------------------------------------------ */
+
+class DistanceRelayModule extends VirtualDistanceRelayModule {
     constructor(arena, mqttPublish) {
         super(null, arena, mqttPublish);
     }
@@ -43,4 +55,4 @@ class CentralDistanceSensorModule extends VServerDistanceSensor {
     };
 }
 
-module.exports = { CentralDistanceSensorModule };
+module.exports = { DistanceRelayModule };

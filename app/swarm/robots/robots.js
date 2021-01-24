@@ -5,7 +5,7 @@ const {
 
 const { Robot } = require('../robot/robot');
 
-const { CentralDistanceSensorModule, NeoPixel } = require('../modules/virtual-sensors/');
+const { DistanceRelayModule, NeoPixel } = require('../modules/virtual-relays');
 
 // Class for representing the robots level functionality
 class Robots {
@@ -23,7 +23,7 @@ class Robots {
         this.debug = true;
 
         // Attach distance sensor with giving access to arenaConfig data and MQTT publish
-        this.distanceSensor = new CentralDistanceSensorModule(
+        this.distanceSensor = new DistanceRelayModule(
             swarm.arenaConfig,
             this.mqttPublish
         );
