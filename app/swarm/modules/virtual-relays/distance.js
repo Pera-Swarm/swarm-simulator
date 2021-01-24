@@ -18,6 +18,23 @@ class DistanceRelayModule extends VirtualDistanceRelayModule {
         super(null, arena, mqttPublish);
     }
 
+    /*
+     getReadings = (robot: VRobot, suffix: string, callback: Function) => {
+        const { x, y, heading } = robot.coordinates;
+        robot.updateHeartbeat();
+        let dist = round(this._getBorderDistance(x, y, heading) * 10) / 10;
+        this.publish(dist, suffix);
+        // this.setReading(dist);
+        if (callback != undefined) callback(dist);
+    };
+
+    viewReading = (robot: { getData: (arg0: string) => any } | undefined) => {
+        if (robot === undefined) throw new TypeError('robot unspecified');
+        const dist = robot.getData('distance');
+        return dist != undefined ? dist : NaN;
+    };
+     */
+
     getReading = (robot, callback) => {
         const { x, y, heading } = robot.getCoordinates();
         robot.updateHeartbeat();
