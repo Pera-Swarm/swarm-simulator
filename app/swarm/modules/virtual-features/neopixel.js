@@ -1,4 +1,5 @@
 class NeoPixel {
+    
     constructor(mqttPublish) {
         this.publish = mqttPublish;
     }

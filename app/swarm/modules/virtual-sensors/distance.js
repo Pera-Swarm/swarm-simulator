@@ -2,6 +2,8 @@ const { abs, round, cos, sin } = require('mathjs');
 const { VServerDistanceSensor } = require('../../../../dist/pera-swarm');
 
 class CentralDistanceSensorModule extends VServerDistanceSensor {
+    // TODO: Review the flow and add necessary methods @NuwanJ
+
     constructor(arena, mqttPublish) {
         super(null, arena, mqttPublish);
     }
