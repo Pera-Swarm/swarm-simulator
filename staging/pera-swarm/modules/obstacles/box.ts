@@ -43,8 +43,8 @@ export abstract class AbstractBox extends AbstractObject {
     }
 
     /**
-    * Wall Object string representation
-    */
+     * Wall Object string representation
+     */
     public toString = (): string => {
         return `  ${this._type} Obstacle\n   width : ${this._width} height: ${this._height}\n   depth: ${this._depth} orientation: ${this._orientation}\n p1: { x: ${this.position.x}, y: ${this.position.y}}\n`;
     };

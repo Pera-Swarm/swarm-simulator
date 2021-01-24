@@ -79,9 +79,7 @@ class Swarm {
         this.environment = new Environment(
             obstacleController(),
             './app/config/env.config.json'
-        );
-
-        this.environment.createObstacles((obstacles) => {
+        ).createObstacles((obstacles) => {
             // Callback for publishing each obstacle into the environment
             this.mqttPublish('/obstacles', obstacles, {
                 ...mqttConfig.options,

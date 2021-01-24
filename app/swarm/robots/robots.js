@@ -110,7 +110,7 @@ class Robots {
             delete this.robotList[id];
             this.size--;
             this.updated = Date.now();
-            
+
             this.mqttPublish('robot/delete', { id });
             if (callback !== undefined) callback(id);
 
