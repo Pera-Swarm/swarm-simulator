@@ -1,3 +1,4 @@
+import { AbstractBox, BoxPropType } from './box';
 import { AbstractCylinder, CylinderPropType } from './cylinder';
 import { AbstractObject, VisualizeType } from './obstacle';
 import { obstacleBuilder, AbstractObstacleBuilder } from './obstacleBuilder';
@@ -48,6 +49,28 @@ export class ObstacleController
             originX,
             originY,
             depth,
+            debug
+        );
+        this._list.push(obj);
+        return obj;
+    }
+
+    createBox(
+        width: number,
+        height: number,
+        depth: number,
+        orientation: number,
+        originX: number,
+        originY: number,
+        debug: boolean
+    ): AbstractBox {
+        const obj = this.builder.createBox(
+            width,
+            height,
+            depth,
+            orientation,
+            originX,
+            originY,
             debug
         );
         this._list.push(obj);

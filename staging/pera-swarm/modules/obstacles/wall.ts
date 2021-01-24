@@ -5,6 +5,7 @@ import {
     validateObjectCoordinate,
     VisualizeType
 } from './obstacle';
+
 const { abs, round, cos, sin, tan, atan2, sqrt, pow, distance } = require('mathjs');
 
 export type WallPropType = {
@@ -28,7 +29,7 @@ export abstract class AbstractWall extends AbstractObject {
         height: number,
         orientation: number,
         position: ObjectCoordinate,
-        depth: number = 5,
+        depth: number = 1,
         debug: boolean
     ) {
         super(height, position, debug);
@@ -60,7 +61,7 @@ export class Wall extends AbstractWall {
         orientation: number,
         originX: number,
         originY: number,
-        depth: number = 5,
+        depth: number = 1,
         debug = false
     ) {
         super(
@@ -82,8 +83,8 @@ export class Wall extends AbstractWall {
 
     geometric = () => {
         return {
-            position: this.position,
-            center2: this._p2,
+            p1: this.position,
+            p2: this._p2,
             width: this._width,
             height: this._height,
             depth: this._depth,
