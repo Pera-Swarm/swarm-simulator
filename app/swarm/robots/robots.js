@@ -5,7 +5,11 @@ const {
 
 const { Robot } = require('../robot/robot');
 
-const { DistanceRelayModule, NeoPixelRelayModule } = require('../modules/virtual-relays');
+const {
+    DistanceRelayModule,
+    LocalizationRelayModule,
+    NeoPixelRelayModule
+} = require('../modules/virtual-relays');
 
 // Class for representing the robots level functionality
 class Robots {
@@ -22,13 +26,7 @@ class Robots {
         this.mqttPublish = mqttPublish;
         this.debug = true;
 
-        // Attach distance sensor with giving access to arenaConfig data and MQTT publish
-        this.distanceSensor = new DistanceRelayModule(
-            swarm.arenaConfig,
-            this.mqttPublish
-        );
-
-        // Simple communication
+        // Simple Communication Module
         this.simpleCommunication = new SimpleCommunication(
             this,
             this.mqttPublish,
@@ -36,7 +34,7 @@ class Robots {
             this.debug
         );
 
-        // Directed communication
+        // Directed Communication Module
         this.directedCommunication = new DirectedCommunication(
             this,
             this.mqttPublish,
@@ -45,7 +43,17 @@ class Robots {
             this.debug
         );
 
+        // Distance Controller Module
+        this.distanceSensor = new DistanceRelayModule(
+            swarm.arenaConfig,
+            this.mqttPublish
+        );
+
+        // NeoPixel Controller Module
         this.neopixel = new NeoPixelRelayModule(this.mqttPublish);
+
+        // Localization Controller Module
+        this.localization = new LocalizationRelayModule(this.mqttPublish);
     }
 
     /**
@@ -56,6 +64,7 @@ class Robots {
             ...this.simpleCommunication.defaultSubscriptions(),
             ...this.directedCommunication.defaultSubscriptions(),
             ...this.distanceSensor.defaultSubscriptions(),
+            ...this.localization.defaultSubscriptions(),
             ...this.neopixel.defaultSubscriptions()
         ];
         return commRoutes;
