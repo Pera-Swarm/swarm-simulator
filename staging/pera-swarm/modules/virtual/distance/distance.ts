@@ -1,7 +1,6 @@
-const { abs, round, cos, sin } = require('mathjs');
+const { abs, cos, sin } = require('mathjs');
 import { normalizeAngle } from '../../../helpers';
-import { VRobot } from '../../robot';
-import { AbstractVirtualRelayModule } from '..';
+import { AbstractVirtualRelayModule } from '../';
 import { ArenaType } from '../../environment';
 
 export class VirtualDistanceRelayModule extends AbstractVirtualRelayModule {

@@ -1,4 +1,4 @@
-import { AbstractVirtualRelayModule } from '..';
+import { AbstractVirtualRelayModule } from '../';
 
 export type RGBType<TId, TValue> = {
     id: TId;
