@@ -1,7 +1,9 @@
 const { DistanceRelayModule } = require('./distance');
-const { NeoPixel } = require('./neopixel');
+const { LocalizationRelayModule } = require('./localization');
+const { NeoPixelRelayModule } = require('./neopixel');
 
 module.exports = {
     DistanceRelayModule,
-    NeoPixel
+    LocalizationRelayModule,
+    NeoPixelRelayModule
 };

@@ -5,7 +5,7 @@ const {
 
 const { Robot } = require('../robot/robot');
 
-const { DistanceRelayModule, NeoPixel } = require('../modules/virtual-relays');
+const { DistanceRelayModule, NeoPixelRelayModule } = require('../modules/virtual-relays');
 
 // Class for representing the robots level functionality
 class Robots {
@@ -45,7 +45,7 @@ class Robots {
             this.debug
         );
 
-        this.neopixel = new NeoPixel(this.mqttPublish);
+        this.neopixel = new NeoPixelRelayModule(this.mqttPublish);
     }
 
     /**

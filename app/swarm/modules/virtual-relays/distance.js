@@ -1,5 +1,9 @@
 const { abs, round, cos, sin } = require('mathjs');
-const { VirtualDistanceRelayModule } = require('../../../../dist/pera-swarm');
+const {
+    VirtualDistanceRelayModule,
+    ArenaType,
+    AbstractObstacleBuilder
+} = require('../../../../dist/pera-swarm');
 
 /* ------------------------------------------------------
 Arena coordinate system (top view)
@@ -14,8 +18,16 @@ Axises: ↑ Y, → X
 ------------------------------------------------------ */
 
 class DistanceRelayModule extends VirtualDistanceRelayModule {
-    constructor(arena, mqttPublish) {
+    _obstacleController;
+    /**
+     * DistanceRelayModule
+     * @param {ArenaType} arena arena config
+     * @param {Function} mqttPublish mqtt publish function
+     * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
+     */
+    constructor(arena, mqttPublish, obstacleController = undefined) {
         super(null, arena, mqttPublish);
+        this._obstacleController = obstacleController;
     }
 
     /*
