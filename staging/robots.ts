@@ -137,17 +137,7 @@ class Robots extends AbstractRobots {
     changeMode = (mode: any, options = {}) => {
         this.broadcast('MODE', mode, options);
     };
-
-    // TODO: add swarm functionality here
-    // getSensorReadings
-    // stopRobot
-    // resetRobot
 }
-
-// const initRobots = () => {
-//     // TODO: Fix this, in testings
-//     return new Robots(this.swarm);
-// };
 
 module.exports = {
     Robots

@@ -6,7 +6,7 @@ export type ArenaType = {
     xMax: number;
     yMin: number;
     yMax: number;
-    units?: 'virtual';
+    units?: string | undefined;
 };
 
 export type EnvironmentConfig = {
@@ -115,7 +115,10 @@ export class Environment extends AbstractEnvironment {
      */
     createObstacles = (callback: Function) => {
         if (validateEnvConfig(this.config) === true) {
-            this.obstacleController.createObstaclesJSON(this.config?.obstacles);
+            this.obstacleController.createObstaclesJSON(
+                this.config?.obstacles,
+                this.config?.arena
+            );
             if (callback !== undefined)
                 callback(this._obstacleController.visualizeObstacles());
         }

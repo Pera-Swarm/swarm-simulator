@@ -43,6 +43,7 @@ class Robots {
 
         // Distance Controller Module
         this.distanceSensor = new DistanceSensorEmulator(
+            this,
             swarm.arenaConfig,
             this.mqttPublish
         );
@@ -61,12 +62,52 @@ class Robots {
         const commRoutes = [
             ...this.simpleCommunication.defaultSubscriptions(),
             ...this.directedCommunication.defaultSubscriptions(),
+            // ...this.colorSensor.defaultSubscriptions(),
             ...this.distanceSensor.defaultSubscriptions(),
+            // ...this.proximitySensor.defaultSubscriptions(),
             ...this.localization.defaultSubscriptions(),
-            ...this.neopixel.defaultSubscriptions()
+            ...this.neopixel.defaultSubscriptions(),
+            {
+                topic: 'robot/live',
+                type: 'JSON',
+                allowRetained: false,
+                subscribe: true,
+                publish: false,
+                handler: (msg, swarm) => {
+                    // Heartbeat signal from the robots to server
+                    // console.log('MQTT.Robot: robot/live', msg);
+
+                    let robot = swarm.robots.findRobotById(msg.id);
+                    if (robot !== -1) {
+                        const heartbeat = robot.updateHeartbeat();
+                        //console.log('Heatbeat of the robot', msg, 'is updated to', heartbeat);
+                    } else {
+                        // No robot found.
+                        swarm.robots.createIfNotExists(msg.id, () => {
+                            //console.log('A robot created', msg.id);
+                        });
+                    }
+                }
+            },
+            {
+                topic: 'robot/create',
+                type: 'JSON',
+                allowRetained: false,
+                subscribe: true,
+                publish: false,
+                handler: (msg, swarm) => {
+                    // Create a robot on simulator
+                    console.log('MQTT.Robot: robot/create', msg);
+
+                    const { id, heading, x, y } = msg;
+                    const resp = swarm.robots.addRobot(id, heading, x, y);
+                }
+            }
         ];
         return commRoutes;
     }
+
+    initialPublishers = [];
 
     robotBuilder = (id, heading, x, y) => {
         return new Robot(id, heading, x, y);
