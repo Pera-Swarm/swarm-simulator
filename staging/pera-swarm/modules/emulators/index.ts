@@ -23,5 +23,5 @@ export abstract class AbstractVirtualEmulator implements VirtualEmulatorInterfac
     };
 }
 
-export * from './sensor-emulators/distance';
-export * from './agent-emulators/neopixel';
+export * from './agent-emulators/';
+export * from './sensor-emulators/';
