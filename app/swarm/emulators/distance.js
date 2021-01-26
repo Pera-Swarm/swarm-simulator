@@ -19,14 +19,15 @@ Axises: ↑ Y, → X
 
 class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
     _obstacleController;
+
     /**
      * DistanceSensorEmulator
      * @param {ArenaType} arena arena config
      * @param {Function} mqttPublish mqtt publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
      */
-    constructor(arena, mqttPublish, obstacleController = undefined) {
-        super(null, arena, mqttPublish);
+    constructor(robots, arena, mqttPublish, obstacleController = undefined) {
+        super(robots, arena, mqttPublish);
         this._obstacleController = obstacleController;
     }
 
@@ -51,7 +52,10 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
         const { x, y, heading } = robot.getCoordinates();
         robot.updateHeartbeat();
         console.log(x, y, heading);
-        let dist = round(this._getBorderDistance(x, y, heading) * 10); // return in mm
+        // let dist = round(this._getBorderDistance(x, y, heading) * 10); // return in mm
+        let obstacleDist = this._obstacleController.getDistance(heading, x, y);
+        // TODO: @NuwanJ
+        // let robotDist = this._robots
 
         this.publish(`sensor/distance/${robot.id}`, dist);
         this.setReading(robot, dist);
@@ -70,14 +74,25 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
             {
                 topic: 'sensor/distance',
                 type: 'JSON',
-                allowRetained: false,
+                allowRetained: true,
                 subscribe: true,
                 publish: false,
                 handler: (msg, swarm) => {
-                    // Robots can request virtual dist. sensor reading through this
-                    console.log('MQTT.Dist: sensor/distance', msg);
-                    // TODO: publish the virtual distance reading to
-                    // sensor/distance/{robotId}
+                    // Robot sends its own distance sensor readings to the simulator,
+                    // as reply to the ‘{channal}/sensor/distance/{robotID}/?’ request
+                    console.log('MQTT.Sensor: sensor/distance', msg);
+
+                    let robot = swarm.robots.findRobotById(msg.id);
+                    if (robot != -1) {
+                        swarm.robots.distanceSensor.getReading(robot, (dist) => {
+                            console.log('MQTT:Sensor:Distance_Handler', dist);
+                        });
+                    } else {
+                        // No robot found. Just echo the message, because this is a blocking call for the robot
+
+                        console.log('MQTT_Sensor:Distance_Handler', 'Robot not found');
+                        //console.log(swarm.robots.robotList);
+                    }
                 }
             }
         ];

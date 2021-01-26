@@ -1,6 +1,6 @@
 // const { abs, round, cos, sin } = require('mathjs');
 const {
-    VirtualColorSensorEmulator,
+    VirtualProximitySensorEmulator,
     ArenaType,
     AbstractObstacleBuilder
 } = require('../../../dist/pera-swarm');
@@ -17,10 +17,10 @@ P3  L2  P4
 Axises: ↑ Y, → X
 ------------------------------------------------------ */
 
-class ColorSensorEmulator extends VirtualColorSensorEmulator {
+class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
     _obstacleController;
     /**
-     * ColorSensorEmulator
+     * ProximitySensorEmulator
      * @param {ArenaType} arena arena config
      * @param {Function} mqttPublish mqtt publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
@@ -37,7 +37,7 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
         console.log(x, y, heading);
         let dist = round(this._getBorderDistance(x, y, heading) * 10); // return in mm
 
-        this.publish(`sensor/distance/${robot.id}`, dist);
+        this.publish(`sensor/proximity/${robot.id}`, dist);
         this.setReading(robot, dist);
 
         if (callback != undefined) callback(dist);
@@ -48,35 +48,29 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
         /*
         if (robot === undefined) throw new TypeError('robot unspecified');
         if (value === undefined) throw new TypeError('value unspecified');
-        return robot.setData('distance', Number(value));
+        return robot.setData('proximity', Number(value));
         */
     };
 
     defaultSubscriptions = () => {
         return [
             {
-                topic: 'sensor/color',
+                topic: 'sensor/proximity',
                 type: 'JSON',
                 allowRetained: true,
                 subscribe: true,
                 publish: false,
                 handler: (msg, swarm) => {
                     // Robot sends its own sensor readings to the server,
-                    // as a reply to the ‘{channal}/sensor/color/{robotID}/?’ request
-                    console.log('MQTT.Sensor: sensor/color', msg);
-                    let robot = swarm.robots.findRobotById(msg.id);
-                    if (robot != undefined) {
-                        // TODO: implement return value
-                        const returnValue = 10; //robot.sensors.distance.syncReading(msg.distance);
-                        swarm.mqttPublish('sensor/color/' + robot.id, returnValue);
-                    } else {
-                        // No robot found. Just echo the message, because this is a blocking call for the robot
-                        swarm.mqttPublish('sensor/color/' + msg.id, msg.distance);
-                    }
+                    // as a reply to the ‘{channal}/sensor/proximity/{robotID}/?’ request
+                    console.log('MQTT.Sensor: sensor/proximity', msg);
+
+                    // No actions need to be here,
+                    // since there no any physical sensor for now.
                 }
             }
         ];
     };
 }
 
-module.exports = { ColorSensorEmulator };
+module.exports = { ProximitySensorEmulator };
