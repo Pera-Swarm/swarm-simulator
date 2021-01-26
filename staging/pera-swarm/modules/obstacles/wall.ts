@@ -13,7 +13,7 @@ export type WallPropType = {
     depth: number;
     x: number;
     y: number;
-    z: number;
+    orientation: number;
 };
 
 export abstract class AbstractWall extends AbstractObject {
