@@ -1,7 +1,7 @@
 import { AbstractVirtualEmulator } from '../../';
 
 export type RGBType<TId, TValue> = {
-    id: TId;
+    id?: TId;
     R: TValue;
     G: TValue;
     B: TValue;

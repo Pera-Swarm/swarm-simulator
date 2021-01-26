@@ -17,4 +17,6 @@ export abstract class AbstractSensorEmulator extends AbstractVirtualEmulator {
     abstract defaultSubscriptions: Function;
 }
 
+export * from './color';
 export * from './distance';
+export * from './proximity';
