@@ -66,11 +66,6 @@ export abstract class AbstractRobots<TId> {
     abstract broadcast: Function;
 
     abstract changeMode: Function;
-
-    // TODO: add swarm functionality here
-    // getSensorReadings
-    // stopRobot
-    // resetRobot
 }
 
 export class Robots extends AbstractRobots<number> {
