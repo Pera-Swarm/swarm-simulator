@@ -2,7 +2,6 @@ const {
     obstacleBuilder
 } = require('../dist/pera-swarm/modules/obstacles/obstacleBuilder');
 const {
-    ObstacleController,
     obstacleController
 } = require('../dist/pera-swarm/modules/obstacles/obstacleController');
 const fs = require('fs');
@@ -68,7 +67,7 @@ const wallOrietation = 90;
 // console.log(w.visualize());
 
 // Note: obstacleController is used for creating and managing a list of obstacles.
-const controller = new ObstacleController();
+const controller = new obstacleController();
 const w2 = controller.createWall(wallWidth, height, 0, -50, 50, depth, debug);
 const w3 = controller.createWall(wallWidth, height, 90, -50, -50, depth, debug);
 

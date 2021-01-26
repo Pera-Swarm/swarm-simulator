@@ -1,5 +1,6 @@
 import { AbstractCylinder, Cylinder } from './cylinder';
 import { AbstractWall, Wall } from './wall';
+import { AbstractBox, Box } from './box';
 import { AbstractObject } from './obstacle';
 
 export interface AbstractObstacleBuilder {
@@ -12,6 +13,17 @@ export interface AbstractObstacleBuilder {
         depth: number,
         debug: boolean
     ): AbstractWall;
+
+    createBox(
+        width: number,
+        height: number,
+        depth: number,
+        orientation: number,
+        originX: number,
+        originY: number,
+        debug: boolean
+    ): AbstractBox;
+
     createCylinder(
         radius: number,
         height: number,
@@ -43,6 +55,18 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         debug: boolean
     ): AbstractWall {
         return new Wall(width, height, orientation, originX, originY, depth, debug);
+    }
+
+    createBox(
+        width: number,
+        height: number,
+        depth: number,
+        orientation: number,
+        originX: number,
+        originY: number,
+        debug: boolean
+    ): AbstractBox {
+        return new Box(width, height, depth, orientation, originX, originY, debug);
     }
 
     createCylinder(

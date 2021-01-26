@@ -135,6 +135,8 @@ class Robots {
             } else if (z !== undefined) {
                 this.robotList[id] = new Robot(id, heading, x, y, z);
             }
+
+            // TODO: Publish to robot/create topic after review the current flow
             this.size += 1;
             return id;
         }
@@ -155,6 +157,7 @@ class Robots {
             delete this.robotList[id];
             this.size--;
             this.updated = Date.now();
+
             this.mqttPublish('robot/delete', { id });
             if (callback !== undefined) callback(id);
 
