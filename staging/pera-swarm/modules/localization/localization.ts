@@ -54,9 +54,9 @@ export class Localization<TId> {
      * @returns {number} the index of the coordinate if the id exists, if not -1
      */
     findIndexById = (id: TId): number => {
-        var found = -1,
+        let found = -1,
             i = 0;
-        for (var i = 0; i < this._list.length; i += 1) {
+        for (let i = 0; i < this._list.length; i += 1) {
             if (this._list[i]['id'] === id) {
                 return i;
             }
@@ -68,7 +68,7 @@ export class Localization<TId> {
      * method fot getting the coordinates list.
      */
     getCoordinates = (): CoordinateValueInt<TId>[] => {
-        var coordinates: CoordinateValueInt<TId>[] = [];
+        let coordinates: CoordinateValueInt<TId>[] = [];
         this._list.map((item: Coordinate<TId>) => {
             coordinates.push(item.values);
         });
@@ -99,7 +99,7 @@ export class Localization<TId> {
      * @returns {ValidityType|undefined}
      */
     add = (coordinate: CoordinateValueInt<TId>): ValidityType | undefined => {
-        var status: ValidityType | undefined;
+        let status: ValidityType | undefined;
         status = -1;
         if (this.validateValue(coordinate) === true) {
             if (this.findIndexById(coordinate.id) === -1) {
@@ -154,11 +154,11 @@ export class Localization<TId> {
      * @param {CoordinateValueInt[]} coordinates array of coordinates
      */
     updateMany = (coordinates: CoordinateValueInt<TId>[]) => {
-        var status: ValidityType | undefined;
+        let status: ValidityType | undefined;
         status = -1;
         // update if only the param is an array
         if (Array.isArray(coordinates)) {
-            for (var i = 0; i < coordinates.length; i += 1) {
+            for (let i = 0; i < coordinates.length; i += 1) {
                 if (this.findIndexById(coordinates[i]['id']) === -1) {
                     // add to list
                     status = this.add(coordinates[i]);

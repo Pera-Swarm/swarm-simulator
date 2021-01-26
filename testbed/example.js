@@ -1,6 +1,6 @@
-var queue = require('queue');
+let queue = require('queue');
 
-var q = queue({ results: [] });
+let q = queue({ results: [] });
 
 // add jobs using the familiar Array API
 q.push(function (cb) {

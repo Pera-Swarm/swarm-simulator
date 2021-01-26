@@ -1,6 +1,8 @@
-class NeoPixel {
+const { AbstractAgentEmulator } = require('../../../dist/pera-swarm');
+
+class NeoPixelAgent extends AbstractAgentEmulator {
     constructor(mqttPublish) {
-        this.publish = mqttPublish;
+        super(null, null, mqttPublish);
     }
 
     updateNeoPixel = (robot, R, G, B) => {
@@ -41,4 +43,5 @@ class NeoPixel {
         ];
     };
 }
-module.exports = { NeoPixel };
+
+module.exports = { NeoPixelAgent };

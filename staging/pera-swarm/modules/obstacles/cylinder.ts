@@ -160,7 +160,7 @@ export class Cylinder extends AbstractCylinder {
 
     _angleDifference = (heading: number, angle: number) => {
         // Get the absolute difference between heading and target angle
-        var difference = (angle - heading) % 360;
+        let difference = (angle - heading) % 360;
         if (difference <= -180) difference += 360;
         if (difference > 180) difference -= 360;
         return difference;

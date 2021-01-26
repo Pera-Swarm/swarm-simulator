@@ -1,8 +1,19 @@
+import { abs, cos, sin } from 'mathjs';
+import { normalizeValueRange } from '../../helpers';
+import { ArenaType } from '../environment';
 import { AbstractBox, BoxPropType } from './box';
 import { AbstractCylinder, CylinderPropType } from './cylinder';
 import { AbstractObject, VisualizeType } from './obstacle';
-import { obstacleBuilder, AbstractObstacleBuilder } from './obstacleBuilder';
+import { obstacleBuilder, AbstractObstacleBuilder } from './obstaclebuilder';
 import { AbstractWall, WallPropType } from './wall';
+
+const defaultArenaConfig = {
+    xMin: 150,
+    xMax: 150,
+    yMin: 150,
+    yMax: 150,
+    units: 'virtual'
+};
 
 export interface AbstractObstacleController {
     _list: AbstractObject[];
@@ -18,17 +29,21 @@ export interface AbstractObstacleController {
 export class ObstacleController
     implements AbstractObstacleBuilder, AbstractObstacleController {
     _list: AbstractObject[];
+    _arenaConfig: ArenaType;
     private builder: AbstractObstacleBuilder;
     protected static instance: ObstacleController;
 
-    constructor() {
+    constructor(config: ArenaType) {
         this._list = [];
+        this._arenaConfig = config;
         this.builder = obstacleBuilder();
     }
 
-    public static getInstance(): ObstacleController {
+    public static getInstance(
+        config: ArenaType = defaultArenaConfig
+    ): ObstacleController {
         if (!ObstacleController.instance) {
-            ObstacleController.instance = new ObstacleController();
+            ObstacleController.instance = new ObstacleController(config);
         }
         return ObstacleController.instance;
     }
@@ -92,16 +107,16 @@ export class ObstacleController
     /**
      * @param {JSON} data json config data for the arena
      */
-    createObstaclesJSON = (data: JSON) => {
+    createObstaclesJSON = (data: JSON, config: ArenaType = defaultArenaConfig) => {
         if (Array.isArray(data)) {
             data.forEach((element) => {
                 const { geometry } = element;
                 switch (geometry.type) {
                     case 'BoxGeometry':
-                        this.createWallJSON(element);
+                        this.createWallJSON(element, config);
                         break;
                     case 'CylinderGeometry':
-                        this.createCylinderJSON(element);
+                        this.createCylinderJSON(element, config);
                         break;
                     default:
                         break;
@@ -114,11 +129,19 @@ export class ObstacleController
      * create a wall obstacle from JSON data
      * @param {VisualizeType} data obstacle JSON data
      */
-    createWallJSON = (data: VisualizeType) => {
+    createWallJSON = (data: VisualizeType, config: ArenaType) => {
         const decodedProps = this._decodeWallPropsFromJSON(data);
         if (decodedProps !== -1) {
-            const { width, height, x, y, z, depth } = decodedProps;
-            this.createWall(width, height, z, x, y, depth, true);
+            const { width, height, x, y, orientation, depth } = decodedProps;
+            this.createWall(
+                width,
+                height,
+                orientation,
+                normalizeValueRange(x, config.xMin, config.xMax),
+                normalizeValueRange(y, config.yMin, config.yMax),
+                depth,
+                true
+            );
             // this.createWall(width, height, orientation, originX, originY, depth, debug);
         }
     };
@@ -127,11 +150,17 @@ export class ObstacleController
      * create a cylinder obstacle from JSON data
      * @param {VisualizeType} data obstacle JSON data
      */
-    createCylinderJSON = (data: VisualizeType) => {
+    createCylinderJSON = (data: VisualizeType, config: ArenaType) => {
         const decodedProps = this._decodeCylinderPropsFromJSON(data);
         if (decodedProps !== -1) {
             const { radius, height, x, y } = decodedProps;
-            this.createCylinder(radius, height, x, y, true);
+            this.createCylinder(
+                radius,
+                height,
+                normalizeValueRange(x, config.xMin, config.xMax),
+                normalizeValueRange(y, config.yMin, config.yMax),
+                true
+            );
         }
     };
 
@@ -198,10 +227,9 @@ export class ObstacleController
      * @returns {boolean} true : if there any obstacle in heading direction
      */
     isObstacleThere = (heading: number, x: number, y: number) => {
-        // TODO: @luk3Sky please review this
-        var found = false;
+        let found = false;
 
-        for (var i = 0; i < this._list.length; i++) {
+        for (let i = 0; i < this._list.length; i++) {
             found = this._list[i].isInRange(heading, x, y);
             //console.log(found);
             if (found == true) return true;
@@ -214,13 +242,50 @@ export class ObstacleController
      * @param {number} heading heading coordinate
      * @param {number} x x coordinate
      * @param {number} y y coordinate
+     * @param {number} distanceThreshold distance threshold
+     * @returns {string | null} if thre any obstacle in heading front, return the color to the closest one
+     */
+    getColor = (
+        heading: number,
+        x: number,
+        y: number,
+        distanceThreshold: number = 10
+    ) => {
+        // TODO: @NuwanJ please review this
+        let minDist = Infinity;
+        let color = null;
+
+        for (let i = 0; i < this._list.length; i++) {
+            const found = this._list[i].isInRange(heading, x, y);
+            //console.log(found);
+            if (found == true) {
+                const dist = this._list[i].getDistance(heading, x, y);
+                console.log(dist);
+
+                if (dist > 0 && dist <= minDist) {
+                    minDist = dist;
+                    color = this._list[i].appearance.color;
+                }
+            }
+        }
+        if (minDist > distanceThreshold) {
+            color = null;
+        }
+        return color;
+    };
+
+    /**
+     * method for obtain the virtaul distance sensor readings with these virtual objects
+     * @param {number} heading heading coordinate
+     * @param {number} x x coordinate
+     * @param {number} y y coordinate
      * @returns {number | Infinity} if thre any obstacle in heading front, return the distance to the closest one
      */
     getDistance = (heading: number, x: number, y: number) => {
-        // TODO: @luk3Sky please review this
-        var minDist = Infinity;
+        // TODO: @NuwanJ please review this
+        let minDist = Infinity;
 
-        for (var i = 0; i < this._list.length; i++) {
+        for (let i = 0; i < this._list.length; i++) {
             const found = this._list[i].isInRange(heading, x, y);
             //console.log(found);
             if (found == true) {
@@ -308,7 +373,7 @@ export class ObstacleController
      * @returns {any} ObstacleAPI defined Objects
      */
     visualizeObstacles = (): VisualizeType[] => {
-        var visualizeList: VisualizeType[] = [];
+        let visualizeList: VisualizeType[] = [];
         this._list.forEach((item: AbstractObject) => {
             // one obstacle object can have multiple geometrics.
             item.visualize().forEach((itemChild: VisualizeType) => {
@@ -324,29 +389,22 @@ export class ObstacleController
      * @param { WallPropType | -1} data wall JSON data
      */
     private _decodeWallPropsFromJSON = (data: VisualizeType): WallPropType | -1 => {
-        var { geometry, position, rotation } = data;
-        var { width, height, depth } = geometry;
-        var { x, y } = position;
-        var { y: z } = rotation;
-        var i = 0;
+        let { geometry, position, rotation } = data;
+        let { width, height, depth } = geometry;
+        let { x, y } = position;
+        let { y: orientation } = rotation;
+        let i = 0;
         if (width === undefined) i += 1;
         if (height === undefined) i += 1;
         if (depth === undefined) i += 1;
         if (x === undefined) i += 1;
         if (y === undefined) i += 1;
-        if (z === undefined) i += 1;
+        if (orientation === undefined) i += 1;
         if (i !== 0) {
             console.error('Failed_To_Derive_Wall_Properties');
             return -1;
         }
-        return {
-            width,
-            height,
-            depth,
-            x,
-            y,
-            z
-        };
+        return this._normalizeWallProps(width, height, depth, x, y, orientation);
     };
 
     /**
@@ -356,11 +414,11 @@ export class ObstacleController
     private _decodeCylinderPropsFromJSON = (
         data: VisualizeType
     ): CylinderPropType | -1 => {
-        var { geometry, position, rotation } = data;
-        var { radius, radiusTop, radiusBottom, height } = geometry;
-        var { x, y } = position;
-        // var { z } = rotation;
-        var i = 0;
+        let { geometry, position, rotation } = data;
+        let { radius, radiusTop, radiusBottom, height } = geometry;
+        let { x, y } = position;
+        // let { z } = rotation;
+        let i = 0;
         if (radiusTop === undefined && radiusBottom === undefined && radius === undefined)
             i += 1;
         if (height === undefined) i += 1;
@@ -379,13 +437,80 @@ export class ObstacleController
             y
         };
     };
+
+    _normalizeWallProps = (
+        width: number,
+        height: number,
+        depth: number,
+        x: number,
+        y: number,
+        orientation: number
+    ) => {
+        const normalizedOrientation = normalizeValueRange(orientation, -360, 360);
+        // validating a wall instance that to be created or not according to env limitations
+        // TODO: @NuwanJ Please review this
+        const theta = (normalizedOrientation / 360) * 2 * Math.PI;
+        let upperEdgeX = x + (width / 2) * cos(theta);
+        let upperEdgeY = y + (width / 2) * sin(theta);
+        let lowerEdgeX = x - (width / 2) * cos(theta);
+        let lowerEdgeY = y - (width / 2) * sin(theta);
+        if (
+            (abs(x) > abs(this._arenaConfig.xMax) &&
+                abs(y) > abs(this._arenaConfig.yMax)) ||
+            (abs(x) > abs(this._arenaConfig.xMax) &&
+                abs(y) > abs(this._arenaConfig.yMin)) ||
+            (abs(x) > abs(this._arenaConfig.xMin) &&
+                abs(y) > abs(this._arenaConfig.yMax)) ||
+            (abs(x) > abs(this._arenaConfig.xMin) && abs(y) > abs(this._arenaConfig.yMin))
+        ) {
+            console.log(
+                'First scenario',
+                x,
+                y,
+                abs(x) < abs(this._arenaConfig.xMin),
+                abs(y) > abs(this._arenaConfig.yMin),
+                typeof this._arenaConfig.xMin,
+                typeof this._arenaConfig.yMin
+            );
+            return -1;
+            // }else if(){
+            //     return {
+            //         width,
+            // height,
+            // depth,
+            // x,
+            // y,
+            // orientation
+            //     }
+            // }
+        } else {
+            let normalizedX = normalizeValueRange(
+                x,
+                this._arenaConfig.xMin,
+                this._arenaConfig.xMax
+            );
+            let normalizedY = normalizeValueRange(
+                y,
+                this._arenaConfig.yMin,
+                this._arenaConfig.yMax
+            );
+            return {
+                width,
+                height,
+                depth,
+                x,
+                y,
+                orientation
+            };
+        }
+    };
 }
 
 /**
  * get singleton obstacle controller instance
  */
-export const obstacleController = () => {
-    return ObstacleController.getInstance();
+export const obstacleController = (config: ArenaType = defaultArenaConfig) => {
+    return ObstacleController.getInstance(config);
 };
 
 export const obstacleList = {

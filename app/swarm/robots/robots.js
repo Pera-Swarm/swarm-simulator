@@ -5,8 +5,9 @@ const {
 
 const { Robot } = require('../robot/robot');
 
-const { CentralDistanceSensorModule } = require('../modules/virtual-sensors/');
-const { NeoPixel } = require('../modules/virtual-features/');
+const { NeoPixelAgent } = require('../agents');
+const { LocalizationController } = require('../controllers');
+const { DistanceSensorEmulator } = require('../emulators');
 
 // Class for representing the robots level functionality
 class Robots {
@@ -23,13 +24,7 @@ class Robots {
         this.mqttPublish = mqttPublish;
         this.debug = true;
 
-        // Attach distance sensor with giving access to arenaConfig data and MQTT publish
-        this.distanceSensor = new CentralDistanceSensorModule(
-            swarm.arenaConfig,
-            this.mqttPublish
-        );
-
-        // Simple communication
+        // Simple Communication Module
         this.simpleCommunication = new SimpleCommunication(
             this,
             this.mqttPublish,
@@ -37,7 +32,7 @@ class Robots {
             this.debug
         );
 
-        // Directed communication
+        // Directed Communication Module
         this.directedCommunication = new DirectedCommunication(
             this,
             this.mqttPublish,
@@ -46,7 +41,18 @@ class Robots {
             this.debug
         );
 
-        this.neopixel = new NeoPixel(this.mqttPublish);
+        // Distance Controller Module
+        this.distanceSensor = new DistanceSensorEmulator(
+            this,
+            swarm.arenaConfig,
+            this.mqttPublish
+        );
+
+        // NeoPixel Controller Module
+        this.neopixel = new NeoPixelAgent(this.mqttPublish);
+
+        // Localization Controller Module
+        this.localization = new LocalizationController(this.mqttPublish);
     }
 
     /**
@@ -56,11 +62,52 @@ class Robots {
         const commRoutes = [
             ...this.simpleCommunication.defaultSubscriptions(),
             ...this.directedCommunication.defaultSubscriptions(),
+            // ...this.colorSensor.defaultSubscriptions(),
             ...this.distanceSensor.defaultSubscriptions(),
-            ...this.neopixel.defaultSubscriptions()
+            // ...this.proximitySensor.defaultSubscriptions(),
+            ...this.localization.defaultSubscriptions(),
+            ...this.neopixel.defaultSubscriptions(),
+            {
+                topic: 'robot/live',
+                type: 'JSON',
+                allowRetained: false,
+                subscribe: true,
+                publish: false,
+                handler: (msg, swarm) => {
+                    // Heartbeat signal from the robots to server
+                    // console.log('MQTT.Robot: robot/live', msg);
+
+                    let robot = swarm.robots.findRobotById(msg.id);
+                    if (robot !== -1) {
+                        const heartbeat = robot.updateHeartbeat();
+                        //console.log('Heatbeat of the robot', msg, 'is updated to', heartbeat);
+                    } else {
+                        // No robot found.
+                        swarm.robots.createIfNotExists(msg.id, () => {
+                            //console.log('A robot created', msg.id);
+                        });
+                    }
+                }
+            },
+            {
+                topic: 'robot/create',
+                type: 'JSON',
+                allowRetained: false,
+                subscribe: true,
+                publish: false,
+                handler: (msg, swarm) => {
+                    // Create a robot on simulator
+                    console.log('MQTT.Robot: robot/create', msg);
+
+                    const { id, heading, x, y } = msg;
+                    const resp = swarm.robots.addRobot(id, heading, x, y);
+                }
+            }
         ];
         return commRoutes;
     }
+
+    initialPublishers = [];
 
     robotBuilder = (id, heading, x, y) => {
         return new Robot(id, heading, x, y);
@@ -176,7 +223,7 @@ class Robots {
     findRobotById = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
-        var result = this.robotList[id];
+        let result = this.robotList[id];
         return result !== undefined ? result : -1;
     };
 
@@ -213,7 +260,7 @@ class Robots {
      * @returns {Coordinate[]} current robot coordinates : that are existing in the list
      */
     getCoordinatesAll = () => {
-        var result = [];
+        let result = [];
         for (const key in this.robotList) {
             result.push(this.robotList[key].getCoordinates());
         }
@@ -248,7 +295,7 @@ class Robots {
     prune = (interval, callback) => {
         if (interval === undefined) throw new TypeError('interval unspecified');
 
-        for (var id in this.robotList) {
+        for (let id in this.robotList) {
             if (this.isAliveRobot(id, interval) == false) {
                 this.removeRobot(id, callback);
             }
