@@ -29,6 +29,7 @@ class Scheduler {
  */
 const schedulerService = (routine, interval = this.THIRTY_SECONDS) => {
     if (routine !== undefined && typeof routine === 'function') {
+        routine();
         new Scheduler(routine, interval);
     } else {
         console.error('Scheduler function not specified');
