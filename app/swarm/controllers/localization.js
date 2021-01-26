@@ -52,19 +52,6 @@ class LocalizationController extends VirtualLocalizationController {
                 }
             },
             {
-                topic: 'localization/update',
-                type: 'JSON',
-                allowRetained: false,
-                subscribe: false,
-                publish: true,
-                handler: (msg, swarm) => {
-                    // This will request coordinate updates from the Localization System, and virtual robots
-                    // console.log('MQTT.Localization: /localization/update', msg);
-                    // No actions need to be here, just for representation
-                }
-            },
-
-            {
                 topic: 'localization/?',
                 type: 'String',
                 allowRetained: false,
@@ -80,6 +67,13 @@ class LocalizationController extends VirtualLocalizationController {
             }
         ];
     };
+
+    initialPublishers = [
+        {
+            topic: 'localization/update',
+            data: '?'
+        }
+    ];
 }
 
 module.exports = {
