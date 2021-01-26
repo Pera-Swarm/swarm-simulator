@@ -1,3 +1,5 @@
+import { RGBType } from '../modules';
+
 /**
  * method for normalizing a given angle
  * @param {number} a angle
@@ -32,6 +34,21 @@ export const normalizeValueRange = (
     } else {
         return value;
     }
+};
+
+/**
+ * method for converting a hex value to RGB
+ * @param {string} value color value in hex
+ */
+export const hexToRGB = (value: string = '#000000'): RGBType<number, number> | null => {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(value);
+    return result
+        ? {
+              R: parseInt(result[1], 16),
+              G: parseInt(result[2], 16),
+              B: parseInt(result[3], 16)
+          }
+        : null;
 };
 
 export * from './constants';
