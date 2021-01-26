@@ -5,11 +5,9 @@ const {
 
 const { Robot } = require('../robot/robot');
 
-const {
-    DistanceRelayModule,
-    LocalizationRelayModule,
-    NeoPixelRelayModule
-} = require('../modules/virtual-relays');
+const { NeoPixelAgent } = require('../agents');
+const { LocalizationController } = require('../controllers');
+const { DistanceSensorEmulator } = require('../emulators');
 
 // Class for representing the robots level functionality
 class Robots {
@@ -44,16 +42,16 @@ class Robots {
         );
 
         // Distance Controller Module
-        this.distanceSensor = new DistanceRelayModule(
+        this.distanceSensor = new DistanceSensorEmulator(
             swarm.arenaConfig,
             this.mqttPublish
         );
 
         // NeoPixel Controller Module
-        this.neopixel = new NeoPixelRelayModule(this.mqttPublish);
+        this.neopixel = new NeoPixelAgent(this.mqttPublish);
 
         // Localization Controller Module
-        this.localization = new LocalizationRelayModule(this.mqttPublish);
+        this.localization = new LocalizationController(this.mqttPublish);
     }
 
     /**
