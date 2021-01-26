@@ -75,6 +75,7 @@ function superSlowJob(cb) {
         console.log('super slow job finished');
         cb();
     }, 2000);
+    cb(null, 'superSlowJob');
 }
 
 superSlowJob.timeout = null;

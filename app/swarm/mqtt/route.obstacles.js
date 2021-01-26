@@ -14,7 +14,8 @@ const routes = [
             // console.log(swarm.obstacleController.visualizeObstacles());
             swarm.mqttPublish('obstacles', swarm.environment.getObstaclesAll(), {
                 qos: 2,
-                dup: false
+                dup: false,
+                retain: true
             });
         }
     }

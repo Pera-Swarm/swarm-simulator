@@ -5,10 +5,8 @@ const {
 
 const { Robot } = require('../robot/robot');
 
-// TODO: need to move this to pera-swarm library
-const { DistanceSensor } = require('../../modules/distanceSensor');
-
-const { NeoPixel } = require('../../modules/neopixel');
+const { CentralDistanceSensorModule } = require('../modules/virtual-sensors/');
+const { NeoPixel } = require('../modules/virtual-features/');
 
 // Class for representing the robots level functionality
 class Robots {
@@ -26,7 +24,10 @@ class Robots {
         this.debug = true;
 
         // Attach distance sensor with giving access to arenaConfig data and MQTT publish
-        this.distanceSensor = new DistanceSensor(swarm.arenaConfig, this.mqttPublish);
+        this.distanceSensor = new CentralDistanceSensorModule(
+            swarm.arenaConfig,
+            this.mqttPublish
+        );
 
         // Simple communication
         this.simpleCommunication = new SimpleCommunication(
@@ -87,6 +88,8 @@ class Robots {
             } else if (z !== undefined) {
                 this.robotList[id] = new Robot(id, heading, x, y, z);
             }
+
+            // TODO: Publish to robot/create topic after review the current flow
             this.size += 1;
             return id;
         }
@@ -107,6 +110,7 @@ class Robots {
             delete this.robotList[id];
             this.size--;
             this.updated = Date.now();
+
             this.mqttPublish('robot/delete', { id });
             if (callback !== undefined) callback(id);
 

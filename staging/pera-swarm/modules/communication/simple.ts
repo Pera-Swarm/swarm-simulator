@@ -24,7 +24,7 @@ export class SimpleCommunication extends Communication {
         const allCoordinates = this._robots.getCoordinatesAll();
         const thisCoordinate = this._robots.getCoordinatesById(robotId);
         var receivers = 0;
-        var receiveList = [];
+        var receiveList: number[] = [];
 
         allCoordinates.forEach(
             (coordinate: CoordinateValueInt<number>, index?: number) => {

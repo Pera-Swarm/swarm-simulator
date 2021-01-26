@@ -1,3 +1,4 @@
+import { AbstractBox, BoxPropType } from './box';
 import { AbstractCylinder, CylinderPropType } from './cylinder';
 import { AbstractObject, VisualizeType } from './obstacle';
 import { obstacleBuilder, AbstractObstacleBuilder } from './obstacleBuilder';
@@ -54,6 +55,28 @@ export class ObstacleController
         return obj;
     }
 
+    createBox(
+        width: number,
+        height: number,
+        depth: number,
+        orientation: number,
+        originX: number,
+        originY: number,
+        debug: boolean
+    ): AbstractBox {
+        const obj = this.builder.createBox(
+            width,
+            height,
+            depth,
+            orientation,
+            originX,
+            originY,
+            debug
+        );
+        this._list.push(obj);
+        return obj;
+    }
+
     createCylinder(
         radius: number,
         height: number,
@@ -92,7 +115,6 @@ export class ObstacleController
      * @param {VisualizeType} data obstacle JSON data
      */
     createWallJSON = (data: VisualizeType) => {
-        console.log('Create Wall Obstacle', data);
         const decodedProps = this._decodeWallPropsFromJSON(data);
         if (decodedProps !== -1) {
             const { width, height, x, y, z, depth } = decodedProps;
@@ -106,7 +128,6 @@ export class ObstacleController
      * @param {VisualizeType} data obstacle JSON data
      */
     createCylinderJSON = (data: VisualizeType) => {
-        console.log('Create Cylinder Obstacle', data);
         const decodedProps = this._decodeCylinderPropsFromJSON(data);
         if (decodedProps !== -1) {
             const { radius, height, x, y } = decodedProps;
@@ -302,7 +323,7 @@ export class ObstacleController
      * decode properties required to create a wall from a given JSON data
      * @param { WallPropType | -1} data wall JSON data
      */
-    _decodeWallPropsFromJSON = (data: VisualizeType): WallPropType | -1 => {
+    private _decodeWallPropsFromJSON = (data: VisualizeType): WallPropType | -1 => {
         var { geometry, position, rotation } = data;
         var { width, height, depth } = geometry;
         var { x, y } = position;
@@ -332,7 +353,9 @@ export class ObstacleController
      * decode properties required to create a cylinder from a given JSON data
      * @param { CylinderPropType | -1} data cylinder JSON data
      */
-    _decodeCylinderPropsFromJSON = (data: VisualizeType): CylinderPropType | -1 => {
+    private _decodeCylinderPropsFromJSON = (
+        data: VisualizeType
+    ): CylinderPropType | -1 => {
         var { geometry, position, rotation } = data;
         var { radius, radiusTop, radiusBottom, height } = geometry;
         var { x, y } = position;
@@ -344,7 +367,7 @@ export class ObstacleController
         if (x === undefined) i += 1;
         if (y === undefined) i += 1;
         if (i !== 0) {
-            console.error('Failed_To_Derive_Wall_Properties');
+            console.error('Failed_To_Parse_Wall_Properties');
             return -1;
         }
         return {
