@@ -1,21 +1,8 @@
-// const { abs, round, cos, sin } = require('mathjs');
 const {
     VirtualColorSensorEmulator,
     ArenaType,
     AbstractObstacleBuilder
 } = require('../../../dist/pera-swarm');
-
-/* ------------------------------------------------------
-Arena coordinate system (top view)
-
-P1   L4  P2
-┍━━━┑
-L3 ┃   ┃ L1
-┕━━━┛
-P3  L2  P4
-
-Axises: ↑ Y, → X
------------------------------------------------------- */
 
 class ColorSensorEmulator extends VirtualColorSensorEmulator {
     _obstacleController;

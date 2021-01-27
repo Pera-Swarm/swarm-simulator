@@ -1,11 +1,16 @@
-const {
-    SimpleCommunication,
-    DirectedCommunication
-} = require('../../../dist/pera-swarm');
+// const {
+//     SimpleCommunication,
+//     DirectedCommunication
+// } = require('../../../dist/pera-swarm');
 
 const { Robot } = require('../robot/robot');
 
-const { NeoPixelAgent } = require('../agents');
+const {
+    NeoPixelAgent,
+    SimpleCommunicationEmulator,
+    DirectionalCommunicationEmulator
+} = require('../agents');
+
 const { LocalizationController } = require('../controllers');
 const { DistanceSensorEmulator } = require('../emulators');
 
@@ -25,7 +30,7 @@ class Robots {
         this.debug = true;
 
         // Simple Communication Module
-        this.simpleCommunication = new SimpleCommunication(
+        this.simpleCommunication = new SimpleCommunicationEmulator(
             this,
             this.mqttPublish,
             60,
@@ -33,7 +38,7 @@ class Robots {
         );
 
         // Directed Communication Module
-        this.directedCommunication = new DirectedCommunication(
+        this.directedCommunication = new DirectionalCommunicationEmulator(
             this,
             this.mqttPublish,
             60,
@@ -41,11 +46,14 @@ class Robots {
             this.debug
         );
 
+        console.log(swarm.obstacleController);
+
         // Distance Controller Module
         this.distanceSensor = new DistanceSensorEmulator(
             this,
             swarm.arenaConfig,
-            this.mqttPublish
+            this.mqttPublish,
+            swarm.obstacleController
         );
 
         // NeoPixel Controller Module

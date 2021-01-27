@@ -23,9 +23,9 @@ export const normalizeValueRange = (
     minValue: number,
     maxValue: number
 ) => {
-    console.log('value', value);
-    console.log('minValue', minValue);
-    console.log('maxValue', maxValue);
+    // console.log('value', value);
+    // console.log('minValue', minValue);
+    // console.log('maxValue', maxValue);
 
     if (value <= minValue) {
         return minValue;

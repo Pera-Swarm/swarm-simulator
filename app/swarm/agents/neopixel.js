@@ -12,7 +12,7 @@ class NeoPixelAgent extends AbstractAgentEmulator {
         // Store in robot data structure
         robot.setData('neopixel', { R, G, B });
 
-        // Info the robot about update
+        // Info the robot visualizer about update
         this.publish(`output/neopixel/${id}`, msg);
     };
 
@@ -32,11 +32,7 @@ class NeoPixelAgent extends AbstractAgentEmulator {
                     const robot = swarm.robots.findRobotById(id);
 
                     swarm.robots.createIfNotExists(id, () => {
-                        // Update the setting in robot data structure
                         robot.setData('neopixel', { R, G, B });
-
-                        //console.log(robot);
-                        //this.updateNeoPixel(robot, R, G, B);
                     });
                 }
             }

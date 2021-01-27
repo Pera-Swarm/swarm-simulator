@@ -4,7 +4,7 @@ import { ArenaType } from '../environment';
 import { AbstractBox, BoxPropType } from './box';
 import { AbstractCylinder, CylinderPropType } from './cylinder';
 import { AbstractObject, VisualizeType } from './obstacle';
-import { obstacleBuilder, AbstractObstacleBuilder } from './obstaclebuilder';
+import { obstacleBuilder, AbstractObstacleBuilder } from './obstacleBuilder';
 import { AbstractWall, WallPropType } from './wall';
 
 const defaultArenaConfig = {
@@ -140,7 +140,7 @@ export class ObstacleController
                 normalizeValueRange(x, config.xMin, config.xMax),
                 normalizeValueRange(y, config.yMin, config.yMax),
                 depth,
-                true
+                false
             );
             // this.createWall(width, height, orientation, originX, originY, depth, debug);
         }
@@ -159,7 +159,7 @@ export class ObstacleController
                 height,
                 normalizeValueRange(x, config.xMin, config.xMax),
                 normalizeValueRange(y, config.yMin, config.yMax),
-                true
+                false
             );
         }
     };

@@ -47,6 +47,8 @@ class Swarm {
             './app/config/env.config.json'
         );
 
+        console.log(this.environment.obstacleController);
+
         const initialPublishers = [
             ...this.environment.initialPublishers,
             ...this.robots.initialPublishers
@@ -67,7 +69,7 @@ class Swarm {
     }
 
     prune = () => {
-        console.log('Swarm_Prune');
+        // console.log('Swarm_Prune');
         // Delete robots who are not active on last 5 mins (360 seconds)
         this.robots.prune(DEFAULT_ROBOT_ALIVE_INTERVAL);
     };
