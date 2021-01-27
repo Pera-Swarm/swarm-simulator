@@ -1,4 +1,4 @@
-import { VRobot as Robot, Coordinate } from '../../';
+import { VRobot as Robot, Coordinate } from '../';
 import { CoordinateValueInt } from '../coordinate';
 
 export type RobotListType = {
@@ -66,11 +66,6 @@ export abstract class AbstractRobots<TId> {
     abstract broadcast: Function;
 
     abstract changeMode: Function;
-
-    // TODO: add swarm functionality here
-    // getSensorReadings
-    // stopRobot
-    // resetRobot
 }
 
 export class Robots extends AbstractRobots<number> {
@@ -169,7 +164,7 @@ export class Robots extends AbstractRobots<number> {
      */
     findRobotById = (id: number): Robot | -1 => {
         if (id === undefined) throw new TypeError('id unspecified');
-        var result = this._robotList[id];
+        let result = this._robotList[id];
         return result !== undefined ? result : -1;
     };
 
@@ -232,7 +227,7 @@ export class Robots extends AbstractRobots<number> {
      * @returns {Coordinate[]} current robot coordinates : that are existing in the list
      */
     getCoordinatesAll = (): CoordinateValueInt<number>[] => {
-        var result = [];
+        let result = [];
         for (const key in this._robotList) {
             const robot = this.findRobotById(Number(key));
             if (robot !== -1) {

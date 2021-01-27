@@ -2,10 +2,10 @@ const { MQTTRouter } = require('../dist/mqtt-router/index');
 const mqttClient = require('mqtt');
 const mqttConfig = require('../app/config/mqtt.config');
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.mqttOptions);
-var queue = require('queue');
+let queue = require('queue');
 
-var q = queue({ results: [] });
-var router;
+let q = queue({ results: [] });
+let router;
 
 // Sample dynamic route list with handler functions
 const SAMPLE_ROUTES = [
@@ -17,7 +17,7 @@ const SAMPLE_ROUTES = [
         type: 'JSON',
         handler: (msg) => {
             try {
-                var data = JSON.parse(msg);
+                let data = JSON.parse(msg);
                 console.log(
                     `Default Subscriber(${SAMPLE_ROUTES[0].topic}) picked up the message`,
                     data

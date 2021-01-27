@@ -1,7 +1,6 @@
 // Main pera-swarm library components
 const {
     obstacleController,
-    Environment,
     DEFAULT_ROBOT_ALIVE_INTERVAL
 } = require('../../dist/pera-swarm');
 
@@ -13,21 +12,10 @@ const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router'
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 
-// MQTT routes
-const {
-    localizationRoutes,
-    sensorRoutes,
-    robotRoutes,
-    obstacleRoutes
-} = require('./mqtt/');
-
-const { obstacleInitialPublishers } = require('./mqtt/');
-
 // Customized components
 const { Robots } = require('./robots/robots');
-const { schedulerService } = require('../services/cron.js');
-
-const initialPublishers = [...obstacleInitialPublishers];
+const { schedulerService, SIXTY_SECONDS } = require('../services/cron.js');
+const { EnvironmentController } = require('./controllers');
 
 /**
  * @class Swarm Representation
@@ -39,57 +27,55 @@ class Swarm {
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-        this.robots = new Robots(this, this.mqttPublish);
-        this.mqttRouter = new MQTTRouter(
-            mqtt,
-            wrapper(
-                [
-                    ...robotRoutes,
-                    ...localizationRoutes,
-                    ...sensorRoutes,
-                    ...obstacleRoutes,
-                    //...communicationRoutes,
-                    ...this.robots.defaultSubscriptionRoutes
-                ],
-                this
-            ),
-            mqttConfig,
-            setup
-        );
+        // @luk3Sky, please review this, about change of the wrapper
+        // Initiate the MQTT router for communication
+        this.mqttRouter = new MQTTRouter(mqtt, wrapper([], this), mqttConfig, setup);
         this.mqttRouter.start();
 
-        // Initial Publishers according to swarm configuration
-        initialPublishers.forEach((publisher) => {
-            this.mqttPublish(publisher.topic, publisher.data);
-        });
-
-        // Cron Jobs with defined intervals
-        schedulerService(this.prune);
-        schedulerService(this.broadcastCheckALive);
-
-        // TODO: make a publish to topic '/localization/update'
-        // More Info: https://pera-swarm.ce.pdn.ac.lk/docs/communication/mqtt/localization#localizationupdate
-        // Note: added it like this because of the urgent requirement.
-        // Better to move into a propper place later
-        this.mqttPublish('localization/update', '?');
-
-        // Make a publish to topic 'robot/msg/broadcast'
-        this.broadcastCheckALive();
-
-        this.environment = new Environment(
+        // Create the environment
+        this.environment = new EnvironmentController(
             obstacleController(),
             './app/config/env.config.json'
-        ).createObstacles((obstacles) => {
+        );
+        this.environment.createObstacles((obstacles) => {
             // Callback for publishing each obstacle into the environment
             this.mqttPublish('/obstacles', obstacles, {
                 ...mqttConfig.options,
                 retain: false
             });
         });
+
+        this.robots = new Robots(this, this.mqttPublish);
+
+        // Cron Jobs with defined intervals
+        schedulerService(this.prune, SIXTY_SECONDS);
+        schedulerService(this.broadcastCheckALive);
+
+        // Need some time for initiate the modules
+        var self = this;
+        setTimeout(function () {
+            // Add default subscription routes
+            self.mqttRouter.addRoutes(
+                wrapper([...self.environment.defaultSubscriptionRoutes], self)
+            );
+            self.mqttRouter.addRoutes(
+                wrapper([...self.robots.defaultSubscriptionRoutes], self)
+            );
+        }, 1000);
+
+        const initialPublishers = [
+            ...this.environment.initialPublishers,
+            ...this.robots.initialPublishers
+        ];
+
+        // Initial Publishers according to swarm configuration
+        initialPublishers.forEach((publisher) => {
+            this.mqttPublish(publisher.topic, publisher.data);
+        });
     }
 
     prune = () => {
-        console.log('Swarm_Prune');
+        // console.log('Swarm_Prune');
         // Delete robots who are not active on last 5 mins (360 seconds)
         this.robots.prune(DEFAULT_ROBOT_ALIVE_INTERVAL);
     };

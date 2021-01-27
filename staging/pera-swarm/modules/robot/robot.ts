@@ -206,7 +206,7 @@ export class VRobot extends Robot<
         sensorTypes: K[]
     ): SensorsType<number>[K][] {
         if (sensorTypes !== undefined) {
-            var result: SensorsType<number>[K][];
+            let result: SensorsType<number>[K][];
             result = [];
             sensorTypes.forEach((s) => {
                 if (this._sensors[s] !== undefined) {

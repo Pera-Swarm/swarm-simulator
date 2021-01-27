@@ -43,14 +43,14 @@ export abstract class AbstractBox extends AbstractObject {
     }
 
     /**
-     * Wall Object string representation
+     * Box Object string representation
      */
     public toString = (): string => {
         return `  ${this._type} Obstacle\n   width : ${this._width} height: ${this._height}\n   depth: ${this._depth} orientation: ${this._orientation}\n p1: { x: ${this.position.x}, y: ${this.position.y}}\n`;
     };
 }
 
-// This should be in wall.js after pera-swarm library migration
+// This should be in box.js after pera-swarm library migration
 export class Box extends AbstractBox {
     constructor(
         width: number,
