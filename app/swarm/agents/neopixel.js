@@ -5,14 +5,14 @@ class NeoPixelAgent extends AbstractAgentEmulator {
         super(null, null, mqttPublish);
     }
 
-    updateNeoPixel = (robot, R, G, B) => {
+    update = (robot, R, G, B) => {
         const id = robot.id;
         const msg = `${R} ${G} ${B}`;
 
         // Store in robot data structure
         robot.setData('neopixel', { R, G, B });
 
-        // Info the robot visualizer about update
+        // Info the robot visualizer about update, OPTIONAL
         this.publish(`output/neopixel/${id}`, msg);
     };
 
@@ -24,16 +24,14 @@ class NeoPixelAgent extends AbstractAgentEmulator {
                 allowRetained: false,
                 subscribe: true,
                 publish: false,
-                handler: (msg, swarm) => {
+                handler: (msg) => {
                     // Robots can info the server about neopixel strip through this topic
                     // console.log('MQTT.Neopixel: output/neopixel', msg);
 
                     const { id, R, G, B } = msg;
                     const robot = swarm.robots.findRobotById(id);
 
-                    swarm.robots.createIfNotExists(id, () => {
-                        robot.setData('neopixel', { R, G, B });
-                    });
+                    this.update(robot, R, G, B);
                 }
             }
         ];
