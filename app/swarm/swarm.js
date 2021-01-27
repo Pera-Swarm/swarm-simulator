@@ -17,6 +17,9 @@ const { Robots } = require('./robots/robots');
 const { schedulerService, SIXTY_SECONDS } = require('../services/cron.js');
 const { EnvironmentController } = require('./controllers');
 
+// MQTT Routes
+const { localizationRoutes } = require('./mqtt/');
+
 // const initialPublishers = [...obstacleInitialPublishers];
 
 /**
@@ -29,25 +32,42 @@ class Swarm {
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-        this.robots = new Robots(this, this.mqttPublish);
+        // @luk3Sky, please review this, about change of the wrapper
+        // Initiate the MQTT router for communication
         this.mqttRouter = new MQTTRouter(
             mqtt,
-            wrapper([...this.robots.defaultSubscriptionRoutes], this),
+            wrapper([...localizationRoutes], this),
             mqttConfig,
             setup
         );
         this.mqttRouter.start();
 
-        // Cron Jobs with defined intervals
-        schedulerService(this.prune, SIXTY_SECONDS);
-        schedulerService(this.broadcastCheckALive);
-
+        // Create the environment
         this.environment = new EnvironmentController(
             obstacleController(),
             './app/config/env.config.json'
         );
+        this.environment.createObstacles((obstacles) => {
+            // Callback for publishing each obstacle into the environment
+            this.mqttPublish('/obstacles', obstacles, {
+                ...mqttConfig.options,
+                retain: false
+            });
+        });
 
-        console.log(this.environment.obstacleController);
+        this.robots = new Robots(this, this.mqttPublish);
+
+        // Cron Jobs with defined intervals
+        schedulerService(this.prune, SIXTY_SECONDS);
+        schedulerService(this.broadcastCheckALive);
+
+        // Add default subscription routes
+        this.mqttRouter.addRoutes(
+            wrapper([...this.environment.defaultSubscriptionRoutes], this)
+        );
+        this.mqttRouter.addRoutes(
+            wrapper([...this.robots.defaultSubscriptionRoutes], this)
+        );
 
         const initialPublishers = [
             ...this.environment.initialPublishers,
@@ -57,14 +77,6 @@ class Swarm {
         // Initial Publishers according to swarm configuration
         initialPublishers.forEach((publisher) => {
             this.mqttPublish(publisher.topic, publisher.data);
-        });
-
-        this.environment.createObstacles((obstacles) => {
-            // Callback for publishing each obstacle into the environment
-            this.mqttPublish('/obstacles', obstacles, {
-                ...mqttConfig.options,
-                retain: false
-            });
         });
     }
 

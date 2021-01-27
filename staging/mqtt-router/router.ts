@@ -294,9 +294,9 @@ export class MQTTRouter {
             this._routes.push(route);
             if (route.subscribe !== false) {
                 // subscribe at the beginning unless it is avoided by setting 'subscribe:false'
-                if (logLevel === 'debug') {
-                    console.log('MQTT_Subscribed: ', resolveChannelTopic(route.topic));
-                }
+                //if (logLevel === 'debug') {
+                console.log('MQTT_Subscribed: ', resolveChannelTopic(route.topic));
+                //}
                 this._mqttClient.subscribe(
                     resolveChannelTopic(route.topic),
                     this._options
@@ -310,6 +310,18 @@ export class MQTTRouter {
                     );
                 }
             }
+        }
+    };
+
+    /**
+     * method for adding multiple routes to the list
+     * @param {Route[]} route[] list of route objects to be added to the subscriber list
+     */
+    addRoutes = (routes: Route[]) => {
+        // TODO: @luk3Sky, please review this
+        for (let i = 0; i < routes.length; i++) {
+            //console.log(routes[i].topic);
+            this.addRoute(routes[i]);
         }
     };
 

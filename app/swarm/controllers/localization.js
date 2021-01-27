@@ -15,7 +15,7 @@ class LocalizationController extends VirtualLocalizationController {
                 publish: false,
                 handler: (msg, swarm) => {
                     // Robot will call this method to get it's own localization values; x,y,heading
-                    // console.log('MQTT.Localization: /localization', msg);
+                    console.log('MQTT.Localization: /localization', msg);
 
                     const { id, x, y, heading } = msg;
                     const robotCoordinateString = swarm.robots.getCoordinateStringById(
