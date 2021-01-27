@@ -137,6 +137,14 @@ export class Cylinder extends AbstractCylinder {
         ];
     };
 
+    /**
+     * get appearance properties
+     */
+    get appearance(): Appearance {
+        return {
+            color: '#AA0000'
+        };
+    }
     // -------------------- Private functions --------------------
     _point2PointDistance = (from: ObjectCoordinate, to: ObjectCoordinate) => {
         if (validateObjectCoordinate(from) && validateObjectCoordinate(to)) {

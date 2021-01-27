@@ -22,7 +22,8 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
         console.log('color measure from ', { x, y, heading });
 
         // TODO: @NuwanJ implement full logic
-        let obstacleColor = { R: 0, G: 0, B: 0 }; //this._obstacleController.getDistance(heading, x, y);
+        //let obstacleColor = { R: 0, G: 0, B: 0 }; //this._obstacleController.getDistance(heading, x, y);
+        let obstacleColor = this._obstacleController.getColor(heading, x, y);
 
         this.publish(
             `sensor/color/${robot.id}`,

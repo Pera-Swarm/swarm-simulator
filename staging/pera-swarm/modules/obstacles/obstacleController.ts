@@ -1,5 +1,5 @@
 import { abs, cos, sin } from 'mathjs';
-import { normalizeValueRange } from '../../helpers';
+import { normalizeValueRange, hexToRGB } from '../../helpers';
 import { ArenaType } from '../environment';
 import { AbstractBox, BoxPropType } from './box';
 import { AbstractCylinder, CylinderPropType } from './cylinder';
@@ -113,9 +113,11 @@ export class ObstacleController
                 const { geometry } = element;
                 switch (geometry.type) {
                     case 'BoxGeometry':
+                        // console.log('createBox');
                         this.createWallJSON(element, config);
                         break;
                     case 'CylinderGeometry':
+                        // console.log('createCylinder');
                         this.createCylinderJSON(element, config);
                         break;
                     default:
@@ -153,12 +155,13 @@ export class ObstacleController
     createCylinderJSON = (data: VisualizeType, config: ArenaType) => {
         const decodedProps = this._decodeCylinderPropsFromJSON(data);
         if (decodedProps !== -1) {
-            const { radius, height, x, y } = decodedProps;
+            const { radiusTop, radiusBottom, height, x, y } = decodedProps;
+            const radius = (radiusTop + radiusBottom) / 2; // Temp
             this.createCylinder(
                 radius,
                 height,
-                normalizeValueRange(x, config.xMin, config.xMax),
-                normalizeValueRange(y, config.yMin, config.yMax),
+                x, // normalizeValueRange(x, config.xMin, config.xMax),
+                y, // normalizeValueRange(y, config.yMin, config.yMax),
                 false
             );
         }
@@ -251,25 +254,24 @@ export class ObstacleController
         y: number,
         distanceThreshold: number = 10
     ) => {
-        // TODO: @NuwanJ please review this
         let minDist = Infinity;
-        let color = null;
+        let color = { R: 0, G: 0, B: 0 };
 
         for (let i = 0; i < this._list.length; i++) {
             const found = this._list[i].isInRange(heading, x, y);
             //console.log(found);
             if (found == true) {
                 const dist = this._list[i].getDistance(heading, x, y);
-                console.log(dist);
+                color = hexToRGB(this._list[i].appearance.color);
+                console.log(dist, color);
 
                 if (dist > 0 && dist <= minDist) {
                     minDist = dist;
-                    color = this._list[i].appearance.color;
                 }
             }
         }
         if (minDist > distanceThreshold) {
-            color = null;
+            color = { R: 0, G: 0, B: 0 };
         }
         return color;
     };
@@ -374,6 +376,7 @@ export class ObstacleController
      */
     visualizeObstacles = (): VisualizeType[] => {
         let visualizeList: VisualizeType[] = [];
+
         this._list.forEach((item: AbstractObject) => {
             // one obstacle object can have multiple geometrics.
             item.visualize().forEach((itemChild: VisualizeType) => {
