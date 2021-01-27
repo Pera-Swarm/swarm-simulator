@@ -15,24 +15,16 @@ class LocalizationController extends VirtualLocalizationController {
                 publish: false,
                 handler: (msg, swarm) => {
                     // Robot will call this method to get it's own localization values; x,y,heading
+                    // This is called by physical robots
                     console.log('MQTT.Localization: /localization', msg);
 
-                    const { id, x, y, heading } = msg;
-                    const robotCoordinateString = swarm.robots.getCoordinateStringById(
-                        id
-                    );
+                    const { id } = msg;
+                    const robotCoordinate = swarm.robots.getCoordinateStringById(id);
 
-                    if (robotCoordinateString !== -1) {
-                        swarm.mqttPublish(`localization/${id}`, robotCoordinateString);
+                    if (robotCoordinate !== -1) {
+                        swarm.mqttPublish(`localization/${id}`, robotCoordinate);
                     } else {
-                        // No robot found
-                        if (x != undefined && y != undefined && heading != undefined) {
-                            // Just echo the message, because this is a blocking call for the robot
-                            const returnMsg = `${x} ${y} ${heading}`;
-                            swarm.mqttPublish(`localization/${id}`, returnMsg);
-                        } else {
-                            // no need to provide any reply
-                        }
+                        // No robot found, no return message
                     }
                 }
             },
@@ -61,7 +53,7 @@ class LocalizationController extends VirtualLocalizationController {
                     // This will print all available localization detail into topic 'localization/info'
                     // console.log('MQTT.Localization: localization/?', msg);
 
-                    let coordinates = JSON.stringify(swarm.robots.getCoordinatesAll());
+                    const coordinates = JSON.stringify(swarm.robots.getCoordinatesAll());
                     swarm.mqttPublish('localization/info', coordinates);
                 }
             }

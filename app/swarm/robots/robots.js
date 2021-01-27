@@ -1,13 +1,13 @@
 const { Robot } = require('../robot/robot');
 
+const { DistanceSensorEmulator, ColorSensorEmulator } = require('../emulators/sensors');
 const {
-    NeoPixelAgent,
     SimpleCommunicationEmulator,
     DirectionalCommunicationEmulator
-} = require('../agents');
+} = require('../emulators/communication');
+const { NeoPixelAgent } = require('../emulators/agents');
 
 const { LocalizationController } = require('../controllers');
-const { DistanceSensorEmulator } = require('../emulators');
 
 // Class for representing the robots level functionality
 class Robots {
@@ -43,17 +43,24 @@ class Robots {
             this.debug
         );
 
-        // Distance Controller Module
+        // Distance Sensor Emulator
         this.distanceSensor = new DistanceSensorEmulator(
             this,
             this.mqttPublish,
             this.obstacleController
         );
 
-        // NeoPixel Controller Module
+        // Color Sensor Emulator
+        this.colorSensor = new ColorSensorEmulator(
+            this,
+            this.mqttPublish,
+            this.obstacleController
+        );
+
+        // NeoPixel Agent Module
         this.neopixel = new NeoPixelAgent(this.mqttPublish);
 
-        // Localization Controller Module
+        // Localization Module
         this.localization = new LocalizationController(this.mqttPublish);
     }
 
@@ -62,13 +69,20 @@ class Robots {
      */
     get defaultSubscriptionRoutes() {
         const commRoutes = [
+            // Communication
             ...this.simpleCommunication.defaultSubscriptions(),
-            ...this.distanceSensor.defaultSubscriptions(),
             ...this.directedCommunication.defaultSubscriptions(),
-            // ...this.colorSensor.defaultSubscriptions(),
+
+            // Sensor Emulators
+            ...this.distanceSensor.defaultSubscriptions(),
+            ...this.colorSensor.defaultSubscriptions(),
             // ...this.proximitySensor.defaultSubscriptions(),
+
+            // Agent Emulators
             ...this.localization.defaultSubscriptions(),
             ...this.neopixel.defaultSubscriptions(),
+
+            // Robots specific topics
             {
                 topic: 'robot/live',
                 type: 'JSON',
@@ -111,10 +125,6 @@ class Robots {
 
     initialPublishers = [];
 
-    robotBuilder = (id, heading, x, y) => {
-        return new Robot(id, heading, x, y);
-    };
-
     /**
      * method for adding a robot to the robotList
      * @param {number} id robot id
@@ -122,7 +132,7 @@ class Robots {
      * @param {number} x x coordinate
      * @param {number} y y coordinate
      * @param {number} z z coordinate, optional
-     * @returns {number} id : if successful
+     * @returns {Robot} Robot : if successful
      */
     addRobot = (id, heading, x, y, z) => {
         if (id === undefined) throw new TypeError('id unspecified');
@@ -137,11 +147,9 @@ class Robots {
             } else if (z !== undefined) {
                 this.robotList[id] = new Robot(id, heading, x, y, z);
             }
-
-            // TODO: Publish to robot/create topic after review the current flow
             this.size += 1;
-            return id;
         }
+        return this.robotList[id];
     };
 
     /**
@@ -160,7 +168,7 @@ class Robots {
             this.size--;
             this.updated = Date.now();
 
-            this.mqttPublish('robot/delete', { id });
+            this.mqttPublish('robot/delete', id);
             if (callback !== undefined) callback(id);
 
             console.log(`robot:deleted > ${id}`);
@@ -315,6 +323,10 @@ class Robots {
 
     changeMode = (mode, options = {}) => {
         this.broadcast('MODE', value);
+    };
+
+    robotBuilder = (id, heading, x, y) => {
+        return new Robot(id, heading, x, y);
     };
 }
 

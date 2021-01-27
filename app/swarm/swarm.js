@@ -17,11 +17,6 @@ const { Robots } = require('./robots/robots');
 const { schedulerService, SIXTY_SECONDS } = require('../services/cron.js');
 const { EnvironmentController } = require('./controllers');
 
-// MQTT Routes
-const { localizationRoutes } = require('./mqtt/');
-
-// const initialPublishers = [...obstacleInitialPublishers];
-
 /**
  * @class Swarm Representation
  * @classdesc representing the customized swarm level functionality
@@ -34,12 +29,7 @@ class Swarm {
     constructor(setup) {
         // @luk3Sky, please review this, about change of the wrapper
         // Initiate the MQTT router for communication
-        this.mqttRouter = new MQTTRouter(
-            mqtt,
-            wrapper([...localizationRoutes], this),
-            mqttConfig,
-            setup
-        );
+        this.mqttRouter = new MQTTRouter(mqtt, wrapper([], this), mqttConfig, setup);
         this.mqttRouter.start();
 
         // Create the environment
@@ -61,13 +51,17 @@ class Swarm {
         schedulerService(this.prune, SIXTY_SECONDS);
         schedulerService(this.broadcastCheckALive);
 
-        // Add default subscription routes
-        this.mqttRouter.addRoutes(
-            wrapper([...this.environment.defaultSubscriptionRoutes], this)
-        );
-        this.mqttRouter.addRoutes(
-            wrapper([...this.robots.defaultSubscriptionRoutes], this)
-        );
+        // Need some time for initiate the modules
+        var self = this;
+        setTimeout(function () {
+            // Add default subscription routes
+            self.mqttRouter.addRoutes(
+                wrapper([...self.environment.defaultSubscriptionRoutes], self)
+            );
+            self.mqttRouter.addRoutes(
+                wrapper([...self.robots.defaultSubscriptionRoutes], self)
+            );
+        }, 1000);
 
         const initialPublishers = [
             ...this.environment.initialPublishers,
