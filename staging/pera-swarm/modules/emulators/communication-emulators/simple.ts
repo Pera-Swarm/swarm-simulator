@@ -1,6 +1,6 @@
-import { Route } from '../../../mqtt-router';
-import { CoordinateValueInt } from '../coordinate';
-import { Robots } from '../robots';
+import { Route } from '../../../../mqtt-router';
+import { CoordinateValueInt } from '../../coordinate';
+import { Robots } from '../../robots';
 import { Communication } from './index';
 
 export class SimpleCommunication extends Communication {

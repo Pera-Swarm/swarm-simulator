@@ -1,8 +1,8 @@
 import { sqrt, pow, round, atan2 } from 'mathjs';
-import { normalizeAngle } from '../../helpers';
-import { Coordinate, CoordinateValueInt } from '../coordinate';
-import { Robots } from '../robots';
-import { SensorsType, SensorValueType } from '../sensors';
+import { normalizeAngle } from '../../../helpers';
+import { Coordinate, CoordinateValueInt } from '../../coordinate';
+import { Robots } from '../../robots';
+import { SensorsType, SensorValueType } from '../../sensors';
 
 export interface CommunicationInterface {
     _mqttPublish: Function;

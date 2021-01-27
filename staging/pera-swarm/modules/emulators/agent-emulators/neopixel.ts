@@ -15,8 +15,8 @@ export type RGBType<TId, TValue> = {
 export class VirtualNeoPixelEmulator<TId, TValue> extends AbstractAgentEmulator {
     protected _robots: Robots;
 
-    constructor(robots: Robots) {
-        super();
+    constructor(robots: Robots, mqttPublish: Function) {
+        super(robots, mqttPublish);
         this._robots = robots;
     }
 
