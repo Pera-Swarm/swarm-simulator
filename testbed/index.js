@@ -10,13 +10,12 @@ const x = 0;
 const y = 0;
 const heading = 140;
 
-
 // width, height, orientation, originX, originY, debug = false
 // const obs = new WallObstacle(wallWidth, 20, wallOrietation, wallX, wallY, true);
 // const obs = new Wall(wallWidth, 20, wallOrietation, wallX, wallY, true);
 
-// var range = obs.isInRange(heading, x, y, 5);
-// var ans = obs.getDistance(heading, x, y);
+// let range = obs.isInRange(heading, x, y, 5);
+// let ans = obs.getDistance(heading, x, y);
 
 // console.log(range, ans);
 

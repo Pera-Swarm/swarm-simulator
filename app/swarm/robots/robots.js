@@ -1,12 +1,13 @@
-const {
-    SimpleCommunication,
-    DirectedCommunication
-} = require('../../../dist/pera-swarm');
-
 const { Robot } = require('../robot/robot');
 
-const { CentralDistanceSensorModule } = require('../modules/virtual-sensors/');
-const { NeoPixel } = require('../modules/virtual-features/');
+const { DistanceSensorEmulator, ColorSensorEmulator } = require('../emulators/sensors');
+const {
+    SimpleCommunicationEmulator,
+    DirectionalCommunicationEmulator
+} = require('../emulators/communication');
+const { NeoPixelAgent } = require('../emulators/agents');
+
+const { LocalizationController } = require('../controllers');
 
 // Class for representing the robots level functionality
 class Robots {
@@ -23,22 +24,18 @@ class Robots {
         this.mqttPublish = mqttPublish;
         this.debug = true;
 
-        // Attach distance sensor with giving access to arenaConfig data and MQTT publish
-        this.distanceSensor = new CentralDistanceSensorModule(
-            swarm.arenaConfig,
-            this.mqttPublish
-        );
+        this.obstacleController = swarm.environment.obstacleController;
 
-        // Simple communication
-        this.simpleCommunication = new SimpleCommunication(
+        // Simple Communication Module
+        this.simpleCommunication = new SimpleCommunicationEmulator(
             this,
             this.mqttPublish,
             60,
             this.debug
         );
 
-        // Directed communication
-        this.directedCommunication = new DirectedCommunication(
+        // Directed Communication Module
+        this.directedCommunication = new DirectionalCommunicationEmulator(
             this,
             this.mqttPublish,
             60,
@@ -46,7 +43,25 @@ class Robots {
             this.debug
         );
 
-        this.neopixel = new NeoPixel(this.mqttPublish);
+        // Distance Sensor Emulator
+        this.distanceSensor = new DistanceSensorEmulator(
+            this,
+            this.mqttPublish,
+            this.obstacleController
+        );
+
+        // Color Sensor Emulator
+        this.colorSensor = new ColorSensorEmulator(
+            this,
+            this.mqttPublish,
+            this.obstacleController
+        );
+
+        // NeoPixel Agent Module
+        this.neopixel = new NeoPixelAgent(this.mqttPublish);
+
+        // Localization Module
+        this.localization = new LocalizationController(this.mqttPublish);
     }
 
     /**
@@ -54,17 +69,61 @@ class Robots {
      */
     get defaultSubscriptionRoutes() {
         const commRoutes = [
+            // Communication
             ...this.simpleCommunication.defaultSubscriptions(),
             ...this.directedCommunication.defaultSubscriptions(),
+
+            // Sensor Emulators
             ...this.distanceSensor.defaultSubscriptions(),
-            ...this.neopixel.defaultSubscriptions()
+            ...this.colorSensor.defaultSubscriptions(),
+            // ...this.proximitySensor.defaultSubscriptions(),
+
+            // Agent Emulators
+            ...this.localization.defaultSubscriptions(),
+            ...this.neopixel.defaultSubscriptions(),
+
+            // Robots specific topics
+            {
+                topic: 'robot/live',
+                type: 'JSON',
+                allowRetained: false,
+                subscribe: true,
+                publish: false,
+                handler: (msg) => {
+                    // Heartbeat signal from the robots to server
+                    // console.log('MQTT.Robot: robot/live', msg);
+
+                    let robot = swarm.robots.findRobotById(msg.id);
+                    if (robot !== -1) {
+                        const heartbeat = robot.updateHeartbeat();
+                        //console.log('Heatbeat of the robot', msg, 'is updated to', heartbeat);
+                    } else {
+                        // No robot found.
+                        this.createIfNotExists(msg.id, () => {
+                            //console.log('A robot created', msg.id);
+                        });
+                    }
+                }
+            },
+            {
+                topic: 'robot/create',
+                type: 'JSON',
+                allowRetained: true,
+                subscribe: true,
+                publish: false,
+                handler: (msg) => {
+                    // Create a robot on simulator
+                    console.log('MQTT.Robot: robot/create', msg);
+
+                    const { id, heading, x, y } = msg;
+                    const resp = this.addRobot(id, heading, x, y);
+                }
+            }
         ];
         return commRoutes;
     }
 
-    robotBuilder = (id, heading, x, y) => {
-        return new Robot(id, heading, x, y);
-    };
+    initialPublishers = [];
 
     /**
      * method for adding a robot to the robotList
@@ -73,7 +132,7 @@ class Robots {
      * @param {number} x x coordinate
      * @param {number} y y coordinate
      * @param {number} z z coordinate, optional
-     * @returns {number} id : if successful
+     * @returns {Robot} Robot : if successful
      */
     addRobot = (id, heading, x, y, z) => {
         if (id === undefined) throw new TypeError('id unspecified');
@@ -88,11 +147,9 @@ class Robots {
             } else if (z !== undefined) {
                 this.robotList[id] = new Robot(id, heading, x, y, z);
             }
-
-            // TODO: Publish to robot/create topic after review the current flow
             this.size += 1;
-            return id;
         }
+        return this.robotList[id];
     };
 
     /**
@@ -111,7 +168,7 @@ class Robots {
             this.size--;
             this.updated = Date.now();
 
-            this.mqttPublish('robot/delete', { id });
+            this.mqttPublish('robot/delete', id);
             if (callback !== undefined) callback(id);
 
             console.log(`robot:deleted > ${id}`);
@@ -176,7 +233,7 @@ class Robots {
     findRobotById = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
-        var result = this.robotList[id];
+        let result = this.robotList[id];
         return result !== undefined ? result : -1;
     };
 
@@ -213,7 +270,7 @@ class Robots {
      * @returns {Coordinate[]} current robot coordinates : that are existing in the list
      */
     getCoordinatesAll = () => {
-        var result = [];
+        let result = [];
         for (const key in this.robotList) {
             result.push(this.robotList[key].getCoordinates());
         }
@@ -225,6 +282,7 @@ class Robots {
      * @param {Coordinate[]} coordinates coordinate data
      */
     updateCoordinates = (coordinates) => {
+        // TODO: handle through Localization module
         if (coordinates === undefined) throw new TypeError('coordinates unspecified');
 
         coordinates.forEach((item) => {
@@ -248,7 +306,7 @@ class Robots {
     prune = (interval, callback) => {
         if (interval === undefined) throw new TypeError('interval unspecified');
 
-        for (var id in this.robotList) {
+        for (let id in this.robotList) {
             if (this.isAliveRobot(id, interval) == false) {
                 this.removeRobot(id, callback);
             }
@@ -265,6 +323,10 @@ class Robots {
 
     changeMode = (mode, options = {}) => {
         this.broadcast('MODE', value);
+    };
+
+    robotBuilder = (id, heading, x, y) => {
+        return new Robot(id, heading, x, y);
     };
 }
 

@@ -137,6 +137,14 @@ export class Cylinder extends AbstractCylinder {
         ];
     };
 
+    /**
+     * get appearance properties
+     */
+    get appearance(): Appearance {
+        return {
+            color: '#AA0000'
+        };
+    }
     // -------------------- Private functions --------------------
     _point2PointDistance = (from: ObjectCoordinate, to: ObjectCoordinate) => {
         if (validateObjectCoordinate(from) && validateObjectCoordinate(to)) {
@@ -160,7 +168,7 @@ export class Cylinder extends AbstractCylinder {
 
     _angleDifference = (heading: number, angle: number) => {
         // Get the absolute difference between heading and target angle
-        var difference = (angle - heading) % 360;
+        let difference = (angle - heading) % 360;
         if (difference <= -180) difference += 360;
         if (difference > 180) difference -= 360;
         return difference;
