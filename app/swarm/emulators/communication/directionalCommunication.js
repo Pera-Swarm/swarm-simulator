@@ -1,6 +1,6 @@
-const { SimpleCommunication } = require('../../../dist/pera-swarm');
+const { DirectedCommunication } = require('../../../../dist/pera-swarm');
 
-class SimpleCommunicationEmulator extends SimpleCommunication {
+class DirectionalCommunicationEmulator extends DirectedCommunication {
     // TODO: @NuwanJ
     constructor(robots, mqttPublish, maxDistance = 100, debug = false) {
         super(robots, mqttPublish, maxDistance, debug);
@@ -9,7 +9,7 @@ class SimpleCommunicationEmulator extends SimpleCommunication {
     defaultSubscriptions = () => {
         return [
             {
-                topic: 'comm/out/simple',
+                topic: 'comm/out/directional',
                 type: 'JSON',
                 allowRetained: false,
                 subscribe: true,
@@ -17,7 +17,7 @@ class SimpleCommunicationEmulator extends SimpleCommunication {
                 handler: (msg) => {
                     // The robots can transmit messages to other robots using a transmission protocol.
                     // Server will decide the robots who can receive the message
-                    console.log('MQTT.Comm: comm/out/simple', msg);
+                    console.log('MQTT.Comm: comm/out/directional', msg);
 
                     this.broadcast(msg.id, msg.msg, (data) => {
                         console.log('Sent to', data.receivers, 'robots');
@@ -28,4 +28,4 @@ class SimpleCommunicationEmulator extends SimpleCommunication {
     };
 }
 
-module.exports = { SimpleCommunicationEmulator };
+module.exports = { DirectionalCommunicationEmulator };

@@ -2,35 +2,30 @@ const {
     VirtualDistanceSensorEmulator,
     ArenaType,
     AbstractObstacleBuilder
-} = require('../../../dist/pera-swarm');
+} = require('../../../../dist/pera-swarm');
 
 class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
     /**
      * DistanceSensorEmulator
-     * @param {ArenaType} arena arena config
+     * @param {Robots} robots robot object
      * @param {Function} mqttPublish mqtt publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
      */
-     constructor(robots, mqttPublish, obstacleController = undefined) {
-         super(robots);
-
-         // @Override
-         this._publish = mqttPublish;
-
-         this._obstacleController = obstacleController;
-     }
+    constructor(robots, mqttPublish, obstacleController = undefined) {
+        super(robots, mqttPublish);
+        this._obstacleController = obstacleController;
+    }
 
     getReading = (robot, callback) => {
         const { x, y, heading } = robot.getCoordinates();
+        console.log('distance measure from ', { x, y, heading });
+
+        // TODO: @NuwanJ implement full logic
+        let obstacleDist = this._obstacleController.getDistance(heading, x, y);
+
+        this.publish(`sensor/distance/${robot.id}`, obstacleDist);
 
         robot.updateHeartbeat();
-        console.log('dist from ', { x, y, heading });
-
-        let obstacleDist = this._obstacleController.getDistance(heading, x, y);
-        // TODO: @NuwanJ implement a method for consider robots (phy|vir) as obstacles.
-        // let robotDist = this._robots.getDistance(heading, x, y);
-
-        this._publish(`sensor/distance/${robot.id}`, obstacleDist);
         this.setData(robot, obstacleDist);
 
         if (callback != undefined) callback(obstacleDist);

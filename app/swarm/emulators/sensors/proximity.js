@@ -3,24 +3,20 @@ const {
     VirtualProximitySensorEmulator,
     ArenaType,
     AbstractObstacleBuilder
-} = require('../../../dist/pera-swarm');
+} = require('../../../../dist/pera-swarm');
 
 class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
     _obstacleController;
     /**
      * ProximitySensorEmulator
-     * @param {ArenaType} arena arena config
+     * @param {Robots} robots robot object
      * @param {Function} mqttPublish mqtt publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
      */
-     constructor(robots, mqttPublish, obstacleController = undefined) {
-         super(robots);
-
-         // @Override
-         this._publish = mqttPublish;
-
-         this._obstacleController = obstacleController;
-     }
+    constructor(robots, mqttPublish, obstacleController = undefined) {
+        super(robots);
+        this._obstacleController = obstacleController;
+    }
 
     getReading = (robot, callback) => {
         const { x, y, heading } = robot.getCoordinates();

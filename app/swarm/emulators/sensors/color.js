@@ -2,38 +2,35 @@ const {
     VirtualColorSensorEmulator,
     ArenaType,
     AbstractObstacleBuilder
-} = require('../../../dist/pera-swarm');
+} = require('../../../../dist/pera-swarm');
 
 class ColorSensorEmulator extends VirtualColorSensorEmulator {
-    _obstacleController;
-
     /**
      * ColorSensorEmulator
-     * @param {ArenaType} arena arena config
+     * @param {Robots} robots robot object
      * @param {Function} mqttPublish mqtt publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
      */
-     constructor(robots, mqttPublish, obstacleController = undefined) {
-         super(robots);
-
-         // @Override
-         this._publish = mqttPublish;
-
-         this._obstacleController = obstacleController;
-     }
+    constructor(robots, mqttPublish, obstacleController = undefined) {
+        super(robots, mqttPublish);
+        this._obstacleController = obstacleController;
+    }
 
     getReading = (robot, callback) => {
         const { x, y, heading } = robot.getCoordinates();
 
+        console.log('color measure from ', { x, y, heading });
+
+        // TODO: @NuwanJ implement full logic
+        let obstacleColor = { R: 0, G: 0, B: 0 }; //this._obstacleController.getDistance(heading, x, y);
+
+        this.publish(
+            `sensor/color/${robot.id}`,
+            `${obstacleColor.R} ${obstacleColor.G} ${obstacleColor.B}`
+        );
+
+        this.setData(robot, obstacleColor);
         robot.updateHeartbeat();
-        console.log('color from ', { x, y, heading });
-
-        let obstacleColor = this._obstacleController.getDistance(heading, x, y);
-        // TODO: @NuwanJ implement a method to get robot colors too
-        // let robotColor = this._robots.getDistance(heading, x, y);
-
-        this.publish(`sensor/color/${robot.id}`, obstacleColor);
-        this.setData(robot, color);
 
         if (callback != undefined) callback(obstacleColor);
     };
