@@ -1,4 +1,5 @@
-import { AbstractVirtualEmulator } from '../../';
+import { AbstractAgentEmulator } from '../';
+import { Robots } from '../../../';
 
 export type RGBType<TId, TValue> = {
     id?: TId;
@@ -11,30 +12,13 @@ export type RGBType<TId, TValue> = {
  * @class VirtualNeoPixelRelayModule
  * @classdesc Provides a General Virtual Neo Pixel Relay Module Representation
  */
-export class VirtualNeoPixelEmulator<TId, TValue> extends AbstractVirtualEmulator {
-    protected _publish: Function;
-    protected _publishTopic: string;
+export class VirtualNeoPixelEmulator<TId, TValue> extends AbstractAgentEmulator {
+    protected _robots: Robots;
 
-    constructor(publish: Function, publishTopic: string = 'out/neopixel/') {
-        super(publish, publishTopic);
-        this._publish = publish;
-        this._publishTopic = publishTopic;
+    constructor(robots: Robots) {
+        super();
+        this._robots = robots;
     }
-
-    /**
-     * the mqtt publish topic
-     */
-    get topic(): string {
-        return this._publishTopic;
-    }
-
-    /**
-     * set the mqtt publish topic
-     * @param {string} topic the mqtt publish topic
-     */
-    setTopic = (topic: string) => {
-        this._publishTopic = topic;
-    };
 
     updateNeoPixel = (robot: Object, R: TValue, G: TValue, B: TValue) => {};
 

@@ -9,17 +9,10 @@ import { Robots } from '../../../';
  * @classdesc Virtual Distance Sensor Emulator Representation
  */
 export class VirtualDistanceSensorEmulator extends AbstractSensorEmulator {
-    protected _arena: ArenaType;
     protected _robots: Robots;
 
-    constructor(
-        robots: Robots,
-        publish: Function,
-        publishTopic: string = 'distance/',
-        arena: ArenaType
-    ) {
-        super(publish, publishTopic);
-        this._arena = arena;
+    constructor(robots: Robots) {
+        super();
         this._robots = robots;
     }
 
