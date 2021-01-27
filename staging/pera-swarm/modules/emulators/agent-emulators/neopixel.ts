@@ -1,5 +1,5 @@
-import { AbstractAgentEmulator } from '../';
-import { Robots } from '../../../';
+import { AbstractAgentEmulator } from './';
+import { Robots } from '../../';
 
 export type RGBType<TId, TValue> = {
     id?: TId;
