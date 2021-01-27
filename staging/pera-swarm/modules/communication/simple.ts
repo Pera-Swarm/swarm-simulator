@@ -57,23 +57,6 @@ export class SimpleCommunication extends Communication {
      * this will be handled by mqtt-router
      */
     defaultSubscriptions = (): Route[] => {
-        return [
-            {
-                topic: 'comm/out/simple',
-                type: 'JSON',
-                allowRetained: false,
-                subscribe: true,
-                publish: true,
-                handler: (msg: any) => {
-                    // The robots can transmit messages to other robots using a transmission protocol.
-                    // Server will decide the robots who can receive the message
-                    console.log('MQTT.Comm: comm/out/simple', msg);
-
-                    this.broadcast(msg.id, msg.msg, (data: any) => {
-                        console.log('Sent to', data.receivers, 'robots');
-                    });
-                }
-            }
-        ];
+        return [];
     };
 }

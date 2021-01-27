@@ -1,11 +1,11 @@
-const {
-    SimpleCommunication,
-    DirectedCommunication
-} = require('../../../dist/pera-swarm');
-
 const { Robot } = require('../robot/robot');
 
-const { NeoPixelAgent } = require('../agents');
+const {
+    NeoPixelAgent,
+    SimpleCommunicationEmulator,
+    DirectionalCommunicationEmulator
+} = require('../agents');
+
 const { LocalizationController } = require('../controllers');
 const { DistanceSensorEmulator } = require('../emulators');
 
@@ -24,8 +24,10 @@ class Robots {
         this.mqttPublish = mqttPublish;
         this.debug = true;
 
+        this.obstacleController = swarm.environment.obstacleController;
+
         // Simple Communication Module
-        this.simpleCommunication = new SimpleCommunication(
+        this.simpleCommunication = new SimpleCommunicationEmulator(
             this,
             this.mqttPublish,
             60,
@@ -33,7 +35,7 @@ class Robots {
         );
 
         // Directed Communication Module
-        this.directedCommunication = new DirectedCommunication(
+        this.directedCommunication = new DirectionalCommunicationEmulator(
             this,
             this.mqttPublish,
             60,
@@ -44,8 +46,8 @@ class Robots {
         // Distance Controller Module
         this.distanceSensor = new DistanceSensorEmulator(
             this,
-            swarm.arenaConfig,
-            this.mqttPublish
+            this.mqttPublish,
+            this.obstacleController
         );
 
         // NeoPixel Controller Module
@@ -61,9 +63,9 @@ class Robots {
     get defaultSubscriptionRoutes() {
         const commRoutes = [
             ...this.simpleCommunication.defaultSubscriptions(),
+            ...this.distanceSensor.defaultSubscriptions(),
             ...this.directedCommunication.defaultSubscriptions(),
             // ...this.colorSensor.defaultSubscriptions(),
-            ...this.distanceSensor.defaultSubscriptions(),
             // ...this.proximitySensor.defaultSubscriptions(),
             ...this.localization.defaultSubscriptions(),
             ...this.neopixel.defaultSubscriptions(),
@@ -73,7 +75,7 @@ class Robots {
                 allowRetained: false,
                 subscribe: true,
                 publish: false,
-                handler: (msg, swarm) => {
+                handler: (msg) => {
                     // Heartbeat signal from the robots to server
                     // console.log('MQTT.Robot: robot/live', msg);
 
@@ -83,7 +85,7 @@ class Robots {
                         //console.log('Heatbeat of the robot', msg, 'is updated to', heartbeat);
                     } else {
                         // No robot found.
-                        swarm.robots.createIfNotExists(msg.id, () => {
+                        this.createIfNotExists(msg.id, () => {
                             //console.log('A robot created', msg.id);
                         });
                     }
@@ -92,15 +94,15 @@ class Robots {
             {
                 topic: 'robot/create',
                 type: 'JSON',
-                allowRetained: false,
+                allowRetained: true,
                 subscribe: true,
                 publish: false,
-                handler: (msg, swarm) => {
+                handler: (msg) => {
                     // Create a robot on simulator
                     console.log('MQTT.Robot: robot/create', msg);
 
                     const { id, heading, x, y } = msg;
-                    const resp = swarm.robots.addRobot(id, heading, x, y);
+                    const resp = this.addRobot(id, heading, x, y);
                 }
             }
         ];
@@ -272,6 +274,7 @@ class Robots {
      * @param {Coordinate[]} coordinates coordinate data
      */
     updateCoordinates = (coordinates) => {
+        // TODO: handle through Localization module
         if (coordinates === undefined) throw new TypeError('coordinates unspecified');
 
         coordinates.forEach((item) => {
