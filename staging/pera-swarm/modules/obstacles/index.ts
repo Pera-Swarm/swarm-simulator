@@ -1,5 +1,4 @@
-export * from './cylinder';
-export * from './obstacle';
+export * from './generalObstacles';
+export * from './abstractObstacles';
 export * from './obstacleController';
 export * from './obstacleBuilder';
-export * from './wall';

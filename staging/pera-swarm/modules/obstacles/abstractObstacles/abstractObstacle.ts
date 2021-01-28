@@ -32,22 +32,24 @@ export type VisualizeType = {
  * @class Obstacle Object
  * @classdesc Obstacle Object Representation
  */
-export abstract class AbstractObject {
+export abstract class AbstractObstacle {
     protected _id: string;
-    protected _height: number;
-    protected _position: ObjectCoordinate;
     protected _type: string;
+
+    protected _position: ObjectCoordinate; /* center coordinate of the Obstacle */
+    protected _color: string; /* color of the Obstacle */
+
     protected _geometryType: string;
-    protected _color: string;
     protected _materialType: string;
+
     protected _debug: boolean;
     protected _created: Date;
     protected _updated: number;
 
-    constructor(height: number, position: ObjectCoordinate, debug: boolean = false) {
+    constructor(position: ObjectCoordinate, debug: boolean = false) {
         this._id = uuid();
-        this._height = height;
         this._position = position;
+
         this._debug = debug;
         this._type = 'Object';
         this._geometryType = 'Geometry';
@@ -62,13 +64,6 @@ export abstract class AbstractObject {
      */
     get id(): string {
         return this._id;
-    }
-
-    /**
-     * get height
-     */
-    get height(): number {
-        return this._height;
     }
 
     /**
@@ -173,6 +168,11 @@ export abstract class AbstractObject {
      * @returns {number} distance from the given object to this obstacle
      */
     abstract getDistance: Function;
+
+    /**
+     * @returns {string} color of the obstacle in format #RRGGBB
+     */
+    abstract getColor: Function;
 }
 
 /**

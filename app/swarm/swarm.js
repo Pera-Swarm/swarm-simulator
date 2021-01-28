@@ -13,7 +13,7 @@ const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router'
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 
 // Customized components
-const { Robots } = require('./robots/robots');
+const { Robots } = require('./controllers/robots');
 const { schedulerService, SIXTY_SECONDS } = require('../services/cron.js');
 const { EnvironmentController } = require('./controllers');
 
@@ -37,13 +37,6 @@ class Swarm {
             obstacleController(),
             './app/config/env.config.json'
         );
-        this.environment.createObstacles((obstacles) => {
-            // Callback for publishing each obstacle into the environment
-            this.mqttPublish('/obstacles', obstacles, {
-                ...mqttConfig.options,
-                retain: false
-            });
-        });
 
         this.robots = new Robots(this, this.mqttPublish);
 
@@ -61,6 +54,15 @@ class Swarm {
             self.mqttRouter.addRoutes(
                 wrapper([...self.robots.defaultSubscriptionRoutes], self)
             );
+
+            // Add obstacles to the environment
+            self.environment.createObstacles((obstacles) => {
+                // Callback for publishing each obstacle into the environment
+                self.mqttPublish('/obstacles', obstacles, {
+                    ...mqttConfig.options,
+                    retain: false
+                });
+            });
         }, 1000);
 
         const initialPublishers = [
