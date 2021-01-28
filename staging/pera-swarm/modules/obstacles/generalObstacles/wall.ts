@@ -22,6 +22,7 @@ export class Wall extends AbstractBox {
     protected _p1: ObjectCoordinate;
     protected _p2: ObjectCoordinate;
 
+
     constructor(
         width: number,
         height: number,
@@ -38,7 +39,7 @@ export class Wall extends AbstractBox {
             orientation,
             {
                 x: originX + (width / 2) * cos((orientation / 180) * Math.PI),
-                y: originY + (width / 2) * cos((orientation / 180) * Math.PI)
+                y: originY + (width / 2) * sin((orientation / 180) * Math.PI)
             },
             debug
         );
@@ -58,6 +59,8 @@ export class Wall extends AbstractBox {
         if (debug) {
             console.log(`Created: [\n ${this.toString()}] `);
         }
+
+        console.log(this.toString());
     }
 
     public toString = (): string => {
