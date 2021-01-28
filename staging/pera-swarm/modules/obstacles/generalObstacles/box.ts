@@ -1,9 +1,4 @@
-
-import {
-    AbstractBox,
-    VisualizeType,
-    BoxPropType
-} from '../abstractObstacles';
+import { AbstractBox, VisualizeType, BoxPropType } from '../abstractObstacles';
 
 export class Box extends AbstractBox {
     constructor(
@@ -54,7 +49,6 @@ export class Box extends AbstractBox {
     };
 
     getDistance = (heading: number, x: number, y: number) => {
-
         if (this.isInRange(heading, x, y) == false) {
             return undefined;
         } else {
@@ -94,7 +88,6 @@ export class Box extends AbstractBox {
             }
         ];
     };
-
 }
 
 export { AbstractBox, BoxPropType };
