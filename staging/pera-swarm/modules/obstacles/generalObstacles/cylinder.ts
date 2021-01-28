@@ -1,45 +1,14 @@
-import { normalizeAngle } from 'pera-swarm/lib';
-import {
-    AbstractObject,
-    ObjectCoordinate,
-    validateObjectCoordinate,
-    VisualizeType
-} from './obstacle';
 const { sqrt, pow, abs, round, cos, sin, atan2, max, asin } = require('mathjs');
 
-export type CylinderPropType = {
-    radius: number;
-    radiusTop?: number;
-    radiusBottom?: number;
-    height: number;
-    x: number;
-    y: number;
-};
+import { normalizeAngle } from 'pera-swarm/lib';
+import {
+    AbstractCylinder,
+    ObjectCoordinate,
+    validateObjectCoordinate,
+    VisualizeType,
+    CylinderPropType
+} from '../abstractObstacles/abstractCylinder';
 
-export abstract class AbstractCylinder extends AbstractObject {
-    protected _radius: number;
-
-    constructor(
-        radius: number,
-        height: number,
-        center: ObjectCoordinate,
-        debug: boolean
-    ) {
-        super(height, center, debug);
-        this._radius = radius;
-        this._type = 'Cylinder';
-        this._geometryType = 'CylinderGeometry';
-    }
-
-    /**
-     * Cylinder Object string representation
-     */
-    public toString = (): string => {
-        return `  ${this._type} Obstacle\n   radius: ${this._radius} height: ${this._height}\n   position: { x: ${this._position.x}, y: ${this._position.y}}\n`;
-    };
-}
-
-// This should be in cylinder.js after pera-swarm library migration
 export class Cylinder extends AbstractCylinder {
     constructor(
         radius: number,
@@ -57,7 +26,7 @@ export class Cylinder extends AbstractCylinder {
     geometric = () => {
         return {
             center: this.position,
-            height: this.height,
+            height: this._height,
             radius: this._radius
         };
     };
@@ -73,6 +42,10 @@ export class Cylinder extends AbstractCylinder {
         const from = { x: x, y: y };
         const dist = this._point2PointDistance(from, this.position);
         return max(dist - this._radius, 0);
+    };
+
+    getColor = () => {
+        return this._color;
     };
 
     isInRange = (heading: number, x: number, y: number, angleThreshold: number = 0) => {
@@ -118,7 +91,7 @@ export class Cylinder extends AbstractCylinder {
                     type: this.geometryType,
                     radiusTop: this._radius,
                     radiusBottom: this._radius,
-                    height: this.height
+                    height: this._height
                 },
                 material: {
                     type: this.materialType,
@@ -137,14 +110,6 @@ export class Cylinder extends AbstractCylinder {
         ];
     };
 
-    /**
-     * get appearance properties
-     */
-    get appearance(): Appearance {
-        return {
-            color: '#AA0000'
-        };
-    }
     // -------------------- Private functions --------------------
     _point2PointDistance = (from: ObjectCoordinate, to: ObjectCoordinate) => {
         if (validateObjectCoordinate(from) && validateObjectCoordinate(to)) {
@@ -174,3 +139,6 @@ export class Cylinder extends AbstractCylinder {
         return difference;
     };
 }
+
+// TODO
+export { AbstractCylinder, CylinderPropType };

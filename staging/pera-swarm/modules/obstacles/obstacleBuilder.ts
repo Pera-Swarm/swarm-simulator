@@ -1,7 +1,7 @@
-import { AbstractCylinder, Cylinder } from './cylinder';
-import { AbstractWall, Wall } from './wall';
-import { AbstractBox, Box } from './box';
-import { AbstractObject } from './obstacle';
+import { Cylinder, CylinderPropType } from './generalObstacles/cylinder';
+import { Wall, WallPropType } from './generalObstacles/wall';
+import { Box, BoxPropType } from './generalObstacles/box';
+import { AbstractObstacle } from './abstractObstacles/abstractObstacle';
 
 export interface AbstractObstacleBuilder {
     createWall(
@@ -12,7 +12,7 @@ export interface AbstractObstacleBuilder {
         originY: number,
         depth: number,
         debug: boolean
-    ): AbstractWall;
+    ): Wall;
 
     createBox(
         width: number,
@@ -22,7 +22,7 @@ export interface AbstractObstacleBuilder {
         originX: number,
         originY: number,
         debug: boolean
-    ): AbstractBox;
+    ): Box;
 
     createCylinder(
         radius: number,
@@ -30,9 +30,9 @@ export interface AbstractObstacleBuilder {
         originX: number,
         originY: number,
         debug: boolean
-    ): AbstractCylinder;
+    ): Cylinder;
 
-    changeMaterial(obstacle: AbstractObject, materialType: string): void;
+    changeMaterial(obstacle: AbstractObstacle, materialType: string): void;
 }
 
 export class ObstacleBuilder implements AbstractObstacleBuilder {
@@ -53,7 +53,7 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         originY: number,
         depth: number,
         debug: boolean
-    ): AbstractWall {
+    ): Wall {
         return new Wall(width, height, orientation, originX, originY, depth, debug);
     }
 
@@ -65,7 +65,7 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         originX: number,
         originY: number,
         debug: boolean
-    ): AbstractBox {
+    ): Box {
         return new Box(width, height, depth, orientation, originX, originY, debug);
     }
 
@@ -75,11 +75,11 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         originX: number,
         originY: number,
         debug: boolean
-    ): AbstractCylinder {
+    ): Cylinder {
         return new Cylinder(radius, height, originX, originY, debug);
     }
 
-    changeMaterial = (obstacle: AbstractObject, materialType: string) => {
+    changeMaterial = (obstacle: AbstractObstacle, materialType: string) => {
         obstacle.setMaterial(materialType);
     };
 }

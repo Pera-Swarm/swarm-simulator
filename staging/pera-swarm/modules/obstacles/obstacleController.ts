@@ -1,11 +1,15 @@
 import { abs, cos, sin } from 'mathjs';
-import { normalizeValueRange, hexToRGB } from '../../helpers';
+import { normalizeValueRange } from '../../helpers';
+
 import { ArenaType } from '../environment';
-import { AbstractBox, BoxPropType } from './box';
-import { AbstractCylinder, CylinderPropType } from './cylinder';
-import { AbstractObject, VisualizeType } from './obstacle';
+import { AbstractObstacle, VisualizeType } from './abstractObstacles/abstractObstacle';
 import { obstacleBuilder, AbstractObstacleBuilder } from './obstacleBuilder';
-import { AbstractWall, WallPropType } from './wall';
+
+// Implemented obstacles
+import { Box, Cylinder, Wall } from './generalObstacles';
+
+// PropTypes of implemented obstacles
+import { BoxPropType, CylinderPropType, WallPropType } from './generalObstacles';
 
 const defaultArenaConfig = {
     xMin: 150,
@@ -16,7 +20,7 @@ const defaultArenaConfig = {
 };
 
 export interface AbstractObstacleController {
-    _list: AbstractObject[];
+    _list: AbstractObstacle[];
     createObstaclesJSON: Function;
     setMaterialById: Function;
     setColorById: Function;
@@ -28,7 +32,7 @@ export interface AbstractObstacleController {
 
 export class ObstacleController
     implements AbstractObstacleBuilder, AbstractObstacleController {
-    _list: AbstractObject[];
+    _list: AbstractObstacle[];
     _arenaConfig: ArenaType;
     private builder: AbstractObstacleBuilder;
     protected static instance: ObstacleController;
@@ -56,7 +60,7 @@ export class ObstacleController
         originY: number,
         depth: number,
         debug: boolean
-    ): AbstractWall {
+    ): Wall {
         const obj = this.builder.createWall(
             width,
             height,
@@ -78,7 +82,7 @@ export class ObstacleController
         originX: number,
         originY: number,
         debug: boolean
-    ): AbstractBox {
+    ): Box {
         const obj = this.builder.createBox(
             width,
             height,
@@ -98,7 +102,7 @@ export class ObstacleController
         originX: number,
         originY: number,
         debug: boolean
-    ): AbstractCylinder {
+    ): Cylinder {
         const obj = this.builder.createCylinder(radius, height, originX, originY, debug);
         this._list.push(obj);
         return obj;
@@ -155,8 +159,8 @@ export class ObstacleController
     createCylinderJSON = (data: VisualizeType, config: ArenaType) => {
         const decodedProps = this._decodeCylinderPropsFromJSON(data);
         if (decodedProps !== -1) {
-            const { radiusTop, radiusBottom, height, x, y } = decodedProps;
-            const radius = (radiusTop + radiusBottom) / 2; // Temp
+            const { radius, radiusTop, radiusBottom, height, x, y } = decodedProps;
+            // const radius = (radiusTop + radiusBottom) / 2; // Temp
             this.createCylinder(
                 radius,
                 height,
@@ -170,16 +174,16 @@ export class ObstacleController
     /**
      * get obstacle list
      */
-    get list(): AbstractObject[] {
+    get list(): AbstractObstacle[] {
         return this.list;
     }
 
     /**
      * method for finding an obstacle in the list with a given id
      * @param {string} type
-     * @returns {AbstractObject|-1}
+     * @returns {AbstractObstacle|-1}
      */
-    findObstacleById = (id: string): AbstractObject | -1 => {
+    findObstacleById = (id: string): AbstractObstacle | -1 => {
         if (id === undefined) {
             console.error('Invalid id');
             return -1;
@@ -201,14 +205,14 @@ export class ObstacleController
     /**
      * method for finding obstacles in the list with a given type
      * @param {string} type
-     * @returns {AbstractObject[]}
+     * @returns {AbstractObstacle[]}
      */
-    findObstaclesByType = (type: string): AbstractObject[] => {
+    findObstaclesByType = (type: string): AbstractObstacle[] => {
         if (type === undefined) {
             console.error('Invalid type');
             return [];
         } else {
-            const foundObjs: AbstractObject[] = [];
+            const foundObjs: AbstractObstacle[] = [];
             this._list.forEach((item) => {
                 if (item.type === type) {
                     foundObjs.push(item);
@@ -255,14 +259,14 @@ export class ObstacleController
         distanceThreshold: number = 10
     ) => {
         let minDist = Infinity;
-        let color = { R: 0, G: 0, B: 0 };
+        let color = null;
 
         for (let i = 0; i < this._list.length; i++) {
             const found = this._list[i].isInRange(heading, x, y);
             //console.log(found);
             if (found == true) {
                 const dist = this._list[i].getDistance(heading, x, y);
-                color = hexToRGB(this._list[i].appearance.color);
+                color = this._list[i].appearance.color;
                 console.log(dist, color);
 
                 if (dist > 0 && dist <= minDist) {
@@ -271,7 +275,7 @@ export class ObstacleController
             }
         }
         if (minDist > distanceThreshold) {
-            color = { R: 0, G: 0, B: 0 };
+            color = null;
         }
         return color;
     };
@@ -321,10 +325,10 @@ export class ObstacleController
 
     /**
      * change material
-     * @param {AbstractObject} id
+     * @param {AbstractObstacle} id
      * @param {string} materialType
      */
-    changeMaterial(obstacle: AbstractObject, materialType: string): void {
+    changeMaterial(obstacle: AbstractObstacle, materialType: string): void {
         if (materialType === undefined) {
             console.error('Invalid material type');
         } else {
@@ -377,7 +381,7 @@ export class ObstacleController
     visualizeObstacles = (): VisualizeType[] => {
         let visualizeList: VisualizeType[] = [];
 
-        this._list.forEach((item: AbstractObject) => {
+        this._list.forEach((item: AbstractObstacle) => {
             // one obstacle object can have multiple geometrics.
             item.visualize().forEach((itemChild: VisualizeType) => {
                 visualizeList.push(itemChild);

@@ -1,5 +1,9 @@
 import fs from 'fs';
-import { AbstractObject, AbstractObstacleController, VisualizeType } from '../obstacles/';
+import {
+    AbstractObstacle,
+    AbstractObstacleController,
+    VisualizeType
+} from '../obstacles/';
 
 export type ArenaType = {
     xMin: number;
@@ -11,7 +15,7 @@ export type ArenaType = {
 
 export type EnvironmentConfig = {
     arena: any;
-    obstacles: AbstractObject[];
+    obstacles: AbstractObstacle[];
     channel: string;
 };
 

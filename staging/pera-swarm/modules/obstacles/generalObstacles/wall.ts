@@ -1,12 +1,12 @@
+const { abs, round, cos, sin, tan, atan2, sqrt, pow, distance } = require('mathjs');
+
 import { normalizeAngle } from 'pera-swarm/lib';
 import {
-    AbstractObject,
+    AbstractBox,
     ObjectCoordinate,
     validateObjectCoordinate,
     VisualizeType
-} from './obstacle';
-
-const { abs, round, cos, sin, tan, atan2, sqrt, pow, distance } = require('mathjs');
+} from '../abstractObstacles/abstractBox';
 
 export type WallPropType = {
     width: number;
@@ -17,73 +17,57 @@ export type WallPropType = {
     orientation: number;
 };
 
-export abstract class AbstractWall extends AbstractObject {
-    protected _width: number;
-    protected _depth: number;
-    protected _orientation: number;
-    protected _theta: number;
+// This should be in wall.js after pera-swarm library migration
+export class Wall extends AbstractBox {
+    protected _p1: ObjectCoordinate;
     protected _p2: ObjectCoordinate;
 
     constructor(
         width: number,
         height: number,
         orientation: number,
-        position: ObjectCoordinate,
-        depth: number = 1,
-        debug: boolean
-    ) {
-        super(height, position, debug);
-        this._width = width;
-        this._orientation = orientation;
-        this._theta = (orientation / 360) * 2 * Math.PI;
-        this._p2 = {
-            x: this.position.x + this._width * cos(this._theta),
-            y: this.position.y + this._width * sin(this._theta)
-        };
-        this._depth = depth;
-        this._type = 'Wall';
-        this._geometryType = 'BoxGeometry';
-    }
-
-    /**
-     * Wall Object string representation
-     */
-    public toString = (): string => {
-        return `  ${this._type} Obstacle\n   width : ${this._width} height: ${this._height}\n   depth: ${this._depth} orientation: ${this._orientation}\n p1: { x: ${this.position.x}, y: ${this.position.y}} p2: { x: ${this._p2.x}, y: ${this._p2.y}}\n`;
-    };
-}
-
-// This should be in wall.js after pera-swarm library migration
-export class Wall extends AbstractWall {
-    constructor(
-        width: number,
-        height: number,
-        orientation: number,
         originX: number,
         originY: number,
-        depth: number = 1,
+        depth: number = 2,
         debug = false
     ) {
         super(
             width,
             height,
+            depth,
             orientation,
             {
-                x: originX,
-                y: originY
+                x: originX + (width / 2) * cos((orientation / 180) * Math.PI),
+                y: originY + (width / 2) * cos((orientation / 180) * Math.PI)
             },
-            depth,
             debug
         );
+
+        // Starting coordinate of the wall
+        this._p1 = { x: originX, y: originY };
+
+        // Ending coordinate of the wall
+        this._p2 = {
+            x: originX + width * cos(this._theta),
+            y: originY + width * sin(this._theta)
+        };
+
+        this._type = 'Wall';
+        this._geometryType = 'BoxGeometry';
 
         if (debug) {
             console.log(`Created: [\n ${this.toString()}] `);
         }
     }
 
+    public toString = (): string => {
+        return `  ${this._type} Obstacle\n   width : ${this._width} height: ${this._height}\n   depth: ${this._depth} orientation: ${this._orientation}\n p1: { x: ${this._p1.x}, y: ${this._p1.y}} p2: { x: ${this._p2.x}, y: ${this._p2.y}}\n`;
+    };
+
     geometric = () => {
         return {
-            p1: this.position,
+            position: this._position,
+            p1: this._p1,
             p2: this._p2,
             width: this._width,
             height: this._height,
@@ -100,8 +84,8 @@ export class Wall extends AbstractWall {
         } else {
             const headingLine = this._getLine(x, y, heading * (Math.PI / 180));
             const obstacleLine = this._getLine(
-                this.position.x,
-                this.position.y,
+                this._position.x,
+                this._position.y,
                 this._theta
             );
 
@@ -121,11 +105,15 @@ export class Wall extends AbstractWall {
         }
     };
 
+    getColor = () => {
+        return this._color;
+    };
+
     isInRange = (heading: number, x: number, y: number, angleThreshold?: number) => {
         const from = { x: x, y: y };
 
         // Lets check the heading in between two center points
-        const pA1 = this._getAngle(from, this.position);
+        const pA1 = this._getAngle(from, this._p1);
         const pA2 = this._getAngle(from, this._p2);
 
         //console.log(`Calculated Angles: ${pA1}, ${pA2}`);
@@ -150,7 +138,7 @@ export class Wall extends AbstractWall {
                     type: this.materialType,
                     properties: this.appearance
                 },
-                position: this.position,
+                position: this._position,
                 rotation: {
                     x: 0,
                     y: this._orientation,
