@@ -1,13 +1,9 @@
-const { abs, round, cos, sin, tan, atan2, sqrt, pow, distance } = require('mathjs');
 
-import { normalizeAngle } from 'pera-swarm/lib';
 import {
     AbstractBox,
-    ObjectCoordinate,
-    validateObjectCoordinate,
     VisualizeType,
     BoxPropType
-} from '../abstractObstacles/abstractBox';
+} from '../abstractObstacles';
 
 export class Box extends AbstractBox {
     constructor(
@@ -17,6 +13,7 @@ export class Box extends AbstractBox {
         orientation: number,
         originX: number,
         originY: number,
+        color: string = '#404040',
         debug = false
     ) {
         super(
@@ -30,11 +27,21 @@ export class Box extends AbstractBox {
             },
             debug
         );
+        this._color = color; /* For the appearance */
 
         if (debug) {
             console.log(`Created: [\n ${this.toString()}] `);
+            this.toString();
         }
     }
+
+    public toString = (): string => {
+        return (
+            `  ${this._type} Obstacle\n   width : ${this._width} height: ${this._height}\n   depth: ${this._depth}  orientation: ${this._orientation}\n` +
+            `   center: x: ${this.position.x} y:${this.position.y}\n` +
+            `   color: ${this._color}`
+        );
+    };
 
     geometric = () => {
         return {
@@ -47,7 +54,6 @@ export class Box extends AbstractBox {
     };
 
     getDistance = (heading: number, x: number, y: number) => {
-        const from = { x: x, y: y };
 
         if (this.isInRange(heading, x, y) == false) {
             return undefined;
@@ -61,6 +67,7 @@ export class Box extends AbstractBox {
     };
 
     isInRange = (heading: number, x: number, y: number, angleThreshold?: number) => {
+        // TODO: need to implement
         return false;
     };
 
@@ -70,7 +77,9 @@ export class Box extends AbstractBox {
                 id: this.id,
                 geometry: {
                     type: this.geometryType,
-                    ...this.geometric()
+                    width: this._width,
+                    height: this._height,
+                    depth: this._depth
                 },
                 material: {
                     type: this.materialType,
@@ -86,17 +95,6 @@ export class Box extends AbstractBox {
         ];
     };
 
-    // -------------------- Private functions --------------------
-    _getAngle = (from: ObjectCoordinate, to: ObjectCoordinate) => {
-        if (validateObjectCoordinate(from) && validateObjectCoordinate(to)) {
-            const xDiff = to.x - from.x;
-            const yDiff = to.y - from.y;
-            return normalizeAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
-        } else {
-            throw new TypeError('Invalid arguments');
-        }
-    };
 }
 
-// TODO
 export { AbstractBox, BoxPropType };

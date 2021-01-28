@@ -18,7 +18,7 @@ export abstract class AbstractCylinder extends AbstractObstacle {
     protected _radius: number;
     protected _height: number;
 
-    constructor(
+    protected constructor(
         radius: number,
         height: number,
         position: ObjectCoordinate,

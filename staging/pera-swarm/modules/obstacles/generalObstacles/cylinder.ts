@@ -1,4 +1,4 @@
-const { sqrt, pow, abs, round, cos, sin, atan2, max, asin } = require('mathjs');
+const { sqrt, pow, abs, round, atan2, max, asin } = require('mathjs');
 
 import { normalizeAngle } from 'pera-swarm/lib';
 import {
@@ -7,7 +7,7 @@ import {
     validateObjectCoordinate,
     VisualizeType,
     CylinderPropType
-} from '../abstractObstacles/abstractCylinder';
+} from '../abstractObstacles';
 
 export class Cylinder extends AbstractCylinder {
     constructor(
@@ -15,9 +15,13 @@ export class Cylinder extends AbstractCylinder {
         height: number,
         originX: number,
         originY: number,
+        color: string = '#404040',
         debug = false
     ) {
         super(radius, height, { x: originX, y: originY }, debug);
+
+        this._color = color;
+
         if (debug) {
             console.log(`Created: [\n ${this.toString()}] `);
         }
@@ -140,5 +144,4 @@ export class Cylinder extends AbstractCylinder {
     };
 }
 
-// TODO
 export { AbstractCylinder, CylinderPropType };
