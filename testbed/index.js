@@ -17,7 +17,7 @@ const wall2_orientation = 90;
 const wallColor = '#404040';
 
 const cylinderRadius = 20;
-const cylinderHeight = 20;
+const cylinderHeight = 18;
 const cylinderX = -50;
 const cylinderY = 40;
 const cylinderColor = '#00AA00';
@@ -60,3 +60,7 @@ const dist = controller.getDistance(heading, x, y);
 const color = controller.getColor(heading, x, y);
 
 console.log('\n\nisObstacle:', isObstacle, 'distance:', dist, 'color', color);
+
+const jsonObstacles = controller.visualizeObstacles();
+
+console.log(JSON.stringify(jsonObstacles));
