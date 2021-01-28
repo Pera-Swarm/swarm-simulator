@@ -11,6 +11,7 @@ export interface AbstractObstacleBuilder {
         originX: number,
         originY: number,
         depth: number,
+        color: string,
         debug: boolean
     ): Wall;
 
@@ -21,6 +22,7 @@ export interface AbstractObstacleBuilder {
         orientation: number,
         originX: number,
         originY: number,
+        color: string,
         debug: boolean
     ): Box;
 
@@ -29,6 +31,7 @@ export interface AbstractObstacleBuilder {
         height: number,
         originX: number,
         originY: number,
+        color: string,
         debug: boolean
     ): Cylinder;
 
@@ -52,9 +55,19 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         originX: number,
         originY: number,
         depth: number,
+        color: string,
         debug: boolean
     ): Wall {
-        return new Wall(width, height, orientation, originX, originY, depth, debug);
+        return new Wall(
+            width,
+            height,
+            orientation,
+            originX,
+            originY,
+            depth,
+            color,
+            debug
+        );
     }
 
     createBox(
@@ -64,9 +77,10 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         orientation: number,
         originX: number,
         originY: number,
+        color: string,
         debug: boolean
     ): Box {
-        return new Box(width, height, depth, orientation, originX, originY, debug);
+        return new Box(width, height, depth, orientation, originX, originY, color, debug);
     }
 
     createCylinder(
@@ -74,9 +88,10 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         height: number,
         originX: number,
         originY: number,
+        color: string,
         debug: boolean
     ): Cylinder {
-        return new Cylinder(radius, height, originX, originY, debug);
+        return new Cylinder(radius, height, originX, originY, color, debug);
     }
 
     changeMaterial = (obstacle: AbstractObstacle, materialType: string) => {

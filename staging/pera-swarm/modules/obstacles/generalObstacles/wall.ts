@@ -1,4 +1,4 @@
-const { abs, round, cos, sin, tan, atan2, sqrt, pow, distance } = require('mathjs');
+const { abs, round, cos, sin, atan2, sqrt, pow } = require('mathjs');
 
 import { normalizeAngle } from 'pera-swarm/lib';
 import {
@@ -6,7 +6,7 @@ import {
     ObjectCoordinate,
     validateObjectCoordinate,
     VisualizeType
-} from '../abstractObstacles/abstractBox';
+} from '../abstractObstacles';
 
 export type WallPropType = {
     width: number;
@@ -30,6 +30,7 @@ export class Wall extends AbstractBox {
         originX: number,
         originY: number,
         depth: number = 2,
+        color: string = '#404040',
         debug = false
     ) {
         super(
@@ -53,18 +54,25 @@ export class Wall extends AbstractBox {
             y: originY + width * sin(this._theta)
         };
 
+        this._color = color;
         this._type = 'Wall';
         this._geometryType = 'BoxGeometry';
 
         if (debug) {
             console.log(`Created: [\n ${this.toString()}] `);
+            console.log(this.toString());
         }
 
         console.log(this.toString());
     }
 
     public toString = (): string => {
-        return `  ${this._type} Obstacle\n   width : ${this._width} height: ${this._height}\n   depth: ${this._depth} orientation: ${this._orientation}\n p1: { x: ${this._p1.x}, y: ${this._p1.y}} p2: { x: ${this._p2.x}, y: ${this._p2.y}}\n`;
+        return (
+            `  ${this._type} Obstacle\n   width : ${this._width} height: ${this._height}\n   depth: ${this._depth}  orientation: ${this._orientation}\n` +
+            `   p1: { x: ${this._p1.x}, y: ${this._p1.y}}\n` +
+            `   p2: { x: ${this._p2.x}, y: ${this._p2.y}}\n` +
+            `   center: x: ${this.position.x} y:${this.position.y}`
+        );
     };
 
     geometric = () => {
@@ -126,6 +134,7 @@ export class Wall extends AbstractBox {
 
         //console.log(`heading: ${heading}, a1:${a1}, a2:${a2}`);
 
+        // TODO: need to consider angleThreshold
         return abs(a1) <= 90 && abs(a2) <= 90 && a1 * a2 <= 0; // Angles should be in different signs
     };
 
@@ -135,13 +144,18 @@ export class Wall extends AbstractBox {
                 id: this.id,
                 geometry: {
                     type: this.geometryType,
-                    ...this.geometric()
+                    width: this._width,
+                    height: this._height,
+                    depth: this._depth
                 },
                 material: {
                     type: this.materialType,
                     properties: this.appearance
                 },
-                position: this._position,
+                position: {
+                    x: this._position.x,
+                    y: this._position.y
+                },
                 rotation: {
                     x: 0,
                     y: this._orientation,
@@ -181,7 +195,7 @@ export class Wall extends AbstractBox {
             a = 0;
             b = -1 * sin(angle);
             c = sin(angle) * x - cos(angle) * y;
-        } else if (angle == 0 || angle == 1 * Math.PI) {
+        } else if (angle == 0 || angle == Math.PI) {
             // line which parallel to x axis
             a = cos(angle);
             b = 0;
