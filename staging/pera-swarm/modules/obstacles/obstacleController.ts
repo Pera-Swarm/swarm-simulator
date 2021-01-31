@@ -341,13 +341,13 @@ export class ObstacleController
 
         for (let i = 0; i < this._list.length; i++) {
             const found = this._list[i].isInRange(heading, x, y);
-            // console.log('isInRange ? ', found);
+            console.log(this._list[i].id, 'isInRange ? ', found);
 
             if (found == true) {
                 const dist = this._list[i].getDistance(heading, x, y);
                 console.log(dist);
 
-                if (dist > 0 && dist <= minDist) {
+                if (dist >= 0 && dist <= minDist) {
                     minDist = dist;
                 }
             }

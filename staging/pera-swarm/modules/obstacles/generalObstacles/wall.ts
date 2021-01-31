@@ -22,7 +22,6 @@ export class Wall extends AbstractBox {
     protected _p1: ObjectCoordinate;
     protected _p2: ObjectCoordinate;
 
-
     constructor(
         width: number,
         height: number,
@@ -100,14 +99,17 @@ export class Wall extends AbstractBox {
                 this._theta
             );
 
-            console.log('headingLine:', headingLine);
-            console.log('obstacleLine:', obstacleLine);
 
             const intersectionPoint = this._getIntersectionPoint(
                 headingLine,
                 obstacleLine
             );
-            console.log('intersectionPoint', intersectionPoint);
+
+            if (this._debug) {
+                console.log('headingLine:', headingLine);
+                console.log('obstacleLine:', obstacleLine);
+                console.log('intersectionPoint', intersectionPoint);
+            }
 
             const headingDistance = this._point2PointDistance(from, intersectionPoint);
 
@@ -192,16 +194,7 @@ export class Wall extends AbstractBox {
 
         if (angle == 90 * (Math.PI / 180) || angle == -90 * (Math.PI / 180)) {
             // line which parallel to y axis
-<<<<<<< HEAD
             a = 1 * sin(angle);
-=======
-            a = 0;
-            b = -1 * sin(angle);
-            c = sin(angle) * x - cos(angle) * y;
-        } else if (angle == 0 || angle == Math.PI) {
-            // line which parallel to x axis
-            a = cos(angle);
->>>>>>> 3884d4c630089be777efd83233886558606e0189
             b = 0;
             c = -x * sin(angle);
         } else if (angle == 0 || angle == Math.PI) {
@@ -215,17 +208,16 @@ export class Wall extends AbstractBox {
             c = -x * sin(angle) + y * cos(angle);
         }
 
-
         return { a, b, c };
     };
 
     _getIntersectionPoint = (line1: any, line2: any) => {
         const x =
-            (line1.b * line2.c - line2.b * line1.c) /
-            (line1.a * line2.b - line2.a * line1.b);
+        (line1.b * line2.c - line2.b * line1.c) /
+        (line1.a * line2.b - line2.a * line1.b);
         const y =
-            (line2.a * line1.c - line1.a * line2.c) /
-            (line1.a * line2.b - line2.a * line1.b);
+        (line2.a * line1.c - line1.a * line2.c) /
+        (line1.a * line2.b - line2.a * line1.b);
         return { x, y };
     };
 
