@@ -119,7 +119,7 @@ class Robots extends AbstractRobots {
     prune = (interval: any, callback: any) => {
         if (interval === undefined) throw new TypeError('interval unspecified');
 
-        for (var id in this._robotList) {
+        for (let id in this._robotList) {
             if (this.isAliveRobot(Number(id), interval) == false) {
                 this.removeRobot(Number(id), callback);
             }
@@ -137,17 +137,7 @@ class Robots extends AbstractRobots {
     changeMode = (mode: any, options = {}) => {
         this.broadcast('MODE', mode, options);
     };
-
-    // TODO: add swarm functionality here
-    // getSensorReadings
-    // stopRobot
-    // resetRobot
 }
-
-// const initRobots = () => {
-//     // TODO: Fix this, in testings
-//     return new Robots(this.swarm);
-// };
 
 module.exports = {
     Robots

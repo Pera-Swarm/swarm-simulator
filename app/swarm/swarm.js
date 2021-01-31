@@ -1,30 +1,21 @@
-
-const arenaConfig = require('../config/arena.config');
+// Main pera-swarm library components
+const {
+    obstacleController,
+    DEFAULT_ROBOT_ALIVE_INTERVAL
+} = require('../../dist/pera-swarm');
 
 // MQTT
 const mqttClient = require('mqtt');
 const mqttConfig = require('../config/mqtt.config');
-
 const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router');
-const { obstacleController, Environment } = require('../../dist/pera-swarm');
 
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
-// MQTT routes
-const {
-    localizationRoutes,
-    sensorRoutes,
-    robotRoutes,
-    obstacleRoutes
-} = require('./mqtt/');
-const { obstacleInitialPublishers } = require('./mqtt/');
 
-// TODO: make as a module
-const cron = require('../services/cron.js');
-
-const { Robots } = require('./robots/robots');
-
-const initialPublishers = [...obstacleInitialPublishers];
+// Customized components
+const { Robots } = require('./controllers/robots');
+const { schedulerService, SIXTY_SECONDS } = require('../services/cron.js');
+const { EnvironmentController } = require('./controllers');
 
 /**
  * @class Swarm Representation
@@ -36,78 +27,63 @@ class Swarm {
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-        // this.arenaConfig = arenaConfig;
-        this.robots = new Robots(this, this.mqttPublish);
-        this.mqttRouter = new MQTTRouter(
-            mqtt,
-            wrapper(
-                [
-                    ...robotRoutes,
-                    ...localizationRoutes,
-                    ...sensorRoutes,
-                    ...obstacleRoutes,
-                    //...communicationRoutes,
-                    ...this.robots.defaultSubscriptionRoutes
-                ],
-                this
-            ),
-            mqttConfig,
-            setup
-        );
+        // @luk3Sky, please review this, about change of the wrapper
+        // Initiate the MQTT router for communication
+        this.mqttRouter = new MQTTRouter(mqtt, wrapper([], this), mqttConfig, setup);
         this.mqttRouter.start();
+
+        // Create the environment
+        this.environment = new EnvironmentController(
+            obstacleController(),
+            './app/config/env.config.json'
+        );
+
+        this.robots = new Robots(this, this.mqttPublish);
+
+        // Cron Jobs with defined intervals
+        schedulerService(this.prune, SIXTY_SECONDS);
+        schedulerService(this.broadcastCheckALive);
+
+        // Need some time for initiate the modules
+        var self = this;
+        setTimeout(function () {
+            // Add default subscription routes
+            self.mqttRouter.addRoutes(
+                wrapper([...self.environment.defaultSubscriptionRoutes], self)
+            );
+            self.mqttRouter.addRoutes(
+                wrapper([...self.robots.defaultSubscriptionRoutes], self)
+            );
+
+            // Add obstacles to the environment
+            self.environment.createObstacles((obstacles) => {
+                // Callback for publishing each obstacle into the environment
+                self.mqttPublish('/obstacles', obstacles, {
+                    ...mqttConfig.options,
+                    retain: false
+                });
+            });
+        }, 1000);
+
+        const initialPublishers = [
+            ...this.environment.initialPublishers,
+            ...this.robots.initialPublishers
+        ];
 
         // Initial Publishers according to swarm configuration
         initialPublishers.forEach((publisher) => {
             this.mqttPublish(publisher.topic, publisher.data);
         });
-
-        // Cron Jobs with defined intervals,
-        // TODO: define intervals as global variables
-        cron.begin(cron.secondsInterval(30), this.prune);
-        cron.begin(cron.secondsInterval(30), this.broadcastCheckALive);
-
-        // TODO: make a publish to topic '/localization/update'
-        // More Info: https://pera-swarm.ce.pdn.ac.lk/docs/communication/mqtt/localization#localizationupdate
-        // Note: added it like this because of the urgent requirement.
-        // Better to move into a propper place later
-        this.mqttPublish('localization/update', '?');
-
-        // Make a publish to topic 'robot/msg/broadcast'
-        this.broadcastCheckALive();
-
-        this.environment = new Environment(
-            obstacleController(),
-            './app/config/env.config.json'
-        );
-
-        this.environment.createObstacles((obstacles) => {
-            // console.log('Created Obstacles:', obstacles);
-            // Callback for publishing each obstacle into the environment
-            this.mqttPublish('/obstacles', obstacles, {
-                ...mqttConfig.options,
-                retain: false
-            });
-            // if (Array.isArray(obstacles)) {
-            //     obstacles.forEach((item) => {
-            //         this.mqttPublish('/obstacles', [item], {...mqttConfig.options, retain: true});
-            //     });
-            // }
-        });
-
-        // build the environment using ObstacleBuilder
-        // this.obstacleController = obstacleController();
-        // const c = new CylinderObstacle(1, radius, height, originX, originY, true);
-        // this.obstacleController.createCylinder(10, 20, 15, 15, true);
-        // this.obstacleController.c
     }
 
     prune = () => {
-        //console.log('Swarm_Prune');
+        // console.log('Swarm_Prune');
         // Delete robots who are not active on last 5 mins (360 seconds)
-        this.robots.prune(360); // TODO: define this as a global variable
+        this.robots.prune(DEFAULT_ROBOT_ALIVE_INTERVAL);
     };
 
     broadcastCheckALive = () => {
+        // console.log('Robot_ID_Broadcast');
         // Publish with retain:true, qos:atLeastOnce
         this.robots.broadcast('ID?', -1, { qos: 1, rap: true });
     };
@@ -120,9 +96,8 @@ class Swarm {
     mqttPublish = (topic, message, options = mqttConfig.mqttOptions) => {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
-        // this.mqttRouter.pushToPublishQueue(topic, message.toString());
-        publishToTopic(mqtt, topic, message.toString(), options);
-
+        this.mqttRouter.pushToPublishQueue(topic, message.toString());
+        // publishToTopic(mqtt, topic, message.toString(), options);
     };
 }
 

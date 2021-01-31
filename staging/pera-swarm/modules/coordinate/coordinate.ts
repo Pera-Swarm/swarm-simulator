@@ -76,8 +76,8 @@ export type ValidityType = boolean | number;
  * @returns {ValidityType} true if valid or -1 if not.
  */
 export function validateCoordinateType<TId>(coordinate: Coordinate<TId>): ValidityType {
-    var validity: ValidityType;
-    var i: number;
+    let validity: ValidityType;
+    let i: number;
     validity = -1;
     i = 0;
     if (Object.prototype.hasOwnProperty.call(coordinate, '_id')) {
@@ -106,8 +106,8 @@ export function validateCoordinateType<TId>(coordinate: Coordinate<TId>): Validi
 export function validateCoordinateValueType<TId>(
     coordinate: CoordinateValueInt<TId>
 ): ValidityType {
-    var validity: ValidityType;
-    var i: number;
+    let validity: ValidityType;
+    let i: number;
     validity = -1;
     i = 0;
     if (Object.prototype.hasOwnProperty.call(coordinate, 'id')) {

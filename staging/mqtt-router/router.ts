@@ -93,7 +93,7 @@ export class MQTTRouter {
                     type: 'String',
                     handler: (msg: string) => {
                         try {
-                            var data = JSON.parse(msg);
+                            let data = JSON.parse(msg);
                             console.log(
                                 `Default Subscriber(${channel}) picked up the message`,
                                 data
@@ -119,7 +119,7 @@ export class MQTTRouter {
             console.log('MQTT_Connecting...\n');
             this.setup();
             this.handleRouteSubscriptions();
-            this._publishQueue.begin();
+            this._publishQueue.start();
             console.log(`MQTT_Router: Connected to channel [${channel}]\n`);
         });
 
@@ -131,10 +131,10 @@ export class MQTTRouter {
         this._mqttClient.on(
             'message',
             (topic: string, message: Buffer, packet: IPublishPacket) => {
-                for (var i = 0; i < this._routes.length; i += 1) {
+                for (let i = 0; i < this._routes.length; i += 1) {
                     if (resolveChannelTopic(this._routes[i].topic) === topic) {
                         // convert message format
-                        var msg: string | JSON | undefined;
+                        let msg: string | JSON | undefined;
                         if (logLevel !== 'info') {
                             console.log(
                                 'MQTT_Message_To_Be_Handled:',
@@ -184,7 +184,7 @@ export class MQTTRouter {
      * method for handling the subscriptions for the topics in the routes list.
      */
     handleRouteSubscriptions = () => {
-        for (var i = 0; i < this._routes.length; i++) {
+        for (let i = 0; i < this._routes.length; i++) {
             if (this._routes[i].subscribe !== false) {
                 // subscribe at the beginning unless it is avoided by setting 'subscribe:false'
                 if (logLevel === 'debug') {
@@ -216,7 +216,7 @@ export class MQTTRouter {
      * @param {Buffer} message mqtt message
      */
     decodeMessage = (type: string, message: Buffer) => {
-        var msg: string | JSON | undefined;
+        let msg: string | JSON | undefined;
         if (type === undefined || message === undefined) {
             console.error('Invalid type or message');
             return undefined;
@@ -294,9 +294,9 @@ export class MQTTRouter {
             this._routes.push(route);
             if (route.subscribe !== false) {
                 // subscribe at the beginning unless it is avoided by setting 'subscribe:false'
-                if (logLevel === 'debug') {
-                    console.log('MQTT_Subscribed: ', resolveChannelTopic(route.topic));
-                }
+                //if (logLevel === 'debug') {
+                console.log('MQTT_Subscribed: ', resolveChannelTopic(route.topic));
+                //}
                 this._mqttClient.subscribe(
                     resolveChannelTopic(route.topic),
                     this._options
@@ -310,6 +310,18 @@ export class MQTTRouter {
                     );
                 }
             }
+        }
+    };
+
+    /**
+     * method for adding multiple routes to the list
+     * @param {Route[]} route[] list of route objects to be added to the subscriber list
+     */
+    addRoutes = (routes: Route[]) => {
+        // TODO: @luk3Sky, please review this
+        for (let i = 0; i < routes.length; i++) {
+            //console.log(routes[i].topic);
+            this.addRoute(routes[i]);
         }
     };
 

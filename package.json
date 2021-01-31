@@ -37,7 +37,6 @@
         "mathjs": "^8.1.1",
         "mocha": "^8.2.0",
         "mqtt": "^4.0.1",
-        "mysql2": "^2.1.0",
         "node-cron": "^2.0.3",
         "pera-swarm": "^1.2.3",
         "prettier": "^2.1.2",
@@ -45,15 +44,14 @@
         "sequelize": "^5.21.2"
     },
     "devDependencies": {
-        "@types/mathjs": "^6.0.9",
+        "@types/mathjs": "^6.0.11",
         "@types/node-cron": "^2.0.3",
         "@types/uuid": "^8.3.0",
         "nodemon": "^2.0.4"
     },
     "nodemonConfig": {
         "ignore": [
-            "test/*",
-            "swarm-node/*"
+            "test/*"
         ],
         "delay": "2500"
     }

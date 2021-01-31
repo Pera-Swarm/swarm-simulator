@@ -40,20 +40,20 @@ export class SimpleLocalizationSystem {
      * @param {number} id robot id
      */
     idExists = (id: number) => {
-        var findNaN = id !== id;
-        var indexOf;
+        let findNaN = id !== id;
+        let indexOf;
         if (!findNaN && typeof Array.prototype.indexOf === 'function') {
             indexOf = Array.prototype.indexOf;
             return indexOf.call(this.ids, id) > -1;
         } else {
             indexOf = (ids: number[], id: number) => {
-                var i = -1,
+                let i = -1,
                     index = -1;
                 console.log(ids.length);
                 console.log(ids[i]);
 
                 for (i = 0; i < ids.length; i++) {
-                    var item = ids[i];
+                    let item = ids[i];
                     if ((findNaN && item !== item) || item === id) {
                         index = i;
                         break;
@@ -83,7 +83,7 @@ export class SimpleLocalizationSystem {
      * supported coordinates types : array, valid_coordinate_object
      */
     update = (coordinates: CoordinateValueInt<number> | CoordinateValueInt<number>[]) => {
-        var status = this._localization.update(coordinates);
+        let status = this._localization.update(coordinates);
         if (status === true) {
             if (Array.isArray(coordinates)) {
                 coordinates.map((item) => {

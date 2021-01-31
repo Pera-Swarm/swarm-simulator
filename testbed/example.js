@@ -1,6 +1,6 @@
-var queue = require('queue');
+let queue = require('queue');
 
-var q = queue({ results: [] });
+let q = queue({ results: [] });
 
 // add jobs using the familiar Array API
 q.push(function (cb) {
@@ -75,6 +75,7 @@ function superSlowJob(cb) {
         console.log('super slow job finished');
         cb();
     }, 2000);
+    cb(null, 'superSlowJob');
 }
 
 superSlowJob.timeout = null;

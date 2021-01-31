@@ -2,10 +2,10 @@ const { MQTTRouter } = require('../dist/mqtt-router/index');
 const mqttClient = require('mqtt');
 const mqttConfig = require('../app/config/mqtt.config');
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.mqttOptions);
-var queue = require('queue');
+let queue = require('queue');
 
-var q = queue({ results: [] });
-var router;
+let q = queue({ results: [] });
+let router;
 
 // Sample dynamic route list with handler functions
 const SAMPLE_ROUTES = [
@@ -17,7 +17,7 @@ const SAMPLE_ROUTES = [
         type: 'JSON',
         handler: (msg) => {
             try {
-                var data = JSON.parse(msg);
+                let data = JSON.parse(msg);
                 console.log(
                     `Default Subscriber(${SAMPLE_ROUTES[0].topic}) picked up the message`,
                     data
@@ -100,32 +100,6 @@ const samplePublishMessages = [
     }
 ];
 
-// samplePublishMessages.forEach((element) => {
-//     router.pushToPublishQueue(element.topic, element.data);
-// });
-
-q.timeout = 1000;
-
-q.push(function (cb) {
-    setTimeout(function () {
-        console.log('slow job finished');
-        cb(null, 'published <timestamp>');
-    }, 200);
-});
-
-// get notified when jobs complete
-q.on('success', function (result, job) {
-    console.log('job finished processing:', job.toString().replace(/\n/g, ''));
-    console.log('The result is:', result);
-});
-
-q.on('timeout', function (next, job) {
-    console.log('job timed out:', job);
-    next();
-});
-
-// begin processing, get notified on end / failure
-q.start(function (err) {
-    if (err) throw err;
-    console.log('all done:', q.results);
+samplePublishMessages.forEach((element) => {
+    router.pushToPublishQueue(element.topic, element.data);
 });
