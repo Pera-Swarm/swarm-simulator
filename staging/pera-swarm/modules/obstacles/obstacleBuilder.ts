@@ -1,7 +1,7 @@
-import { AbstractCylinder, Cylinder } from './cylinder';
-import { AbstractWall, Wall } from './wall';
-import { AbstractBox, Box } from './box';
-import { AbstractObject } from './obstacle';
+import { Cylinder, CylinderPropType } from './generalObstacles/cylinder';
+import { Wall, WallPropType } from './generalObstacles/wall';
+import { Box, BoxPropType } from './generalObstacles/box';
+import { AbstractObstacle } from './abstractObstacles/abstractObstacle';
 
 export interface AbstractObstacleBuilder {
     createWall(
@@ -11,8 +11,9 @@ export interface AbstractObstacleBuilder {
         originX: number,
         originY: number,
         depth: number,
+        color: string,
         debug: boolean
-    ): AbstractWall;
+    ): Wall;
 
     createBox(
         width: number,
@@ -21,18 +22,20 @@ export interface AbstractObstacleBuilder {
         orientation: number,
         originX: number,
         originY: number,
+        color: string,
         debug: boolean
-    ): AbstractBox;
+    ): Box;
 
     createCylinder(
         radius: number,
         height: number,
         originX: number,
         originY: number,
+        color: string,
         debug: boolean
-    ): AbstractCylinder;
+    ): Cylinder;
 
-    changeMaterial(obstacle: AbstractObject, materialType: string): void;
+    changeMaterial(obstacle: AbstractObstacle, materialType: string): void;
 }
 
 export class ObstacleBuilder implements AbstractObstacleBuilder {
@@ -52,9 +55,19 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         originX: number,
         originY: number,
         depth: number,
+        color: string,
         debug: boolean
-    ): AbstractWall {
-        return new Wall(width, height, orientation, originX, originY, depth, debug);
+    ): Wall {
+        return new Wall(
+            width,
+            height,
+            orientation,
+            originX,
+            originY,
+            depth,
+            color,
+            debug
+        );
     }
 
     createBox(
@@ -64,9 +77,10 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         orientation: number,
         originX: number,
         originY: number,
+        color: string,
         debug: boolean
-    ): AbstractBox {
-        return new Box(width, height, depth, orientation, originX, originY, debug);
+    ): Box {
+        return new Box(width, height, depth, orientation, originX, originY, color, debug);
     }
 
     createCylinder(
@@ -74,12 +88,13 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         height: number,
         originX: number,
         originY: number,
+        color: string,
         debug: boolean
-    ): AbstractCylinder {
-        return new Cylinder(radius, height, originX, originY, debug);
+    ): Cylinder {
+        return new Cylinder(radius, height, originX, originY, color, debug);
     }
 
-    changeMaterial = (obstacle: AbstractObject, materialType: string) => {
+    changeMaterial = (obstacle: AbstractObstacle, materialType: string) => {
         obstacle.setMaterial(materialType);
     };
 }

@@ -1,11 +1,15 @@
 import { abs, cos, sin } from 'mathjs';
 import { normalizeValueRange } from '../../helpers';
+
 import { ArenaType } from '../environment';
-import { AbstractBox, BoxPropType } from './box';
-import { AbstractCylinder, CylinderPropType } from './cylinder';
-import { AbstractObject, VisualizeType } from './obstacle';
+import { AbstractObstacle, VisualizeType } from './abstractObstacles';
 import { obstacleBuilder, AbstractObstacleBuilder } from './obstacleBuilder';
-import { AbstractWall, WallPropType } from './wall';
+
+// Implemented obstacles
+import { Box, Cylinder, Wall } from './generalObstacles';
+
+// PropTypes of implemented obstacles
+import { BoxPropType, CylinderPropType, WallPropType } from './generalObstacles';
 
 const defaultArenaConfig = {
     xMin: 150,
@@ -16,7 +20,7 @@ const defaultArenaConfig = {
 };
 
 export interface AbstractObstacleController {
-    _list: AbstractObject[];
+    _list: AbstractObstacle[];
     createObstaclesJSON: Function;
     setMaterialById: Function;
     setColorById: Function;
@@ -28,7 +32,7 @@ export interface AbstractObstacleController {
 
 export class ObstacleController
     implements AbstractObstacleBuilder, AbstractObstacleController {
-    _list: AbstractObject[];
+    _list: AbstractObstacle[];
     _arenaConfig: ArenaType;
     private builder: AbstractObstacleBuilder;
     protected static instance: ObstacleController;
@@ -55,8 +59,9 @@ export class ObstacleController
         originX: number,
         originY: number,
         depth: number,
+        color: string,
         debug: boolean
-    ): AbstractWall {
+    ): Wall {
         const obj = this.builder.createWall(
             width,
             height,
@@ -64,6 +69,7 @@ export class ObstacleController
             originX,
             originY,
             depth,
+            color,
             debug
         );
         this._list.push(obj);
@@ -77,8 +83,9 @@ export class ObstacleController
         orientation: number,
         originX: number,
         originY: number,
+        color: string,
         debug: boolean
-    ): AbstractBox {
+    ): Box {
         const obj = this.builder.createBox(
             width,
             height,
@@ -86,6 +93,7 @@ export class ObstacleController
             orientation,
             originX,
             originY,
+            color,
             debug
         );
         this._list.push(obj);
@@ -97,9 +105,17 @@ export class ObstacleController
         height: number,
         originX: number,
         originY: number,
+        color: string,
         debug: boolean
-    ): AbstractCylinder {
-        const obj = this.builder.createCylinder(radius, height, originX, originY, debug);
+    ): Cylinder {
+        const obj = this.builder.createCylinder(
+            radius,
+            height,
+            originX,
+            originY,
+            color,
+            debug
+        );
         this._list.push(obj);
         return obj;
     }
@@ -110,15 +126,53 @@ export class ObstacleController
     createObstaclesJSON = (data: JSON, config: ArenaType = defaultArenaConfig) => {
         if (Array.isArray(data)) {
             data.forEach((element) => {
-                const { geometry } = element;
-                switch (geometry.type) {
-                    case 'BoxGeometry':
-                        this.createWallJSON(element, config);
+                // console.log(element);
+                const { id, type, parameters } = element;
+                const debug = false;
+                const {
+                    x,
+                    y,
+                    orientation,
+                    width,
+                    height,
+                    depth,
+                    radius,
+                    color
+                } = parameters;
+
+                switch (type) {
+                    case 'wall':
+                        this.createWall(
+                            width,
+                            height,
+                            orientation,
+                            x,
+                            y,
+                            2,
+                            color,
+                            debug
+                        );
                         break;
-                    case 'CylinderGeometry':
-                        this.createCylinderJSON(element, config);
+                    case 'box':
+                        this.createBox(
+                            width,
+                            height,
+                            depth,
+                            orientation,
+                            x,
+                            y,
+                            color,
+                            debug
+                        );
+                        break;
+                    case 'cylinder':
+                        this.createCylinder(radius, height, x, y, color, debug);
+                        break;
+                    case 'cone':
+                        console.error('cone obstacles not implemented.');
                         break;
                     default:
+                        console.error('undefined obstacle found in env.config.json');
                         break;
                 }
             });
@@ -129,54 +183,55 @@ export class ObstacleController
      * create a wall obstacle from JSON data
      * @param {VisualizeType} data obstacle JSON data
      */
-    createWallJSON = (data: VisualizeType, config: ArenaType) => {
-        const decodedProps = this._decodeWallPropsFromJSON(data);
-        if (decodedProps !== -1) {
-            const { width, height, x, y, orientation, depth } = decodedProps;
-            this.createWall(
-                width,
-                height,
-                orientation,
-                normalizeValueRange(x, config.xMin, config.xMax),
-                normalizeValueRange(y, config.yMin, config.yMax),
-                depth,
-                false
-            );
-            // this.createWall(width, height, orientation, originX, originY, depth, debug);
-        }
-    };
+    // createWallJSON = (data: VisualizeType, config: ArenaType) => {
+    //     const decodedProps = this._decodeWallPropsFromJSON(data);
+    //     if (decodedProps !== -1) {
+    //         const { width, height, x, y, orientation, depth } = decodedProps;
+    //         this.createWall(
+    //             width,
+    //             height,
+    //             orientation,
+    //             normalizeValueRange(x, config.xMin, config.xMax),
+    //             normalizeValueRange(y, config.yMin, config.yMax),
+    //             depth,
+    //             false
+    //         );
+    //         // this.createWall(width, height, orientation, originX, originY, depth, debug);
+    //     }
+    // };
 
     /**
      * create a cylinder obstacle from JSON data
      * @param {VisualizeType} data obstacle JSON data
      */
-    createCylinderJSON = (data: VisualizeType, config: ArenaType) => {
-        const decodedProps = this._decodeCylinderPropsFromJSON(data);
-        if (decodedProps !== -1) {
-            const { radius, height, x, y } = decodedProps;
-            this.createCylinder(
-                radius,
-                height,
-                normalizeValueRange(x, config.xMin, config.xMax),
-                normalizeValueRange(y, config.yMin, config.yMax),
-                false
-            );
-        }
-    };
+    // createCylinderJSON = (data: VisualizeType, config: ArenaType) => {
+    //     const decodedProps = this._decodeCylinderPropsFromJSON(data);
+    //     if (decodedProps !== -1) {
+    //         const { radius, radiusTop, radiusBottom, height, x, y } = decodedProps;
+    //         // const radius = (radiusTop + radiusBottom) / 2; // Temp
+    //         this.createCylinder(
+    //             radius,
+    //             height,
+    //             x, // normalizeValueRange(x, config.xMin, config.xMax),
+    //             y, // normalizeValueRange(y, config.yMin, config.yMax),
+    //             false
+    //         );
+    //     }
+    // };
 
     /**
      * get obstacle list
      */
-    get list(): AbstractObject[] {
+    get list(): AbstractObstacle[] {
         return this.list;
     }
 
     /**
      * method for finding an obstacle in the list with a given id
      * @param {string} type
-     * @returns {AbstractObject|-1}
+     * @returns {AbstractObstacle|-1}
      */
-    findObstacleById = (id: string): AbstractObject | -1 => {
+    findObstacleById = (id: string): AbstractObstacle | -1 => {
         if (id === undefined) {
             console.error('Invalid id');
             return -1;
@@ -198,14 +253,14 @@ export class ObstacleController
     /**
      * method for finding obstacles in the list with a given type
      * @param {string} type
-     * @returns {AbstractObject[]}
+     * @returns {AbstractObstacle[]}
      */
-    findObstaclesByType = (type: string): AbstractObject[] => {
+    findObstaclesByType = (type: string): AbstractObstacle[] => {
         if (type === undefined) {
             console.error('Invalid type');
             return [];
         } else {
-            const foundObjs: AbstractObject[] = [];
+            const foundObjs: AbstractObstacle[] = [];
             this._list.forEach((item) => {
                 if (item.type === type) {
                     foundObjs.push(item);
@@ -251,25 +306,24 @@ export class ObstacleController
         y: number,
         distanceThreshold: number = 10
     ) => {
-        // TODO: @NuwanJ please review this
         let minDist = Infinity;
-        let color = null;
+        let color = '#00000';
 
         for (let i = 0; i < this._list.length; i++) {
             const found = this._list[i].isInRange(heading, x, y);
             //console.log(found);
             if (found == true) {
                 const dist = this._list[i].getDistance(heading, x, y);
-                console.log(dist);
+                color = this._list[i].appearance.color;
+                console.log(dist, color);
 
                 if (dist > 0 && dist <= minDist) {
                     minDist = dist;
-                    color = this._list[i].appearance.color;
                 }
             }
         }
         if (minDist > distanceThreshold) {
-            color = null;
+            color = '#00000';
         }
         return color;
     };
@@ -287,12 +341,13 @@ export class ObstacleController
 
         for (let i = 0; i < this._list.length; i++) {
             const found = this._list[i].isInRange(heading, x, y);
-            //console.log(found);
+            console.log(this._list[i].id, 'isInRange ? ', found);
+
             if (found == true) {
                 const dist = this._list[i].getDistance(heading, x, y);
                 console.log(dist);
 
-                if (dist > 0 && dist <= minDist) {
+                if (dist >= 0 && dist <= minDist) {
                     minDist = dist;
                 }
             }
@@ -319,10 +374,10 @@ export class ObstacleController
 
     /**
      * change material
-     * @param {AbstractObject} id
+     * @param {AbstractObstacle} id
      * @param {string} materialType
      */
-    changeMaterial(obstacle: AbstractObject, materialType: string): void {
+    changeMaterial(obstacle: AbstractObstacle, materialType: string): void {
         if (materialType === undefined) {
             console.error('Invalid material type');
         } else {
@@ -374,7 +429,8 @@ export class ObstacleController
      */
     visualizeObstacles = (): VisualizeType[] => {
         let visualizeList: VisualizeType[] = [];
-        this._list.forEach((item: AbstractObject) => {
+
+        this._list.forEach((item: AbstractObstacle) => {
             // one obstacle object can have multiple geometrics.
             item.visualize().forEach((itemChild: VisualizeType) => {
                 visualizeList.push(itemChild);

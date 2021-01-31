@@ -13,14 +13,9 @@ const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router'
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
 
 // Customized components
-const { Robots } = require('./robots/robots');
+const { Robots } = require('./controllers/robots');
 const { schedulerService, SIXTY_SECONDS } = require('../services/cron.js');
 const { EnvironmentController } = require('./controllers');
-
-// MQTT Routes
-const { localizationRoutes } = require('./mqtt/');
-
-// const initialPublishers = [...obstacleInitialPublishers];
 
 /**
  * @class Swarm Representation
@@ -34,12 +29,7 @@ class Swarm {
     constructor(setup) {
         // @luk3Sky, please review this, about change of the wrapper
         // Initiate the MQTT router for communication
-        this.mqttRouter = new MQTTRouter(
-            mqtt,
-            wrapper([...localizationRoutes], this),
-            mqttConfig,
-            setup
-        );
+        this.mqttRouter = new MQTTRouter(mqtt, wrapper([], this), mqttConfig, setup);
         this.mqttRouter.start();
 
         // Create the environment
@@ -47,13 +37,6 @@ class Swarm {
             obstacleController(),
             './app/config/env.config.json'
         );
-        this.environment.createObstacles((obstacles) => {
-            // Callback for publishing each obstacle into the environment
-            this.mqttPublish('/obstacles', obstacles, {
-                ...mqttConfig.options,
-                retain: false
-            });
-        });
 
         this.robots = new Robots(this, this.mqttPublish);
 
@@ -61,13 +44,26 @@ class Swarm {
         schedulerService(this.prune, SIXTY_SECONDS);
         schedulerService(this.broadcastCheckALive);
 
-        // Add default subscription routes
-        this.mqttRouter.addRoutes(
-            wrapper([...this.environment.defaultSubscriptionRoutes], this)
-        );
-        this.mqttRouter.addRoutes(
-            wrapper([...this.robots.defaultSubscriptionRoutes], this)
-        );
+        // Need some time for initiate the modules
+        var self = this;
+        setTimeout(function () {
+            // Add default subscription routes
+            self.mqttRouter.addRoutes(
+                wrapper([...self.environment.defaultSubscriptionRoutes], self)
+            );
+            self.mqttRouter.addRoutes(
+                wrapper([...self.robots.defaultSubscriptionRoutes], self)
+            );
+
+            // Add obstacles to the environment
+            self.environment.createObstacles((obstacles) => {
+                // Callback for publishing each obstacle into the environment
+                self.mqttPublish('/obstacles', obstacles, {
+                    ...mqttConfig.options,
+                    retain: false
+                });
+            });
+        }, 1000);
 
         const initialPublishers = [
             ...this.environment.initialPublishers,

@@ -14,6 +14,8 @@ class Robot extends AbstractCoordinateRobot {
      */
     constructor(id, heading = 0, x = 0, y = 0, realm = 0) {
         super(id, new Coordinate(id, heading, x, y), realm);
+
+        // Robot status details
         this.created = new Date();
         this.timestamp = Date.now();
 

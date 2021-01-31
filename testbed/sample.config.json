@@ -8,44 +8,76 @@
     },
     "obstacles": [
         {
-            "id": 1000,
-            "geometry": { "type": "BoxGeometry", "width": 300, "height": 20, "depth": 5 },
+            "id": "802fdee7-77df-4bb9-aa84-f60e91c3b00c",
+            "geometry": {
+                "type": "BoxGeometry",
+                "width": 100,
+                "height": 20,
+                "depth": 5
+            },
             "material": {
                 "type": "MeshStandardMaterial",
-                "properties": { "color": "#505050" }
+                "properties": {
+                    "color": "#404040"
+                }
             },
-            "position": { "x": 0, "y": 150 },
-            "rotation": { "x": 0, "y": 0, "z": 0 }
+            "position": {
+                "x": 0,
+                "y": 50
+            },
+            "rotation": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            }
         },
         {
-            "id": 1001,
-            "geometry": { "type": "BoxGeometry", "width": 300, "height": 20, "depth": 5 },
+            "id": "c3749bcd-6a88-4efd-8f0e-c08508bb6adf",
+            "geometry": {
+                "type": "BoxGeometry",
+                "width": 100,
+                "height": 20,
+                "depth": 5
+            },
             "material": {
                 "type": "MeshStandardMaterial",
-                "properties": { "color": "#505050" }
+                "properties": {
+                    "color": "#404040"
+                }
             },
-            "position": { "x": -150, "y": 0 },
-            "rotation": { "x": 0, "y": 90, "z": 0 }
+            "position": {
+                "x": -50,
+                "y": 0
+            },
+            "rotation": {
+                "x": 0,
+                "y": 90,
+                "z": 0
+            }
         },
         {
-            "id": 1002,
-            "geometry": { "type": "BoxGeometry", "width": 300, "height": 20, "depth": 5 },
+            "id": "f8fcd79f-50aa-48bd-b775-0f34233116a0",
+            "geometry": {
+                "type": "CylinderGeometry",
+                "radiusTop": 20,
+                "radiusBottom": 20,
+                "height": 18
+            },
             "material": {
                 "type": "MeshStandardMaterial",
-                "properties": { "color": "#505050" }
+                "properties": {
+                    "color": "#00AA00"
+                }
             },
-            "position": { "x": 150, "y": 0 },
-            "rotation": { "x": 0, "y": 90, "z": 0 }
-        },
-        {
-            "id": 1003,
-            "geometry": { "type": "BoxGeometry", "width": 300, "height": 20, "depth": 5 },
-            "material": {
-                "type": "MeshStandardMaterial",
-                "properties": { "color": "#505050" }
+            "position": {
+                "x": -50,
+                "y": 40
             },
-            "position": { "x": 0, "y": -150 },
-            "rotation": { "x": 0, "y": 0, "z": 0 }
+            "rotation": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            }
         }
     ],
     "channel": "v1/"
