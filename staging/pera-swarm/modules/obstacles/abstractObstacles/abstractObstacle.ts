@@ -46,14 +46,14 @@ export abstract class AbstractObstacle {
     protected _created: Date;
     protected _updated: number;
 
-    constructor(position: ObjectCoordinate, debug: boolean = false) {
+    protected constructor(position: ObjectCoordinate, debug: boolean = false) {
         this._id = uuid();
         this._position = position;
 
         this._debug = debug;
         this._type = 'Object';
         this._geometryType = 'Geometry';
-        this._color = '#505050';
+        this._color = '#404040';
         this._materialType = 'MeshStandardMaterial';
         this._created = new Date();
         this._updated = Date.now();

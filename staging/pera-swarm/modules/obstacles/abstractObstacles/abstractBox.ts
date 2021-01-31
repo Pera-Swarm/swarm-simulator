@@ -23,7 +23,7 @@ export abstract class AbstractBox extends AbstractObstacle {
     protected _theta: number;
     protected _center: ObjectCoordinate;
 
-    constructor(
+    protected constructor(
         width: number,
         height: number,
         depth: number,

@@ -2,7 +2,7 @@ import { abs, cos, sin } from 'mathjs';
 import { normalizeValueRange } from '../../helpers';
 
 import { ArenaType } from '../environment';
-import { AbstractObstacle, VisualizeType } from './abstractObstacles/abstractObstacle';
+import { AbstractObstacle, VisualizeType } from './abstractObstacles';
 import { obstacleBuilder, AbstractObstacleBuilder } from './obstacleBuilder';
 
 // Implemented obstacles
@@ -59,6 +59,7 @@ export class ObstacleController
         originX: number,
         originY: number,
         depth: number,
+        color: string,
         debug: boolean
     ): Wall {
         const obj = this.builder.createWall(
@@ -68,6 +69,7 @@ export class ObstacleController
             originX,
             originY,
             depth,
+            color,
             debug
         );
         this._list.push(obj);
@@ -81,6 +83,7 @@ export class ObstacleController
         orientation: number,
         originX: number,
         originY: number,
+        color: string,
         debug: boolean
     ): Box {
         const obj = this.builder.createBox(
@@ -90,6 +93,7 @@ export class ObstacleController
             orientation,
             originX,
             originY,
+            color,
             debug
         );
         this._list.push(obj);
@@ -101,9 +105,17 @@ export class ObstacleController
         height: number,
         originX: number,
         originY: number,
+        color: string,
         debug: boolean
     ): Cylinder {
-        const obj = this.builder.createCylinder(radius, height, originX, originY, debug);
+        const obj = this.builder.createCylinder(
+            radius,
+            height,
+            originX,
+            originY,
+            color,
+            debug
+        );
         this._list.push(obj);
         return obj;
     }
@@ -114,17 +126,53 @@ export class ObstacleController
     createObstaclesJSON = (data: JSON, config: ArenaType = defaultArenaConfig) => {
         if (Array.isArray(data)) {
             data.forEach((element) => {
-                const { geometry } = element;
-                switch (geometry.type) {
-                    case 'BoxGeometry':
-                        // console.log('createBox');
-                        this.createWallJSON(element, config);
+                // console.log(element);
+                const { id, type, parameters } = element;
+                const debug = false;
+                const {
+                    x,
+                    y,
+                    orientation,
+                    width,
+                    height,
+                    depth,
+                    radius,
+                    color
+                } = parameters;
+
+                switch (type) {
+                    case 'wall':
+                        this.createWall(
+                            width,
+                            height,
+                            orientation,
+                            x,
+                            y,
+                            2,
+                            color,
+                            debug
+                        );
                         break;
-                    case 'CylinderGeometry':
-                        // console.log('createCylinder');
-                        this.createCylinderJSON(element, config);
+                    case 'box':
+                        this.createBox(
+                            width,
+                            height,
+                            depth,
+                            orientation,
+                            x,
+                            y,
+                            color,
+                            debug
+                        );
+                        break;
+                    case 'cylinder':
+                        this.createCylinder(radius, height, x, y, color, debug);
+                        break;
+                    case 'cone':
+                        console.error('cone obstacles not implemented.');
                         break;
                     default:
+                        console.error('undefined obstacle found in env.config.json');
                         break;
                 }
             });
@@ -135,41 +183,41 @@ export class ObstacleController
      * create a wall obstacle from JSON data
      * @param {VisualizeType} data obstacle JSON data
      */
-    createWallJSON = (data: VisualizeType, config: ArenaType) => {
-        const decodedProps = this._decodeWallPropsFromJSON(data);
-        if (decodedProps !== -1) {
-            const { width, height, x, y, orientation, depth } = decodedProps;
-            this.createWall(
-                width,
-                height,
-                orientation,
-                normalizeValueRange(x, config.xMin, config.xMax),
-                normalizeValueRange(y, config.yMin, config.yMax),
-                depth,
-                false
-            );
-            // this.createWall(width, height, orientation, originX, originY, depth, debug);
-        }
-    };
+    // createWallJSON = (data: VisualizeType, config: ArenaType) => {
+    //     const decodedProps = this._decodeWallPropsFromJSON(data);
+    //     if (decodedProps !== -1) {
+    //         const { width, height, x, y, orientation, depth } = decodedProps;
+    //         this.createWall(
+    //             width,
+    //             height,
+    //             orientation,
+    //             normalizeValueRange(x, config.xMin, config.xMax),
+    //             normalizeValueRange(y, config.yMin, config.yMax),
+    //             depth,
+    //             false
+    //         );
+    //         // this.createWall(width, height, orientation, originX, originY, depth, debug);
+    //     }
+    // };
 
     /**
      * create a cylinder obstacle from JSON data
      * @param {VisualizeType} data obstacle JSON data
      */
-    createCylinderJSON = (data: VisualizeType, config: ArenaType) => {
-        const decodedProps = this._decodeCylinderPropsFromJSON(data);
-        if (decodedProps !== -1) {
-            const { radius, radiusTop, radiusBottom, height, x, y } = decodedProps;
-            // const radius = (radiusTop + radiusBottom) / 2; // Temp
-            this.createCylinder(
-                radius,
-                height,
-                x, // normalizeValueRange(x, config.xMin, config.xMax),
-                y, // normalizeValueRange(y, config.yMin, config.yMax),
-                false
-            );
-        }
-    };
+    // createCylinderJSON = (data: VisualizeType, config: ArenaType) => {
+    //     const decodedProps = this._decodeCylinderPropsFromJSON(data);
+    //     if (decodedProps !== -1) {
+    //         const { radius, radiusTop, radiusBottom, height, x, y } = decodedProps;
+    //         // const radius = (radiusTop + radiusBottom) / 2; // Temp
+    //         this.createCylinder(
+    //             radius,
+    //             height,
+    //             x, // normalizeValueRange(x, config.xMin, config.xMax),
+    //             y, // normalizeValueRange(y, config.yMin, config.yMax),
+    //             false
+    //         );
+    //     }
+    // };
 
     /**
      * get obstacle list
@@ -259,7 +307,7 @@ export class ObstacleController
         distanceThreshold: number = 10
     ) => {
         let minDist = Infinity;
-        let color = null;
+        let color = '#00000';
 
         for (let i = 0; i < this._list.length; i++) {
             const found = this._list[i].isInRange(heading, x, y);
@@ -275,7 +323,7 @@ export class ObstacleController
             }
         }
         if (minDist > distanceThreshold) {
-            color = null;
+            color = '#00000';
         }
         return color;
     };
@@ -293,7 +341,8 @@ export class ObstacleController
 
         for (let i = 0; i < this._list.length; i++) {
             const found = this._list[i].isInRange(heading, x, y);
-            //console.log(found);
+            // console.log('isInRange ? ', found);
+
             if (found == true) {
                 const dist = this._list[i].getDistance(heading, x, y);
                 console.log(dist);
