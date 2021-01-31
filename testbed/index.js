@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const x = 0;
 const y = 0;
-const heading = 45;
+const heading = 140;
 
 const debug = true;
 
@@ -35,7 +35,7 @@ const w2 = controller.createWall(
     wallColor,
     debug
 );
-/*const w3 = controller.createWall(
+const w3 = controller.createWall(
     wallWidth,
     wallHeight,
     wall2_orientation,
@@ -44,7 +44,7 @@ const w2 = controller.createWall(
     wallDepth,
     wallColor,
     debug
-);*/
+);
 
 const c1 = controller.createCylinder(
     cylinderRadius,

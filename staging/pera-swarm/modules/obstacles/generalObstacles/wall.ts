@@ -192,7 +192,16 @@ export class Wall extends AbstractBox {
 
         if (angle == 90 * (Math.PI / 180) || angle == -90 * (Math.PI / 180)) {
             // line which parallel to y axis
+<<<<<<< HEAD
             a = 1 * sin(angle);
+=======
+            a = 0;
+            b = -1 * sin(angle);
+            c = sin(angle) * x - cos(angle) * y;
+        } else if (angle == 0 || angle == Math.PI) {
+            // line which parallel to x axis
+            a = cos(angle);
+>>>>>>> 3884d4c630089be777efd83233886558606e0189
             b = 0;
             c = -x * sin(angle);
         } else if (angle == 0 || angle == Math.PI) {
