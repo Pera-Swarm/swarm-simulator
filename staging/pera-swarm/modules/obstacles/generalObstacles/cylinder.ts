@@ -1,6 +1,6 @@
 const { sqrt, pow, abs, round, atan2, max, asin } = require('mathjs');
 
-import { normalizeAngle } from 'pera-swarm/lib';
+// import { normalizeAngle } from 'pera-swarm/lib';
 import {
     AbstractCylinder,
     ObjectCoordinate,
@@ -54,7 +54,7 @@ export class Cylinder extends AbstractCylinder {
 
     isInRange = (heading: number, x: number, y: number, angleThreshold: number = 0) => {
         const from = { x: x, y: y };
-        const head = normalizeAngle(heading);
+        const head = this._normalizeAngle(heading);
 
         // Angle from robot to obstacle
         const angle = this._getAngle(from, this.position);
@@ -65,14 +65,19 @@ export class Cylinder extends AbstractCylinder {
         // Angle difference of the tangents of the cylinder from its center
         const deltaT = dist > 0 ? abs(asin(this._radius / dist) * (180 / Math.PI)) : 0;
 
+        console.log(`from (${x}, ${y}) head: ${head} (${heading})`);
+        console.log(
+            `to (${this.position.x}, ${this.position.y}), relativeAngle: ${angle}`
+        );
+
         // Angles of the two tangents of the cylinder and the heading.
         // ___ 360 added to avoid corner cases
         // ___ angleThreshold is the allowed threshold from the cylinder edges
         const aCW = angle - deltaT + 360 - angleThreshold;
         const aCCW = angle + deltaT + 360 + angleThreshold;
-        const aHeading = normalizeAngle(head) + 360;
+        const aHeading = this._normalizeAngle(head) + 360;
 
-        if (this._debug) {
+        if (this._debug || true) {
             console.log(`Calculated Angle: ${angle}, deltaT: ${deltaT}`);
             console.log(
                 'heading:',
@@ -115,6 +120,14 @@ export class Cylinder extends AbstractCylinder {
     };
 
     // -------------------- Private functions --------------------
+
+    _normalizeAngle = (a: number) => {
+        // TODO: error in output for input 66
+        let b = (a + 180) % 360;
+        if (b <= 0) b += 360;
+        b = b - 180;
+        return round(b, 2);
+    };
     _point2PointDistance = (from: ObjectCoordinate, to: ObjectCoordinate) => {
         if (validateObjectCoordinate(from) && validateObjectCoordinate(to)) {
             const xDiff = to.x - from.x;
@@ -129,7 +142,7 @@ export class Cylinder extends AbstractCylinder {
         if (validateObjectCoordinate(from) && validateObjectCoordinate(to)) {
             const xDiff = to.x - from.x;
             const yDiff = to.y - from.y;
-            return normalizeAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
+            return this._normalizeAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
         } else {
             throw new TypeError('Invalid arguments');
         }

@@ -63,7 +63,7 @@ export abstract class AbstractObstacle {
      * get id
      */
     get id(): string {
-        return this._id;
+        return `${this._id} (${this._type})`;
     }
 
     /**
