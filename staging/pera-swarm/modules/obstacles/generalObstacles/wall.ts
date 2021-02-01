@@ -188,20 +188,12 @@ export class Wall extends AbstractBox {
 
     // angle: radians
     _getLine = (x: number, y: number, angle: number) => {
+        //line equation -> sin(theta)x - cos(theta)y + [-x1sin(theta)+y1cos(theta)] = 0 
         let a, b, c;
 
         if (angle == 90 * (Math.PI / 180) || angle == -90 * (Math.PI / 180)) {
             // line which parallel to y axis
-<<<<<<< HEAD
             a = 1 * sin(angle);
-=======
-            a = 0;
-            b = -1 * sin(angle);
-            c = sin(angle) * x - cos(angle) * y;
-        } else if (angle == 0 || angle == Math.PI) {
-            // line which parallel to x axis
-            a = cos(angle);
->>>>>>> 3884d4c630089be777efd83233886558606e0189
             b = 0;
             c = -x * sin(angle);
         } else if (angle == 0 || angle == Math.PI) {
@@ -214,8 +206,6 @@ export class Wall extends AbstractBox {
             b = -1 * cos(angle);
             c = -x * sin(angle) + y * cos(angle);
         }
-
-
         return { a, b, c };
     };
 
