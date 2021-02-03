@@ -52,7 +52,6 @@ class Robot extends AbstractCoordinateRobot {
      */
     set reality(reality) {
         this._reality = reality;
-        console.log(reality);
     }
 
     /**
