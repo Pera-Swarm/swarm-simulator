@@ -22,15 +22,18 @@ export abstract class AbstractCylinder extends AbstractObstacle {
         radius: number,
         height: number,
         position: ObjectCoordinate,
+        reality: 'R' | 'V',
         debug: boolean
     ) {
-        super(position, debug);
+        super(position, reality, debug);
 
         this._radius = radius;
         this._height = height;
 
         this._type = 'Cylinder';
         this._geometryType = 'CylinderGeometry';
+
+        this._reality = reality;
     }
 
     /**

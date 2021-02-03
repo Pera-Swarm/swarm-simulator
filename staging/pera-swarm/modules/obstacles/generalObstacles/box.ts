@@ -9,6 +9,7 @@ export class Box extends AbstractBox {
         originX: number,
         originY: number,
         color: string = '#404040',
+        reality: 'R' | 'V',
         debug = false
     ) {
         super(
@@ -20,13 +21,13 @@ export class Box extends AbstractBox {
                 x: originX,
                 y: originY
             },
+            reality,
             debug
         );
         this._color = color; /* For the appearance */
 
         if (debug) {
             console.log(`Created: [\n ${this.toString()}] `);
-            this.toString();
         }
     }
 
@@ -34,7 +35,7 @@ export class Box extends AbstractBox {
         return (
             `  ${this._type} Obstacle\n   width : ${this._width} height: ${this._height}\n   depth: ${this._depth}  orientation: ${this._orientation}\n` +
             `   center: x: ${this.position.x} y:${this.position.y}\n` +
-            `   color: ${this._color}`
+            `   color: ${this._color} reality: ${this._reality}`
         );
     };
 

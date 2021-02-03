@@ -12,8 +12,15 @@ class EnvironmentController extends Environment {
                 handler: (msg, swarm) => {
                     // Heartbeat signal from the robots to server
                     console.log('MQTT.Obstacles: obstacles/?', msg);
+                    let obstacles;
 
-                    swarm.mqttPublish('obstacles', swarm.environment.getObstaclesAll(), {
+                    if (msg === 'V' || msg === 'R') {
+                        obstacles = this.getObstaclesList(msg);
+                    } else {
+                        obstacles = this.getObstaclesList('M');
+                    }
+
+                    swarm.mqttPublish('obstacles', obstacles, {
                         qos: 2,
                         dup: false,
                         retain: true

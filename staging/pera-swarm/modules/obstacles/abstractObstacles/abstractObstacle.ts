@@ -46,7 +46,13 @@ export abstract class AbstractObstacle {
     protected _created: Date;
     protected _updated: number;
 
-    protected constructor(position: ObjectCoordinate, debug: boolean = false) {
+    protected _reality: string;
+
+    protected constructor(
+        position: ObjectCoordinate,
+        reality: 'R' | 'V',
+        debug: boolean = false
+    ) {
         this._id = uuid();
         this._position = position;
 
@@ -57,6 +63,8 @@ export abstract class AbstractObstacle {
         this._materialType = 'MeshStandardMaterial';
         this._created = new Date();
         this._updated = Date.now();
+
+        this._reality = reality;
     }
 
     /**
@@ -115,6 +123,13 @@ export abstract class AbstractObstacle {
      */
     get materialType(): string {
         return this._materialType;
+    }
+
+    /**
+     * get reality (V or R)
+     */
+    get reality(): string {
+        return this._reality;
     }
 
     /**

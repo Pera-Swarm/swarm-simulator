@@ -60,6 +60,7 @@ export class ObstacleController
         originY: number,
         depth: number,
         color: string,
+        reality: 'R' | 'V',
         debug: boolean
     ): Wall {
         const obj = this.builder.createWall(
@@ -70,6 +71,7 @@ export class ObstacleController
             originY,
             depth,
             color,
+            reality,
             debug
         );
         this._list.push(obj);
@@ -84,6 +86,7 @@ export class ObstacleController
         originX: number,
         originY: number,
         color: string,
+        reality: 'R' | 'V',
         debug: boolean
     ): Box {
         const obj = this.builder.createBox(
@@ -94,6 +97,7 @@ export class ObstacleController
             originX,
             originY,
             color,
+            reality,
             debug
         );
         this._list.push(obj);
@@ -106,6 +110,7 @@ export class ObstacleController
         originX: number,
         originY: number,
         color: string,
+        reality: 'R' | 'V',
         debug: boolean
     ): Cylinder {
         const obj = this.builder.createCylinder(
@@ -114,6 +119,7 @@ export class ObstacleController
             originX,
             originY,
             color,
+            reality,
             debug
         );
         this._list.push(obj);
@@ -126,8 +132,7 @@ export class ObstacleController
     createObstaclesJSON = (data: JSON, config: ArenaType = defaultArenaConfig) => {
         if (Array.isArray(data)) {
             data.forEach((element) => {
-                // console.log(element);
-                const { id, type, parameters } = element;
+                const { id, type, parameters, reality } = element;
                 const debug = false;
                 const {
                     x,
@@ -150,6 +155,7 @@ export class ObstacleController
                             y,
                             2,
                             color,
+                            reality,
                             debug
                         );
                         break;
@@ -162,11 +168,12 @@ export class ObstacleController
                             x,
                             y,
                             color,
+                            reality,
                             debug
                         );
                         break;
                     case 'cylinder':
-                        this.createCylinder(radius, height, x, y, color, debug);
+                        this.createCylinder(radius, height, x, y, color, reality, debug);
                         break;
                     case 'cone':
                         console.error('cone obstacles not implemented.');
@@ -427,14 +434,19 @@ export class ObstacleController
      * method for obtaining a list of visualize object representation of obstacles
      * @returns {any} ObstacleAPI defined Objects
      */
-    visualizeObstacles = (): VisualizeType[] => {
+    visualizeObstacles = (filter: 'M' | 'V' | 'R' = 'M'): VisualizeType[] => {
         let visualizeList: VisualizeType[] = [];
+        //console.log('filter:', filter);
 
         this._list.forEach((item: AbstractObstacle) => {
             // one obstacle object can have multiple geometrics.
-            item.visualize().forEach((itemChild: VisualizeType) => {
-                visualizeList.push(itemChild);
-            });
+            //console.log(item.reality);
+
+            if (item.reality === filter || filter == 'M') {
+                item.visualize().forEach((itemChild: VisualizeType) => {
+                    visualizeList.push(itemChild);
+                });
+            }
         });
         // return a list of Obstacle API defined objects
         return visualizeList;
