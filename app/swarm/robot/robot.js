@@ -12,12 +12,15 @@ class Robot extends AbstractCoordinateRobot {
      * @param {number} x x coordinate
      * @param {number} y y coordinate
      */
-    constructor(id, heading = 0, x = 0, y = 0, realm = 0) {
-        super(id, new Coordinate(id, heading, x, y), realm);
+    constructor(id, heading = 0, x = 0, y = 0, reality = 'V') {
+        super(id, new Coordinate(id, heading, x, y));
 
         // Robot status details
         this.created = new Date();
         this.timestamp = Date.now();
+
+        //console.log(reality);
+        this.reality = reality;
 
         // This is to keep the customized data in the robot object
         this._data = [];
@@ -35,6 +38,21 @@ class Robot extends AbstractCoordinateRobot {
      */
     get data() {
         return this._data;
+    }
+
+    /**
+     * method for getting the reality of the robot, 'R' | 'V'
+     */
+    get reality() {
+        return this._reality;
+    }
+
+    /**
+     * method for setting the reality of the robot, 'R' | 'V'
+     */
+    set reality(reality) {
+        this._reality = reality;
+        console.log(reality);
     }
 
     /**
