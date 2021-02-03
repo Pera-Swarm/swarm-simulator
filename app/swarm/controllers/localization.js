@@ -18,10 +18,12 @@ class LocalizationController extends VirtualLocalizationController {
                     // console.log('MQTT.Localization: localization/?', msg);
 
                     const reality = msg == 'V' || msg == 'R' ? msg : 'M';
-                    const coordinates = JSON.stringify(
-                        swarm.robots.getCoordinatesAll(reality)
-                    );
-                    swarm.mqttPublish('localization/data', coordinates);
+
+                    const resp = JSON.stringify({
+                        reality: reality,
+                        data: swarm.robots.getCoordinatesAll(reality)
+                    });
+                    swarm.mqttPublish('localization/data', resp);
                 }
             },
             {
