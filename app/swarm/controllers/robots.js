@@ -115,7 +115,7 @@ class Robots {
                 publish: false,
                 handler: (msg) => {
                     // Create a robot on simulator
-                    console.log('MQTT_Robot: robot/create', msg);
+                    // console.log('MQTT_Robot: robot/create', msg);
 
                     const { id, heading, x, y, reality } = msg;
                     const resp = this.addRobot(id, heading, x, y, reality);
