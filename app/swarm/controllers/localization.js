@@ -15,14 +15,11 @@ class LocalizationController extends VirtualLocalizationController {
                 publish: false,
                 handler: (msg, swarm) => {
                     // This will print all available localization detail into topic 'localization/info'
-                    // console.log('MQTT.Localization: localization/?', msg);
+                    // console.log('MQTT_Localization: localization/?', msg);
 
                     const reality = msg == 'V' || msg == 'R' ? msg : 'M';
+                    const resp = JSON.stringify(swarm.robots.getCoordinatesAll(reality));
 
-                    const resp = JSON.stringify({
-                        reality: reality,
-                        data: swarm.robots.getCoordinatesAll(reality)
-                    });
                     swarm.mqttPublish('localization/data', resp);
                 }
             },
@@ -35,15 +32,20 @@ class LocalizationController extends VirtualLocalizationController {
                 handler: (msg, swarm) => {
                     // Robot will call this method to get it's own localization values; x,y,heading
                     // This is called by physical robots
-                    console.log('MQTT.Localization: /localization', msg);
+                    //console.log('MQTT_Localization: /localization', msg);
 
                     const id = msg;
-                    const robotCoordinate = swarm.robots.getCoordinateStringById(id);
+                    const { x, y, heading } = swarm.robots.getCoordinatesById(id);
 
-                    if (robotCoordinate !== -1) {
-                        swarm.mqttPublish(`localization/${id}`, robotCoordinate);
+                    if (x !== undefined) {
+                        swarm.mqttPublish(`localization/${id}`, `${x} ${y} ${heading}`);
                     } else {
                         // No robot found, no return message
+                        console.error(
+                            'MQTT_Localization: /localization',
+                            msg,
+                            '| Robot not found'
+                        );
                     }
                 }
             },
@@ -56,11 +58,9 @@ class LocalizationController extends VirtualLocalizationController {
                 handler: (msg, swarm) => {
                     // This will be called by Localization System and the virtual robots,
                     // to inform the updates on their coordinates
-                    console.log('MQTT.Localization: /localization/info ', msg);
+                    // console.log('MQTT_Localization: /localization/update', msg);
 
-                    // Update robot coordinates (& create, if not exists) using received list of coordinates
-                    const { reality, data } = msg;
-                    swarm.robots.updateCoordinates(data, reality);
+                    swarm.robots.updateCoordinates(msg);
                 }
             }
         ];

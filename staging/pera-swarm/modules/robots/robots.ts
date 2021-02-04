@@ -55,8 +55,6 @@ export abstract class AbstractRobots<TId> {
 
     abstract getCoordinatesById: Function;
 
-    abstract getCoordinateStringById: Function;
-
     abstract getCoordinatesAll: Function;
 
     abstract updateCoordinates: Function;
@@ -201,25 +199,6 @@ export class Robots extends AbstractRobots<number> {
         if (this.isExistsRobot(id) === false) return -1;
         const robot = this.findRobotById(id);
         return robot !== -1 ? robot.coordinates : -1;
-    };
-
-    /**
-     * method for getting the robot coordinate string by id
-     * @param {number} id robot id
-     * @returns {String|number} the robot coordinate string : if it exists
-     * @returns -1 : if it doesn't exist
-     */
-    getCoordinateStringById = (id: number): string | number => {
-        if (id === undefined) throw new TypeError('id unspecified');
-
-        if (this.isExistsRobot(id) === false) return -1;
-        const robot = this.findRobotById(id);
-        if (robot !== -1) {
-            const { x, y, heading } = robot.coordinates;
-            return `${x} ${y} ${heading}`;
-        } else {
-            return -1;
-        }
     };
 
     /**

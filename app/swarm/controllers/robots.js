@@ -252,21 +252,6 @@ class Robots {
     };
 
     /**
-     * method for getting the robot coordinate string by id
-     * @param {number} id robot id
-     * @returns {String|number} the robot coordinate string : if it exists
-     * @returns -1 : if it doesn't exist
-     */
-    getCoordinateStringById = (id) => {
-        if (id === undefined) throw new TypeError('id unspecified');
-
-        if (this.isExistsRobot(id) === false) return -1;
-
-        const { x, y, heading } = this.findRobotById(id).getCoordinates();
-        return `${x} ${y} ${heading}`;
-    };
-
-    /**
      * method for getting the coordinates of all robots
      * @returns {Coordinate[]} current robot coordinates : that are existing in the list
      */
@@ -274,8 +259,15 @@ class Robots {
         let result = [];
         for (const key in this.robotList) {
             if (this.robotList[key].reality == reality || reality == 'M') {
-                // Return only robots with requested reality
-                result.push(this.robotList[key].getCoordinates());
+                const { x, y, heading } = this.robotList[key].getCoordinates();
+                const resp = {
+                    id: key,
+                    x: x,
+                    y: y,
+                    heading: heading,
+                    reality: this.robotList[key].reality
+                };
+                result.push(resp);
             }
         }
         return result;
@@ -286,13 +278,15 @@ class Robots {
      * @param {'V'|'R'} reality Reality of the coordinates, default: 'V'
      * @param {Coordinate[]} coordinates coordinate data
      */
-    updateCoordinates = (coordinates, reality = 'V') => {
+    updateCoordinates = (coordinates) => {
         if (coordinates === undefined) throw new TypeError('coordinates unspecified');
 
-        console.log(('reality', reality));
+        //console.log(('reality', reality));
 
         coordinates.forEach((item) => {
             const { id, x, y, heading } = item;
+            const reality = item.reality == undefined ? 'V' : item.reality;
+
             if (this.isExistsRobot(id)) {
                 //console.log(id, this.isExistsRobot(id));
                 this.findRobotById(id).setCoordinateValues(heading, x, y);
