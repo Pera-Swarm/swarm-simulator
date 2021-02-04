@@ -195,7 +195,7 @@ class Robots {
         if (this.isExistsRobot(id) == false) {
             const robot = this.addRobot(id); // create since robot doesn't exists
             robot.reality = reality; // set the reality of the robot, default: 'V'
-            console.log(robot);
+            //console.log(robot);
         }
 
         if (callback !== undefined) callback();

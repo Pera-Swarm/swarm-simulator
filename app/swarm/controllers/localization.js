@@ -56,7 +56,7 @@ class LocalizationController extends VirtualLocalizationController {
                 handler: (msg, swarm) => {
                     // This will be called by Localization System and the virtual robots,
                     // to inform the updates on their coordinates
-                    // console.log('MQTT.Localization: /localization/info ', msg);
+                    console.log('MQTT.Localization: /localization/info ', msg);
 
                     // Update robot coordinates (& create, if not exists) using received list of coordinates
                     const { reality, data } = msg;
