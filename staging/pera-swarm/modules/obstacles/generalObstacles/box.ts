@@ -70,6 +70,7 @@ export class Box extends AbstractBox {
         return [
             {
                 id: this.id,
+                reality: this._reality,
                 geometry: {
                     type: this.geometryType,
                     width: this._width,

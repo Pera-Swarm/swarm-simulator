@@ -143,6 +143,7 @@ export class Wall extends AbstractBox {
         return [
             {
                 id: this.id,
+                reality: this._reality,
                 geometry: {
                     type: this.geometryType,
                     width: this._width,

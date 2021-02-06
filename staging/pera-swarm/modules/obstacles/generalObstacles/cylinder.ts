@@ -104,6 +104,7 @@ export class Cylinder extends AbstractCylinder {
         return [
             {
                 id: this.id,
+                reality: this._reality,
                 geometry: {
                     type: this.geometryType,
                     radiusTop: this._radius,

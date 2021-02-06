@@ -22,6 +22,7 @@ export type MaterialType = {
 
 export type VisualizeType = {
     id: string;
+    reality: string;
     geometry: any;
     material: MaterialType;
     position: ObjectCoordinate;
