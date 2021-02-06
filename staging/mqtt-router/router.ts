@@ -2,6 +2,7 @@ import { IClientSubscribeOptions, IPacket, IPublishPacket, MqttClient } from 'mq
 import { channel, logLevel } from './config';
 import { resolveChannelTopic } from './helper';
 import { Queue } from './queue';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * constraints:
@@ -12,9 +13,13 @@ import { Queue } from './queue';
 
 export type Route = {
     /**
-     *route topic
+     * route topic
      */
     topic: string;
+    /**
+     * channel prefix flag
+     */
+    channelPrefix?: boolean;
     /*
      * payload type (default:String)
      * 'String' | 'JSON'
@@ -187,16 +192,15 @@ export class MQTTRouter {
         for (let i = 0; i < this._routes.length; i++) {
             if (this._routes[i].subscribe !== false) {
                 // subscribe at the beginning unless it is avoided by setting 'subscribe:false'
+                const resolvedTopic =
+                    this._routes[i].channelPrefix !== undefined &&
+                    this._routes[i].channelPrefix === false
+                        ? this._routes[i].topic
+                        : resolveChannelTopic(this._routes[i].topic);
                 if (logLevel === 'debug') {
-                    console.log(
-                        'MQTT_Subscribed: ',
-                        resolveChannelTopic(this._routes[i].topic)
-                    );
+                    console.log('MQTT_Subscribed: ', resolvedTopic);
                 }
-                this._mqttClient.subscribe(
-                    resolveChannelTopic(this._routes[i].topic),
-                    this._options
-                );
+                this._mqttClient.subscribe(resolvedTopic, this._options);
             } else {
                 // No subscription required for this topic
                 if (logLevel === 'debug') {
@@ -293,14 +297,13 @@ export class MQTTRouter {
         } else {
             this._routes.push(route);
             if (route.subscribe !== false) {
+                const resolvedTopic =
+                    route.channelPrefix !== undefined && route.channelPrefix === false
+                        ? route.topic
+                        : resolveChannelTopic(route.topic);
+                console.log('MQTT_Subscribed: ', resolvedTopic);
                 // subscribe at the beginning unless it is avoided by setting 'subscribe:false'
-                //if (logLevel === 'debug') {
-                console.log('MQTT_Subscribed: ', resolveChannelTopic(route.topic));
-                //}
-                this._mqttClient.subscribe(
-                    resolveChannelTopic(route.topic),
-                    this._options
-                );
+                this._mqttClient.subscribe(resolvedTopic, this._options);
             } else {
                 // No subscription required for this topic
                 if (logLevel === 'debug') {
@@ -318,9 +321,7 @@ export class MQTTRouter {
      * @param {Route[]} route[] list of route objects to be added to the subscriber list
      */
     addRoutes = (routes: Route[]) => {
-        // TODO: @luk3Sky, please review this
         for (let i = 0; i < routes.length; i++) {
-            //console.log(routes[i].topic);
             this.addRoute(routes[i]);
         }
     };
