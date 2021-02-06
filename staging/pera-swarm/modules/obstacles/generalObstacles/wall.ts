@@ -99,7 +99,6 @@ export class Wall extends AbstractBox {
                 this._theta
             );
 
-
             const intersectionPoint = this._getIntersectionPoint(
                 headingLine,
                 obstacleLine
@@ -213,11 +212,11 @@ export class Wall extends AbstractBox {
 
     _getIntersectionPoint = (line1: any, line2: any) => {
         const x =
-        (line1.b * line2.c - line2.b * line1.c) /
-        (line1.a * line2.b - line2.a * line1.b);
+            (line1.b * line2.c - line2.b * line1.c) /
+            (line1.a * line2.b - line2.a * line1.b);
         const y =
-        (line2.a * line1.c - line1.a * line2.c) /
-        (line1.a * line2.b - line2.a * line1.b);
+            (line2.a * line1.c - line1.a * line2.c) /
+            (line1.a * line2.b - line2.a * line1.b);
         return { x, y };
     };
 
