@@ -12,6 +12,7 @@ export interface AbstractObstacleBuilder {
         originY: number,
         depth: number,
         color: string,
+        reality: 'R' | 'V',
         debug: boolean
     ): Wall;
 
@@ -23,6 +24,7 @@ export interface AbstractObstacleBuilder {
         originX: number,
         originY: number,
         color: string,
+        reality: 'R' | 'V',
         debug: boolean
     ): Box;
 
@@ -32,6 +34,7 @@ export interface AbstractObstacleBuilder {
         originX: number,
         originY: number,
         color: string,
+        reality: 'R' | 'V',
         debug: boolean
     ): Cylinder;
 
@@ -56,6 +59,7 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         originY: number,
         depth: number,
         color: string,
+        reality: 'R' | 'V',
         debug: boolean
     ): Wall {
         return new Wall(
@@ -66,6 +70,7 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
             originY,
             depth,
             color,
+            reality,
             debug
         );
     }
@@ -78,9 +83,20 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         originX: number,
         originY: number,
         color: string,
+        reality: 'R' | 'V',
         debug: boolean
     ): Box {
-        return new Box(width, height, depth, orientation, originX, originY, color, debug);
+        return new Box(
+            width,
+            height,
+            depth,
+            orientation,
+            originX,
+            originY,
+            color,
+            reality,
+            debug
+        );
     }
 
     createCylinder(
@@ -89,9 +105,10 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         originX: number,
         originY: number,
         color: string,
+        reality: 'R' | 'V',
         debug: boolean
     ): Cylinder {
-        return new Cylinder(radius, height, originX, originY, color, debug);
+        return new Cylinder(radius, height, originX, originY, color, reality, debug);
     }
 
     changeMaterial = (obstacle: AbstractObstacle, materialType: string) => {

@@ -30,6 +30,7 @@ export class Wall extends AbstractBox {
         originY: number,
         depth: number = 2,
         color: string = '#404040',
+        reality: 'R' | 'V',
         debug = false
     ) {
         super(
@@ -41,6 +42,7 @@ export class Wall extends AbstractBox {
                 x: originX + (width / 2) * cos((orientation / 180) * Math.PI),
                 y: originY + (width / 2) * sin((orientation / 180) * Math.PI)
             },
+            reality,
             debug
         );
 
@@ -59,10 +61,7 @@ export class Wall extends AbstractBox {
 
         if (debug) {
             console.log(`Created: [\n ${this.toString()}] `);
-            console.log(this.toString());
         }
-
-        console.log(this.toString());
     }
 
     public toString = (): string => {
@@ -70,7 +69,8 @@ export class Wall extends AbstractBox {
             `  ${this._type} Obstacle\n   width : ${this._width} height: ${this._height}\n   depth: ${this._depth}  orientation: ${this._orientation}\n` +
             `   p1: { x: ${this._p1.x}, y: ${this._p1.y}}\n` +
             `   p2: { x: ${this._p2.x}, y: ${this._p2.y}}\n` +
-            `   center: x: ${this.position.x} y:${this.position.y}`
+            `   center: x: ${this.position.x} y:${this.position.y}\n` +
+            `   reality: ${this._reality}`
         );
     };
 
@@ -105,14 +105,14 @@ export class Wall extends AbstractBox {
             );
 
             if (this._debug) {
-                console.log('headingLine:', headingLine);
-                console.log('obstacleLine:', obstacleLine);
-                console.log('intersectionPoint', intersectionPoint);
+                // console.log('headingLine:', headingLine);
+                // console.log('obstacleLine:', obstacleLine);
+                // console.log('intersectionPoint', intersectionPoint);
             }
 
             const headingDistance = this._point2PointDistance(from, intersectionPoint);
 
-            console.log('headingDistance: ' + headingDistance);
+            // console.log('headingDistance: ' + headingDistance);
             return headingDistance;
         }
     };
@@ -143,6 +143,7 @@ export class Wall extends AbstractBox {
         return [
             {
                 id: this.id,
+                reality: this._reality,
                 geometry: {
                     type: this.geometryType,
                     width: this._width,

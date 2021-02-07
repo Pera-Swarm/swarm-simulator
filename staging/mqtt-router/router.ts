@@ -262,6 +262,7 @@ export class MQTTRouter {
             console.error('Invalid type or message');
             return undefined;
         }
+
         try {
             msg = type === 'String' ? message.toString() : JSON.parse(message.toString());
             return msg;
@@ -408,16 +409,24 @@ export class MQTTRouter {
      * @param {string} message mqtt message
      */
     handlDiscoverySubscription = (topic: string, message: Buffer) => {
-        // TODO: @NuwanJ Please review this
-        // Adding timeout is questionable???
+        // TODO: @luk3Sky Please review
+        // Note: message decoder is replaced with JSON.parse(), otherwise compile is failing
         if (topic === this._discoveryTopic) {
-            const data: { uuid: string; timestamp: string } = this.decodeMessage(
-                'JSON',
-                message
-            );
-            if (data !== undefined && this._id !== data.uuid) {
-                console.log('Received', data.uuid, data.timestamp, this._created);
-                this.publishTerminationMessage(data.uuid);
+            try {
+                const data: { uuid: string; timestamp: string } = JSON.parse(
+                    message.toString()
+                );
+                if (data !== undefined && this._id !== data.uuid) {
+                    console.log('Received', data.uuid, data.timestamp, this._created);
+                    const that = this;
+                    setTimeout(function () {
+                        // Adding a timeout to make sure the the 'sender' is ready to receive messages
+                        that.publishTerminationMessage(data.uuid);
+                    }, 2500);
+                }
+            } catch (error) {
+                console.error('Parse Error');
+                return;
             }
         }
     };
@@ -426,7 +435,6 @@ export class MQTTRouter {
      * method for publishing service discovery message
      */
     publishDiscoveryMessage = () => {
-        // TODO: @NuwanJ Please review this
         this._mqttClient.publish(
             this._discoveryTopic,
             JSON.stringify({ uuid: this._id, timestamp: this._created })
@@ -437,7 +445,6 @@ export class MQTTRouter {
      * method for publishing service termination message
      */
     publishTerminationMessage = (id: string) => {
-        // TODO: @NuwanJ Please review this
         this._mqttClient.publish(`${this._terminateTopic}/${id}`, JSON.stringify({ id }));
     };
 

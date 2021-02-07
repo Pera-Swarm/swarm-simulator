@@ -8,6 +8,7 @@ const y = 0;
 const heading = 140;
 
 const debug = true;
+const obstacleDebug = false;
 
 const wallWidth = 100;
 const wallHeight = 20;
@@ -33,7 +34,8 @@ const w2 = controller.createWall(
     50,
     wallDepth,
     wallColor,
-    debug
+    'R',
+    obstacleDebug
 );
 const w3 = controller.createWall(
     wallWidth,
@@ -43,7 +45,8 @@ const w3 = controller.createWall(
     -50,
     wallDepth,
     wallColor,
-    debug
+    'R',
+    obstacleDebug
 );
 
 const c1 = controller.createCylinder(
@@ -52,7 +55,8 @@ const c1 = controller.createCylinder(
     cylinderX,
     cylinderY,
     cylinderColor,
-    debug
+    'V',
+    obstacleDebug
 );
 
 const isObstacle = controller.isObstacleThere(heading, x, y);
@@ -61,6 +65,6 @@ const color = controller.getColor(heading, x, y);
 
 console.log('\n\nisObstacle:', isObstacle, 'distance:', dist, 'color', color);
 
-const jsonObstacles = controller.visualizeObstacles();
+const jsonObstacles = controller.visualizeObstacles('M');
 
 console.log(JSON.stringify(jsonObstacles));
