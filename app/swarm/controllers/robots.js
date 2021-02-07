@@ -91,10 +91,10 @@ class Robots {
                 publish: false,
                 handler: (msg) => {
                     // Heartbeat signal from the robots to server
-                    // console.log('MQTT_Robot: robot/live', msg);
-                    const { id, reality } = msg;
+                    console.log('MQTT_Robot: robot/live', msg);
 
-                    let robot = this.findRobotById(id);
+                    const { id, reality } = msg;
+                    const robot = this.findRobotById(id);
 
                     if (robot !== -1) {
                         const heartbeat = robot.updateHeartbeat();
@@ -102,7 +102,7 @@ class Robots {
                     } else {
                         // No robot found.
                         this.createIfNotExists(id, reality, () => {
-                            //console.log('A robot created', msg.id);
+                            console.log('A robot created', msg.id);
                         });
                     }
                 }

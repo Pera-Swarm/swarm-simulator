@@ -87,6 +87,16 @@ class Robot extends AbstractCoordinateRobot {
     };
 
     /**
+     * method for getting coordinates
+     * @returns coordinate values, with only 2 decimals
+     */
+    getCoordinatesPretty = () => {
+        const x = Math.round(this._coordinates.values.x * 100) / 100;
+        const y = Math.round(this._coordinates.values.y * 100) / 100;
+        const heading = Math.round(this._coordinates.values.heading * 100) / 100;
+        return { x, y, heading };
+    };
+    /**
      * method for setting coordinates
      * @param {CoordinateValueInt<number>} heading heading coordinate
      * @param {number} x x coordinate

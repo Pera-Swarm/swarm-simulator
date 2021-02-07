@@ -59,8 +59,7 @@ class LocalizationController extends VirtualLocalizationController {
                     // This will be called by Localization System and the virtual robots,
                     // to inform the updates on their coordinates
 
-                    console.log('MQTT_Localization: /localization/update', msg);
-
+                    //console.log('MQTT_Localization: /localization/update', msg);
                     swarm.robots.updateCoordinates(msg);
                 }
             }

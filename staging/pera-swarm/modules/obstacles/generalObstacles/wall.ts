@@ -105,14 +105,14 @@ export class Wall extends AbstractBox {
             );
 
             if (this._debug) {
-                console.log('headingLine:', headingLine);
-                console.log('obstacleLine:', obstacleLine);
-                console.log('intersectionPoint', intersectionPoint);
+                // console.log('headingLine:', headingLine);
+                // console.log('obstacleLine:', obstacleLine);
+                // console.log('intersectionPoint', intersectionPoint);
             }
 
             const headingDistance = this._point2PointDistance(from, intersectionPoint);
 
-            console.log('headingDistance: ' + headingDistance);
+            // console.log('headingDistance: ' + headingDistance);
             return headingDistance;
         }
     };
