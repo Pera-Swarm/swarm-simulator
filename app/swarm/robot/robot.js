@@ -12,12 +12,15 @@ class Robot extends AbstractCoordinateRobot {
      * @param {number} x x coordinate
      * @param {number} y y coordinate
      */
-    constructor(id, heading = 0, x = 0, y = 0, realm = 0) {
-        super(id, new Coordinate(id, heading, x, y), realm);
+    constructor(id, heading = 0, x = 0, y = 0, reality = 'V') {
+        super(id, new Coordinate(id, heading, x, y));
 
         // Robot status details
         this.created = new Date();
         this.timestamp = Date.now();
+
+        //console.log(reality);
+        this.reality = reality;
 
         // This is to keep the customized data in the robot object
         this._data = [];
@@ -35,6 +38,20 @@ class Robot extends AbstractCoordinateRobot {
      */
     get data() {
         return this._data;
+    }
+
+    /**
+     * method for getting the reality of the robot, 'R' | 'V'
+     */
+    get reality() {
+        return this._reality;
+    }
+
+    /**
+     * method for setting the reality of the robot, 'R' | 'V'
+     */
+    set reality(reality) {
+        this._reality = reality;
     }
 
     /**
@@ -69,6 +86,16 @@ class Robot extends AbstractCoordinateRobot {
         return this._coordinates.values;
     };
 
+    /**
+     * method for getting coordinates
+     * @returns coordinate values, with only 2 decimals
+     */
+    getCoordinatesPretty = () => {
+        const x = Math.round(this._coordinates.values.x * 100) / 100;
+        const y = Math.round(this._coordinates.values.y * 100) / 100;
+        const heading = Math.round(this._coordinates.values.heading * 100) / 100;
+        return { x, y, heading };
+    };
     /**
      * method for setting coordinates
      * @param {CoordinateValueInt<number>} heading heading coordinate

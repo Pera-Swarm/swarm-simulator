@@ -29,9 +29,10 @@ export abstract class AbstractBox extends AbstractObstacle {
         depth: number,
         orientation: number,
         position: ObjectCoordinate,
+        reality: 'R' | 'V',
         debug: boolean
     ) {
-        super(position, debug);
+        super(position, reality, debug);
         this._width = width;
         this._depth = depth;
         this._height = height;
@@ -42,6 +43,8 @@ export abstract class AbstractBox extends AbstractObstacle {
         this._type = 'Box';
         this._geometryType = 'BoxGeometry';
         this._center = position;
+
+        this._reality = reality;
     }
 
     /**

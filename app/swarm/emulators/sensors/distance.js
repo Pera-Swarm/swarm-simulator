@@ -17,12 +17,12 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
     }
 
     getReading = (robot, callback) => {
-        const { x, y, heading } = robot.getCoordinates();
-        console.log('distance measure from ', { x, y, heading });
+        const { x, y, heading } = robot.getCoordinatesPretty();
 
         // TODO: @NuwanJ implement full logic
         let obstacleDist = this._obstacleController.getDistance(heading, x, y);
 
+        console.log(`Dist: ${obstacleDist} \tmeasured from (${x},${y})  ^${heading}`);
         this.publish(`sensor/distance/${robot.id}`, obstacleDist);
 
         robot.updateHeartbeat();
@@ -47,14 +47,14 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
                 publish: false,
                 handler: (msg) => {
                     // Listen for the virtual distance sensor reading requests
-                    console.log('MQTT.Sensor: sensor/distance', msg);
+                    // console.log('MQTT.Sensor: sensor/distance', msg);
 
                     //this._robots.createIfNotExists(msg.id, () => {
                     let robot = this._robots.findRobotById(msg.id);
 
                     if (robot != -1) {
                         this.getReading(robot, (dist) => {
-                            console.log('MQTT:Sensor:DistanceEmulator', dist);
+                            // console.log('MQTT:Sensor:DistanceEmulator', dist);
                         });
                     } else {
                         console.log('MQTT_Sensor:DistanceEmulator', 'Robot not found');

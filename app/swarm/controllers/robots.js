@@ -91,16 +91,18 @@ class Robots {
                 publish: false,
                 handler: (msg) => {
                     // Heartbeat signal from the robots to server
-                    // console.log('MQTT.Robot: robot/live', msg);
+                    console.log('MQTT_Robot: robot/live', msg);
 
-                    let robot = swarm.robots.findRobotById(msg.id);
+                    const { id, reality } = msg;
+                    const robot = this.findRobotById(id);
+
                     if (robot !== -1) {
                         const heartbeat = robot.updateHeartbeat();
                         //console.log('Heatbeat of the robot', msg, 'is updated to', heartbeat);
                     } else {
                         // No robot found.
-                        this.createIfNotExists(msg.id, () => {
-                            //console.log('A robot created', msg.id);
+                        this.createIfNotExists(id, reality, () => {
+                            console.log('A robot created', msg.id);
                         });
                     }
                 }
@@ -113,10 +115,10 @@ class Robots {
                 publish: false,
                 handler: (msg) => {
                     // Create a robot on simulator
-                    console.log('MQTT.Robot: robot/create', msg);
+                    // console.log('MQTT_Robot: robot/create', msg);
 
-                    const { id, heading, x, y } = msg;
-                    const resp = this.addRobot(id, heading, x, y);
+                    const { id, heading, x, y, reality } = msg;
+                    const resp = this.addRobot(id, heading, x, y, reality);
                 }
             },
             // Robot snapshots
@@ -150,22 +152,19 @@ class Robots {
      * @param {number} heading heading coordinate
      * @param {number} x x coordinate
      * @param {number} y y coordinate
-     * @param {number} z z coordinate, optional
+     * @param {'V'|'R'} reality reality of the robot, default: 'V'
      * @returns {Robot} Robot : if successful
      */
-    addRobot = (id, heading, x, y, z) => {
+    addRobot = (id, heading, x, y, reality = 'V') => {
         if (id === undefined) throw new TypeError('id unspecified');
 
         // only add a robot if the id doesn't exist
         if (this.isExistsRobot(id) === false) {
             // robot doesn't exists
-            if (heading === undefined) this.robotList[id] = new Robot(id);
+            if ((heading === undefined) | (x === undefined) || y === undefined)
+                this.robotList[id] = new Robot(id);
+            else this.robotList[id] = new Robot(id, heading, x, y, reality);
 
-            if (z === undefined) {
-                this.robotList[id] = new Robot(id, heading, x, y);
-            } else if (z !== undefined) {
-                this.robotList[id] = new Robot(id, heading, x, y, z);
-            }
             this.size += 1;
         }
         return this.robotList[id];
@@ -210,10 +209,12 @@ class Robots {
      * @returns nothing
      */
 
-    createIfNotExists = (id, callback) => {
+    createIfNotExists = (id, reality = 'V', callback) => {
         if (id === undefined) throw new TypeError('id unspecified');
         if (this.isExistsRobot(id) == false) {
-            this.addRobot(id); // robot doesn't exists
+            const robot = this.addRobot(id); // create since robot doesn't exists
+            robot.reality = reality; // set the reality of the robot, default: 'V'
+            //console.log(robot);
         }
 
         if (callback !== undefined) callback();
@@ -270,48 +271,48 @@ class Robots {
     };
 
     /**
-     * method for getting the robot coordinate string by id
-     * @param {number} id robot id
-     * @returns {String|number} the robot coordinate string : if it exists
-     * @returns -1 : if it doesn't exist
-     */
-    getCoordinateStringById = (id) => {
-        if (id === undefined) throw new TypeError('id unspecified');
-
-        if (this.isExistsRobot(id) === false) return -1;
-
-        const { x, y, heading } = this.findRobotById(id).getCoordinates();
-        return `${x} ${y} ${heading}`;
-    };
-
-    /**
      * method for getting the coordinates of all robots
      * @returns {Coordinate[]} current robot coordinates : that are existing in the list
      */
-    getCoordinatesAll = () => {
+    getCoordinatesAll = (reality = 'M') => {
         let result = [];
         for (const key in this.robotList) {
-            result.push(this.robotList[key].getCoordinates());
+            if (this.robotList[key].reality == reality || reality == 'M') {
+                const { x, y, heading } = this.robotList[key].getCoordinates();
+                const resp = {
+                    id: key,
+                    x: x,
+                    y: y,
+                    heading: heading,
+                    reality: this.robotList[key].reality
+                };
+                result.push(resp);
+            }
         }
         return result;
     };
 
     /**
      * method for updating the coordinates of the given robots coordinates data
+     * @param {'V'|'R'} reality Reality of the coordinates, default: 'V'
      * @param {Coordinate[]} coordinates coordinate data
      */
     updateCoordinates = (coordinates) => {
-        // TODO: handle through Localization module
         if (coordinates === undefined) throw new TypeError('coordinates unspecified');
+
+        //console.log(('reality', reality));
 
         coordinates.forEach((item) => {
             const { id, x, y, heading } = item;
+            const reality = item.reality == undefined ? 'V' : item.reality;
+
             if (this.isExistsRobot(id)) {
                 //console.log(id, this.isExistsRobot(id));
                 this.findRobotById(id).setCoordinateValues(heading, x, y);
+                this.findRobotById(id).reality = reality;
             } else {
                 //console.log('robot added', id);
-                this.addRobot(id, heading, x, y);
+                this.addRobot(id, heading, x, y, reality);
             }
             this.updated = Date.now();
         });
