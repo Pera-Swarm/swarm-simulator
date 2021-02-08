@@ -118,6 +118,25 @@ class Robots {
                     const { id, heading, x, y } = msg;
                     const resp = this.addRobot(id, heading, x, y);
                 }
+            },
+            // Robot snapshots
+            {
+                topic: 'mgt/robots/snapshot',
+                type: 'JSON',
+                allowRetained: false,
+                subscribe: true,
+                publish: false,
+                handler: (msg, swarm) => {
+                    const { id } = msg;
+                    if (id !== undefined) {
+                        // Handle robot snapshot request
+                        const { id } = msg;
+                        console.log('MQTT.Robot: mgt/robots/snapshot', msg);
+                        const resp = this.findRobotById(id);
+                        // TODO: @NuwanJ Please review this: response data type not yet finalized in the server I think
+                        swarm.mqttPublish('mgt/robots/?', resp);
+                    }
+                }
             }
         ];
         return commRoutes;
