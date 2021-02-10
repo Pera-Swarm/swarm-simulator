@@ -131,8 +131,9 @@ export class Environment extends AbstractEnvironment {
     /**
      * method for obtaining all the obstacles in the environment configuration
      */
-    getObstaclesAll = (): VisualizeType[] => {
-        return this.obstacleController.visualizeObstacles();
+    getObstaclesList = (reality: 'M' | 'V' | 'R' = 'M'): VisualizeType[] => {
+        // TODO: TypeError for reality
+        return this.obstacleController.visualizeObstacles(reality);
     };
 }
 

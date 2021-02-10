@@ -16,9 +16,10 @@ export class Cylinder extends AbstractCylinder {
         originX: number,
         originY: number,
         color: string = '#404040',
+        reality: 'R' | 'V',
         debug = false
     ) {
-        super(radius, height, { x: originX, y: originY }, debug);
+        super(radius, height, { x: originX, y: originY }, reality, debug);
 
         this._color = color;
 
@@ -26,6 +27,13 @@ export class Cylinder extends AbstractCylinder {
             console.log(`Created: [\n ${this.toString()}] `);
         }
     }
+    public toString = (): string => {
+        return (
+            `  ${this._type} Obstacle\n   radius : ${this._radius} height: ${this._height}\n` +
+            `   center: x: ${this.position.x} y:${this.position.y}\n` +
+            `   color: ${this._color} reality: ${this._reality}`
+        );
+    };
 
     geometric = () => {
         return {
@@ -96,6 +104,7 @@ export class Cylinder extends AbstractCylinder {
         return [
             {
                 id: this.id,
+                reality: this._reality,
                 geometry: {
                     type: this.geometryType,
                     radiusTop: this._radius,

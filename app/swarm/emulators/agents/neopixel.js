@@ -2,7 +2,7 @@ const { AbstractAgentEmulator } = require('../../../../dist/pera-swarm');
 
 class NeoPixelAgent extends AbstractAgentEmulator {
     constructor(mqttPublish) {
-        super(null, null, mqttPublish);
+        super(null, mqttPublish);
     }
 
     update = (robot, R, G, B) => {
@@ -13,7 +13,7 @@ class NeoPixelAgent extends AbstractAgentEmulator {
         robot.setData('neopixel', { R, G, B });
 
         // Info the robot visualizer about update, OPTIONAL
-        this.publish(`output/neopixel/${id}`, msg);
+        //this.publish(`output/neopixel/${id}`, msg);
     };
 
     defaultSubscriptions = () => {
@@ -24,14 +24,23 @@ class NeoPixelAgent extends AbstractAgentEmulator {
                 allowRetained: false,
                 subscribe: true,
                 publish: false,
-                handler: (msg) => {
+                handler: (msg, swarm) => {
                     // Robots can info the server about neopixel strip through this topic
-                    // console.log('MQTT.Neopixel: output/neopixel', msg);
+                    // console.log('MQTT_Neopixel: output/neopixel', msg);
 
                     const { id, R, G, B } = msg;
                     const robot = swarm.robots.findRobotById(id);
 
-                    this.update(robot, R, G, B);
+                    if (robot != -1) {
+                        this.update(robot, R, G, B);
+                    } else {
+                        // No robot found, no return message
+                        console.error(
+                            'MQTT_Neopixel: output/neopixel',
+                            msg,
+                            '| Robot not found'
+                        );
+                    }
                 }
             }
         ];

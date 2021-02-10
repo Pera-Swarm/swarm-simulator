@@ -77,7 +77,6 @@ swarm(setup){
         +isAliveRobot(id, interval)
         +findRobotById(id)
         +getCoordinatesById(id)
-        +getCoordinateStringById(id)
         +getCoordinatesAll()
         +updateCoordinates(coordinates)
         +prune(interval, callback)

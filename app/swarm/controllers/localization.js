@@ -8,6 +8,22 @@ class LocalizationController extends VirtualLocalizationController {
     defaultSubscriptions = () => {
         return [
             {
+                topic: 'localization/data/?',
+                type: 'String',
+                allowRetained: false,
+                subscribe: true,
+                publish: false,
+                handler: (msg, swarm) => {
+                    // This will print all available localization detail into topic 'localization/info'
+                    // console.log('MQTT_Localization: localization/?', msg);
+
+                    const reality = msg == 'V' || msg == 'R' ? msg : 'M';
+                    const resp = JSON.stringify(swarm.robots.getCoordinatesAll(reality));
+
+                    swarm.mqttPublish('localization/data', resp);
+                }
+            },
+            {
                 topic: 'localization',
                 type: 'JSON',
                 allowRetained: false,
@@ -16,20 +32,25 @@ class LocalizationController extends VirtualLocalizationController {
                 handler: (msg, swarm) => {
                     // Robot will call this method to get it's own localization values; x,y,heading
                     // This is called by physical robots
-                    console.log('MQTT.Localization: /localization', msg);
+                    //console.log('MQTT_Localization: /localization', msg);
 
-                    const { id } = msg;
-                    const robotCoordinate = swarm.robots.getCoordinateStringById(id);
+                    const id = msg;
+                    const { x, y, heading } = swarm.robots.getCoordinatesById(id);
 
-                    if (robotCoordinate !== -1) {
-                        swarm.mqttPublish(`localization/${id}`, robotCoordinate);
+                    if (x !== undefined) {
+                        swarm.mqttPublish(`localization/${id}`, `${x} ${y} ${heading}`);
                     } else {
                         // No robot found, no return message
+                        console.error(
+                            'MQTT_Localization: /localization',
+                            msg,
+                            '| Robot not found'
+                        );
                     }
                 }
             },
             {
-                topic: 'localization/info',
+                topic: 'localization/update',
                 type: 'JSON',
                 allowRetained: true,
                 subscribe: true,
@@ -37,24 +58,9 @@ class LocalizationController extends VirtualLocalizationController {
                 handler: (msg, swarm) => {
                     // This will be called by Localization System and the virtual robots,
                     // to inform the updates on their coordinates
-                    // console.log('MQTT.Localization: /localization/info ', msg);
 
-                    // Update robot coordinates (& create, if not exists) using received list of coordinates
+                    //console.log('MQTT_Localization: /localization/update', msg);
                     swarm.robots.updateCoordinates(msg);
-                }
-            },
-            {
-                topic: 'localization/?',
-                type: 'String',
-                allowRetained: false,
-                subscribe: true,
-                publish: false,
-                handler: (msg, swarm) => {
-                    // This will print all available localization detail into topic 'localization/info'
-                    // console.log('MQTT.Localization: localization/?', msg);
-
-                    const coordinates = JSON.stringify(swarm.robots.getCoordinatesAll());
-                    swarm.mqttPublish('localization/info', coordinates);
                 }
             }
         ];
@@ -62,7 +68,7 @@ class LocalizationController extends VirtualLocalizationController {
 
     initialPublishers = [
         {
-            topic: 'localization/update',
+            topic: 'localization/update/?',
             data: '?'
         }
     ];

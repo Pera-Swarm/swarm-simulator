@@ -2,6 +2,7 @@ import { IClientSubscribeOptions, IPacket, IPublishPacket, MqttClient } from 'mq
 import { channel, logLevel } from './config';
 import { resolveChannelTopic } from './helper';
 import { Queue } from './queue';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * constraints:
@@ -12,9 +13,13 @@ import { Queue } from './queue';
 
 export type Route = {
     /**
-     *route topic
+     * route topic
      */
     topic: string;
+    /**
+     * channel prefix flag
+     */
+    channelPrefix?: boolean;
     /*
      * payload type (default:String)
      * 'String' | 'JSON'
@@ -58,10 +63,15 @@ const defaultOnError = function (error: any) {
 };
 
 export class MQTTRouter {
+    private _id: string;
     protected _mqttClient: MqttClient;
     protected _routes: Route[];
     protected _publishQueue: Queue;
     private _options: IClientSubscribeOptions;
+    private _unique: boolean;
+    private _discoveryTopic: string;
+    private _terminateTopic: string;
+    private _created: Date;
     private setup: Function;
     private errorHandler: Function;
 
@@ -72,13 +82,17 @@ export class MQTTRouter {
      * @param {IClientSubscribeOptions} options mqtt message options
      * @param {Function} setup setup function that runs on connection success
      * @param {Function} onError error handler function
+     * @param {boolean} isUnique whether to allow multiple instances of mqtt routers on the same mqtt channel
      */
     constructor(
         mqttConnection: MqttClient,
         routes: Route[],
         options: IClientSubscribeOptions = defaultOptions,
         setup: Function = defaultSetup,
-        onError: Function = defaultOnError
+        onError: Function = defaultOnError,
+        isUnique: boolean = true,
+        discoveryTopic: string = '/service/discovery',
+        terminateTopic: string = '/service/terminate'
     ) {
         this._mqttClient = mqttConnection;
         if (Array.isArray(routes)) {
@@ -109,6 +123,11 @@ export class MQTTRouter {
         this._options = options;
         this.setup = setup;
         this.errorHandler = onError;
+        this._unique = isUnique;
+        this._id = uuidv4();
+        this._discoveryTopic = discoveryTopic;
+        this._terminateTopic = terminateTopic;
+        this._created = new Date();
     }
 
     /**
@@ -119,6 +138,12 @@ export class MQTTRouter {
             console.log('MQTT_Connecting...\n');
             this.setup();
             this.handleRouteSubscriptions();
+            if (this._unique) {
+                this.addRoutes(this.initialServiceSubscriptions());
+                setTimeout(() => {
+                    this.publishDiscoveryMessage();
+                }, 1000);
+            }
             this._publishQueue.start();
             console.log(`MQTT_Router: Connected to channel [${channel}]\n`);
         });
@@ -131,48 +156,65 @@ export class MQTTRouter {
         this._mqttClient.on(
             'message',
             (topic: string, message: Buffer, packet: IPublishPacket) => {
-                for (let i = 0; i < this._routes.length; i += 1) {
-                    if (resolveChannelTopic(this._routes[i].topic) === topic) {
-                        // convert message format
-                        let msg: string | JSON | undefined;
-                        if (logLevel !== 'info') {
-                            console.log(
-                                'MQTT_Message_To_Be_Handled:',
-                                topic + ' > ' + message
-                            );
-                        }
-                        try {
-                            msg = this.decodeMessage(this._routes[i].type, message);
-                            if (msg !== undefined) {
-                                if (!packet.retain) {
-                                    // Fresh messages
-                                    this.callHandler(topic, msg, this._routes[i]);
-                                } else if (
-                                    packet.retain &&
-                                    this._routes[i].allowRetained
-                                ) {
-                                    // Older/Retained messages
-                                    // Note: Accept and handle 'retained true logic' only if both the packet is retained and the route allows retained packets
-                                    this.callHandler(topic, msg, this._routes[i]);
-                                } else if (
-                                    packet.retain &&
-                                    !this._routes[i].allowRetained &&
-                                    this._routes[i].fallbackRetainHandler !== undefined
-                                ) {
-                                    // Older/Retained messages
-                                    // Note: Accept and handle 'retained false logic' if both the packet is retained and the route doesn't allow retained packets
-                                    this.callFallback(topic, msg, this._routes[i]);
-                                } else if (
-                                    packet.retain &&
-                                    !this._routes[i].allowRetained &&
-                                    this._routes[i].fallbackRetainHandler === undefined
-                                ) {
-                                    // Discard Older/Retained messages
-                                    this.discard(topic, msg);
-                                }
+                if (this._unique && topic === this._discoveryTopic) {
+                    if (logLevel !== 'info') {
+                        console.log('Service:Discovery');
+                    }
+                    this.handlDiscoverySubscription(topic, message);
+                } else if (
+                    this._unique &&
+                    topic === `${this._terminateTopic}/${this._id}`
+                ) {
+                    if (logLevel !== 'info') {
+                        console.log('Service:Termination');
+                    }
+                    this.terminate();
+                } else {
+                    for (let i = 0; i < this._routes.length; i += 1) {
+                        if (resolveChannelTopic(this._routes[i].topic) === topic) {
+                            // convert message format
+                            let msg: string | JSON | undefined;
+                            if (logLevel !== 'info') {
+                                console.log(
+                                    'MQTT_Message_To_Be_Handled:',
+                                    topic + ' > ' + message
+                                );
                             }
-                        } catch (err) {
-                            this.errorHandler(err);
+                            try {
+                                msg = this.decodeMessage(this._routes[i].type, message);
+                                if (msg !== undefined) {
+                                    if (!packet.retain) {
+                                        // Fresh messages
+                                        this.callHandler(topic, msg, this._routes[i]);
+                                    } else if (
+                                        packet.retain &&
+                                        this._routes[i].allowRetained
+                                    ) {
+                                        // Older/Retained messages
+                                        // Note: Accept and handle 'retained true logic' only if both the packet is retained and the route allows retained packets
+                                        this.callHandler(topic, msg, this._routes[i]);
+                                    } else if (
+                                        packet.retain &&
+                                        !this._routes[i].allowRetained &&
+                                        this._routes[i].fallbackRetainHandler !==
+                                            undefined
+                                    ) {
+                                        // Older/Retained messages
+                                        // Note: Accept and handle 'retained false logic' if both the packet is retained and the route doesn't allow retained packets
+                                        this.callFallback(topic, msg, this._routes[i]);
+                                    } else if (
+                                        packet.retain &&
+                                        !this._routes[i].allowRetained &&
+                                        this._routes[i].fallbackRetainHandler ===
+                                            undefined
+                                    ) {
+                                        // Discard Older/Retained messages
+                                        this.discard(topic, msg);
+                                    }
+                                }
+                            } catch (err) {
+                                this.errorHandler(err);
+                            }
                         }
                     }
                 }
@@ -187,16 +229,15 @@ export class MQTTRouter {
         for (let i = 0; i < this._routes.length; i++) {
             if (this._routes[i].subscribe !== false) {
                 // subscribe at the beginning unless it is avoided by setting 'subscribe:false'
+                const resolvedTopic =
+                    this._routes[i].channelPrefix !== undefined &&
+                    this._routes[i].channelPrefix === false
+                        ? this._routes[i].topic
+                        : resolveChannelTopic(this._routes[i].topic);
                 if (logLevel === 'debug') {
-                    console.log(
-                        'MQTT_Subscribed: ',
-                        resolveChannelTopic(this._routes[i].topic)
-                    );
+                    console.log('MQTT_Subscribed: ', resolvedTopic);
                 }
-                this._mqttClient.subscribe(
-                    resolveChannelTopic(this._routes[i].topic),
-                    this._options
-                );
+                this._mqttClient.subscribe(resolvedTopic, this._options);
             } else {
                 // No subscription required for this topic
                 if (logLevel === 'debug') {
@@ -221,6 +262,7 @@ export class MQTTRouter {
             console.error('Invalid type or message');
             return undefined;
         }
+
         try {
             msg = type === 'String' ? message.toString() : JSON.parse(message.toString());
             return msg;
@@ -293,14 +335,13 @@ export class MQTTRouter {
         } else {
             this._routes.push(route);
             if (route.subscribe !== false) {
+                const resolvedTopic =
+                    route.channelPrefix !== undefined && route.channelPrefix === false
+                        ? route.topic
+                        : resolveChannelTopic(route.topic);
+                console.log('MQTT_Subscribed: ', resolvedTopic);
                 // subscribe at the beginning unless it is avoided by setting 'subscribe:false'
-                //if (logLevel === 'debug') {
-                console.log('MQTT_Subscribed: ', resolveChannelTopic(route.topic));
-                //}
-                this._mqttClient.subscribe(
-                    resolveChannelTopic(route.topic),
-                    this._options
-                );
+                this._mqttClient.subscribe(resolvedTopic, this._options);
             } else {
                 // No subscription required for this topic
                 if (logLevel === 'debug') {
@@ -318,9 +359,7 @@ export class MQTTRouter {
      * @param {Route[]} route[] list of route objects to be added to the subscriber list
      */
     addRoutes = (routes: Route[]) => {
-        // TODO: @luk3Sky, please review this
         for (let i = 0; i < routes.length; i++) {
-            //console.log(routes[i].topic);
             this.addRoute(routes[i]);
         }
     };
@@ -352,5 +391,100 @@ export class MQTTRouter {
                 }
             });
         }
+    };
+
+    /**
+     * Method for setting discoveryTopic and terminateTopic
+     * @param {string} discoveryTopic the discovery topic
+     * @param {string} terminateTopic the terminate topic
+     */
+    setServiceTopics = (discoveryTopic: string, terminateTopic: string) => {
+        this._discoveryTopic = discoveryTopic;
+        this._terminateTopic = terminateTopic;
+    };
+
+    /**
+     * Method for handling service discovery subscription
+     * @param {string} topic the discovery topic
+     * @param {string} message mqtt message
+     */
+    handlDiscoverySubscription = (topic: string, message: Buffer) => {
+        // TODO: @luk3Sky Please review
+        // Note: message decoder is replaced with JSON.parse(), otherwise compile is failing
+        if (topic === this._discoveryTopic) {
+            try {
+                const data: { uuid: string; timestamp: string } = JSON.parse(
+                    message.toString()
+                );
+                if (data !== undefined && this._id !== data.uuid) {
+                    console.log('Received', data.uuid, data.timestamp, this._created);
+                    const that = this;
+                    setTimeout(function () {
+                        // Adding a timeout to make sure the the 'sender' is ready to receive messages
+                        that.publishTerminationMessage(data.uuid);
+                    }, 2500);
+                }
+            } catch (error) {
+                console.error('Parse Error');
+                return;
+            }
+        }
+    };
+
+    /**
+     * method for publishing service discovery message
+     */
+    publishDiscoveryMessage = () => {
+        this._mqttClient.publish(
+            this._discoveryTopic,
+            JSON.stringify({ uuid: this._id, timestamp: this._created })
+        );
+    };
+
+    /**
+     * method for publishing service termination message
+     */
+    publishTerminationMessage = (id: string) => {
+        this._mqttClient.publish(`${this._terminateTopic}/${id}`, JSON.stringify({ id }));
+    };
+
+    /**
+     * initial subscriptions
+     */
+    initialServiceSubscriptions = (): Route[] => {
+        return [
+            {
+                topic: this._discoveryTopic,
+                allowRetained: false,
+                subscribe: true,
+                publish: false,
+                channelPrefix: false,
+                type: 'JSON',
+                handler: () => {}
+            },
+            {
+                topic: `${this._terminateTopic}/${this._id}`,
+                allowRetained: false,
+                subscribe: true,
+                publish: false,
+                channelPrefix: false,
+                type: 'JSON',
+                handler: () => {}
+            }
+        ];
+    };
+
+    /**
+     * Method for gracefully terminating the mqtt router
+     */
+    terminate = () => {
+        // TODO: @NuwanJ Please review this
+        // this._mqttClient.end(false, {}, () => {
+        //     console.log('GRACEFUL EXIT');
+        // });
+        throw new Error('MQTT_Channel_Occupied: Please change the mqtt channel!');
+        // process.kill(process.pid, 'SIGTERM');
+        // process.exit(1);
+        // TODO: Process exiting was not effective as I thought. It still kept running :-(
     };
 }
