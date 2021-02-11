@@ -134,8 +134,19 @@ class Robots {
                         // Handle robot snapshot request
                         const { id } = msg;
                         console.log('MQTT.Robot: mgt/robots/snapshot', msg);
-                        const resp = this.findRobotById(id);
-                        // TODO: @NuwanJ Please review this: response data type not yet finalized in the server I think
+                        const robot = this.findRobotById(id);
+                        // TODO: Response data type not yet finalized in the server I think
+                        const resp = {
+                            id: id,
+                            reality: robot.reality,
+                            coordinates: robot.getCoordinatesPretty(),
+                            data: {
+                                distance: robot.getData('distance')
+                            }
+                        };
+
+                        console.log(robot);
+
                         swarm.mqttPublish('mgt/robots/?', resp);
                     }
                 }
