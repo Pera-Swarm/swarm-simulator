@@ -1,3 +1,12 @@
+// Temp zone -------------------
+
+// TODO: move following to env configs or any suitable place
+const ROBOT_DIAMETER = 6;
+
+const { sqrt, pow, round, atan2, abs } = require('mathjs');
+const { normalizeAngle } = require('../../../dist/pera-swarm');
+// -----------------------------
+
 const { Robot } = require('../robot/robot');
 
 const { DistanceSensorEmulator, ColorSensorEmulator } = require('../emulators/sensors');
@@ -145,10 +154,23 @@ class Robots {
                             }
                         };
 
-                        console.log(robot);
+                        // console.log(robot);
 
                         swarm.mqttPublish('mgt/robots/?', resp);
                     }
+                }
+            },
+            {
+                topic: 'test',
+                type: 'JSON',
+                allowRetained: false,
+                subscribe: true,
+                publish: false,
+                handler: (msg) => {
+                    //console.log(msg);
+                    const { x, y, heading } = msg;
+                    const dist = this.getRobotDistance(heading, x, y);
+                    console.log('Dist:', dist);
                 }
             }
         ];
@@ -358,6 +380,68 @@ class Robots {
 
     robotBuilder = (id, heading, x, y) => {
         return new Robot(id, heading, x, y);
+    };
+
+    // Robot as an obstacle functions:
+
+    getRobotDistance = (heading, x, y) => {
+        const allCoord = this.getCoordinatesAll();
+        const from = { x, y, heading };
+        let minDist = Infinity;
+
+        // console.log('\n');
+
+        allCoord.forEach((to, index) => {
+            // Target should not be the same robot,
+            // TODO: use a better logic, ex: round to 2 digits and compare
+            if (this._getDistance(from, to) >= 1) {
+                // Obtain the angle difference and distance
+                const angle = this._getAngle(from, to);
+                const dist = this._getDistance(from, to);
+                const angleTolerence = this._angleToleranceWithDistance(
+                    dist,
+                    ROBOT_DIAMETER + 6
+                );
+                const angleDiff = abs(heading - angle);
+                // console.log(
+                //     `angle=${angle}, dist=${dist}, angleDiff=${angleDiff}, angleTolerence=${angleTolerence}`
+                // );
+
+                // Robot is in front, if the angel is close to heading
+                // The tolerance is depends with distance, tanInverse(Radius/Dist)
+                // Added additional 5 deg additional threshold
+                if (angleDiff < angleTolerence + 5) {
+                    const realDist = dist - ROBOT_DIAMETER / 2;
+                    // console.log(`\tYes, dist=${realDist}`);
+
+                    if (realDist < minDist) {
+                        minDist = realDist;
+                    }
+                }
+            }
+        });
+
+        return minDist;
+    };
+
+    // TODO: implement followings on pera-swarm/helpers/geometricHelpers.ts
+    _getAngle = (from, to) => {
+        const xDiff = to.x - from.x;
+        const yDiff = to.y - from.y;
+        return normalizeAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
+    };
+
+    _getDistance = (from, to) => {
+        const xDiff = to.x - from.x;
+        const yDiff = to.y - from.y;
+        return round(sqrt(Number(pow(xDiff, 2)) + Number(pow(yDiff, 2))), 2);
+    };
+
+    _angleToleranceWithDistance = (dist, width) => {
+        const r = width / 2;
+        const angleDiff = (Math.atan(r / dist) * 180) / Math.PI;
+
+        return Math.round(angleDiff * 100) / 100;
     };
 }
 
