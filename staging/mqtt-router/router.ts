@@ -409,19 +409,15 @@ export class MQTTRouter {
      * @param {string} message mqtt message
      */
     handlDiscoverySubscription = (topic: string, message: Buffer) => {
-        // TODO: @luk3Sky Please review
-        // Note: message decoder is replaced with JSON.parse(), otherwise compile is failing
         if (topic === this._discoveryTopic) {
             try {
                 const data: { uuid: string; timestamp: string } = JSON.parse(
                     message.toString()
                 );
-                if (data !== undefined && this._id !== data.uuid) {
-                    console.log('Received', data.uuid, data.timestamp, this._created);
-                    const that = this;
-                    setTimeout(function () {
+                if (data !== undefined && this._id !== String(data.uuid)) {
+                    setTimeout(() => {
                         // Adding a timeout to make sure the the 'sender' is ready to receive messages
-                        that.publishTerminationMessage(data.uuid);
+                        this.publishTerminationMessage(data.uuid);
                     }, 2500);
                 }
             } catch (error) {
@@ -475,16 +471,9 @@ export class MQTTRouter {
     };
 
     /**
-     * Method for gracefully terminating the mqtt router
+     * Method for terminating the mqtt router
      */
     terminate = () => {
-        // TODO: @NuwanJ Please review this
-        // this._mqttClient.end(false, {}, () => {
-        //     console.log('GRACEFUL EXIT');
-        // });
         throw new Error('MQTT_Channel_Occupied: Please change the mqtt channel!');
-        // process.kill(process.pid, 'SIGTERM');
-        // process.exit(1);
-        // TODO: Process exiting was not effective as I thought. It still kept running :-(
     };
 }
