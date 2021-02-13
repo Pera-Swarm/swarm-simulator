@@ -46,13 +46,17 @@ export class Wall extends AbstractBox {
             debug
         );
 
+        // Note: 6 added to the end coordinates to avoid missing the wall by distance sensor
         // Starting coordinate of the wall
-        this._p1 = { x: originX, y: originY };
+        this._p1 = {
+            x: originX - 6 * cos(this._theta),
+            y: originY - 6 * sin(this._theta)
+        };
 
         // Ending coordinate of the wall
         this._p2 = {
-            x: originX + width * cos(this._theta),
-            y: originY + width * sin(this._theta)
+            x: originX + (width + 6) * cos(this._theta),
+            y: originY + (width + 6) * sin(this._theta)
         };
 
         this._color = color;
@@ -124,19 +128,19 @@ export class Wall extends AbstractBox {
     isInRange = (heading: number, x: number, y: number, angleThreshold?: number) => {
         const from = { x: x, y: y };
 
-        // Lets check the heading in between two center points
+        // The angle between two center points
         const pA1 = this._getAngle(from, this._p1);
         const pA2 = this._getAngle(from, this._p2);
-
         //console.log(`Calculated Angles: ${pA1}, ${pA2}`);
 
+        // The angle difference between heading and the calculated angle
         const a1 = this._angleDifference(heading, pA1);
         const a2 = this._angleDifference(heading, pA2);
-
-        //console.log(`heading: ${heading}, a1:${a1}, a2:${a2}`);
+        // console.log(`heading: ${heading}, a1:${a1}, a2:${a2}`);
 
         // TODO: need to consider angleThreshold
-        return abs(a1) <= 90 && abs(a2) <= 90 && a1 * a2 <= 0; // Angles should be in different signs
+        // Angles should be in different signs
+        return (abs(a1) <= 90 || abs(a2) <= 90) && a1 * a2 <= 0;
     };
 
     visualize = (): VisualizeType[] => {

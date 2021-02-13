@@ -19,16 +19,22 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
     getReading = (robot, callback) => {
         const { x, y, heading } = robot.getCoordinatesPretty();
 
-        // TODO: @NuwanJ implement full logic
-        let obstacleDist = this._obstacleController.getDistance(heading, x, y);
+        // Minimum distance to obstacles
+        const obstacleDist = this._obstacleController.getDistance(heading, x, y);
 
-        console.log(`Dist: ${obstacleDist} \tmeasured from (${x},${y})  ^${heading}`);
-        this.publish(`sensor/distance/${robot.id}`, obstacleDist);
+        // Minimum distance to robots
+        const robotDist = this._robots.getRobotDistance(heading, x, y);
+        const dist = Math.min(obstacleDist, robotDist);
+
+        console.log(
+            `Dist: ${dist} \tmeasured from (${x},${y})  ^${heading} for R_${robot.id}`
+        );
+        this.publish(`sensor/distance/${robot.id}`, dist);
 
         robot.updateHeartbeat();
-        this.setData(robot, obstacleDist);
+        this.setData(robot, dist);
 
-        if (callback != undefined) callback(obstacleDist);
+        if (callback != undefined) callback(dist);
     };
 
     setData = (robot, value) => {

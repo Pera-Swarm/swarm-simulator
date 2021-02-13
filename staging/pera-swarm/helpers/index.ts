@@ -18,6 +18,8 @@ export const normalizeAngle = (a: number) => {
  * @param {number} maxValue
  * @returns {number} normalized value
  */
+
+// TODO: move this to geometricHelpers.ts
 export const normalizeValueRange = (
     value: number,
     minValue: number,
@@ -52,3 +54,4 @@ export const hexToRGB = (value: string = '#000000'): RGBType<number, number> | n
 };
 
 export * from './constants';
+// export * from './geometricHelpers';
