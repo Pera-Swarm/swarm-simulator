@@ -12,33 +12,6 @@ export const normalizeAngle = (a: number) => {
 };
 
 /**
- * method for normalizing a given value according within a range
- * @param {number} value
- * @param {number} minValue
- * @param {number} maxValue
- * @returns {number} normalized value
- */
-
-// TODO: move this to geometricHelpers.ts
-export const normalizeValueRange = (
-    value: number,
-    minValue: number,
-    maxValue: number
-) => {
-    // console.log('value', value);
-    // console.log('minValue', minValue);
-    // console.log('maxValue', maxValue);
-
-    if (value <= minValue) {
-        return minValue;
-    } else if (value >= maxValue) {
-        return maxValue;
-    } else {
-        return value;
-    }
-};
-
-/**
  * method for converting a hex value to RGB
  * @param {string} value color value in hex
  */
@@ -54,4 +27,4 @@ export const hexToRGB = (value: string = '#000000'): RGBType<number, number> | n
 };
 
 export * from './constants';
-// export * from './geometricHelpers';
+export * from './geometric';
