@@ -314,7 +314,7 @@ export class ObstacleController
         distanceThreshold: number = 10
     ) => {
         let minDist = Infinity;
-        let color = '#00000';
+        let color = '#000000';
 
         for (let i = 0; i < this._list.length; i++) {
             const found = this._list[i].isInRange(heading, x, y);
@@ -322,7 +322,7 @@ export class ObstacleController
             if (found == true) {
                 const dist = this._list[i].getDistance(heading, x, y);
                 color = this._list[i].appearance.color;
-                console.log(dist, color);
+                console.log(`obstacle > dist: ${dist}, color:${color}`);
 
                 if (dist > 0 && dist <= minDist) {
                     minDist = dist;
@@ -330,7 +330,7 @@ export class ObstacleController
             }
         }
         if (minDist > distanceThreshold) {
-            color = '#00000';
+            color = '#000000';
         }
         return color;
     };

@@ -18,21 +18,22 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
 
     getReading = (robot, callback) => {
         const { x, y, heading } = robot.getCoordinates();
+        const reality = robot.reality;
 
         console.log('color measure from ', { x, y, heading });
 
-        // TODO: @NuwanJ implement full logic
-        //let obstacleColor = { R: 0, G: 0, B: 0 }; //this._obstacleController.getDistance(heading, x, y);
-
+        // TODO: @NuwanJ implement MR based filtering
         const hexColor = this._obstacleController.getColor(heading, x, y);
-
-        console.log(hexColor);
+        // console.log(hexColor);
 
         let obstacleColor = this.colorToRGB(hexColor);
+        const color_clear = Math.round(
+            (obstacleColor.R + obstacleColor.G + obstacleColor.B) / 3
+        );
 
         this.publish(
             `sensor/color/${robot.id}`,
-            `${obstacleColor.R} ${obstacleColor.G} ${obstacleColor.B}`
+            `${obstacleColor.R} ${obstacleColor.G} ${obstacleColor.B} ${color_clear}`
         );
 
         this.setData(robot, obstacleColor);
