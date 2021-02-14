@@ -156,18 +156,15 @@ export class MQTTRouter {
         this._mqttClient.on(
             'message',
             (topic: string, message: Buffer, packet: IPublishPacket) => {
-                if (this._unique && topic === this._discoveryTopic) {
-                    if (logLevel !== 'info') {
-                        console.log('Service:Discovery');
-                    }
+                if (logLevel !== 'info') {
+                    console.log('Received::::MQTT_Message from topic >', topic);
+                }
+                if (this._unique && topic === resolveChannelTopic(this._discoveryTopic)) {
                     this.handlDiscoverySubscription(topic, message);
                 } else if (
                     this._unique &&
-                    topic === `${this._terminateTopic}/${this._id}`
+                    topic === resolveChannelTopic(`${this._terminateTopic}/${this._id}`)
                 ) {
-                    if (logLevel !== 'info') {
-                        console.log('Service:Termination');
-                    }
                     this.terminate();
                 } else {
                     for (let i = 0; i < this._routes.length; i += 1) {
@@ -409,12 +406,23 @@ export class MQTTRouter {
      * @param {string} message mqtt message
      */
     handlDiscoverySubscription = (topic: string, message: Buffer) => {
-        if (topic === this._discoveryTopic) {
+        if (topic === resolveChannelTopic(this._discoveryTopic)) {
             try {
                 const data: { uuid: string; timestamp: string } = JSON.parse(
                     message.toString()
                 );
-                if (data !== undefined && this._id !== String(data.uuid)) {
+                if (logLevel !== 'info') {
+                    console.log('Service::Discovery::This_Data >', {
+                        id: this._id,
+                        created: this._created
+                    });
+                    console.log('Service::Discovery::Parsed_Data >', data);
+                }
+                if (
+                    data !== undefined &&
+                    this._id !== String(data.uuid) &&
+                    Number(this._created) < Number(new Date(data.timestamp))
+                ) {
                     setTimeout(() => {
                         // Adding a timeout to make sure the the 'sender' is ready to receive messages
                         this.publishTerminationMessage(data.uuid);
@@ -431,7 +439,7 @@ export class MQTTRouter {
      * method for publishing service discovery message
      */
     publishDiscoveryMessage = () => {
-        this._mqttClient.publish(
+        this.pushToPublishQueue(
             this._discoveryTopic,
             JSON.stringify({ uuid: this._id, timestamp: this._created })
         );
@@ -441,7 +449,7 @@ export class MQTTRouter {
      * method for publishing service termination message
      */
     publishTerminationMessage = (id: string) => {
-        this._mqttClient.publish(`${this._terminateTopic}/${id}`, JSON.stringify({ id }));
+        this.pushToPublishQueue(`${this._terminateTopic}/${id}`, JSON.stringify({ id }));
     };
 
     /**
@@ -454,7 +462,7 @@ export class MQTTRouter {
                 allowRetained: false,
                 subscribe: true,
                 publish: false,
-                channelPrefix: false,
+                channelPrefix: true,
                 type: 'JSON',
                 handler: () => {}
             },
@@ -463,7 +471,7 @@ export class MQTTRouter {
                 allowRetained: false,
                 subscribe: true,
                 publish: false,
-                channelPrefix: false,
+                channelPrefix: true,
                 type: 'JSON',
                 handler: () => {}
             }
@@ -474,6 +482,9 @@ export class MQTTRouter {
      * Method for terminating the mqtt router
      */
     terminate = () => {
+        if (logLevel !== 'info') {
+            console.log('Service::Termination');
+        }
         throw new Error('MQTT_Channel_Occupied: Please change the mqtt channel!');
     };
 }
