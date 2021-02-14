@@ -1,6 +1,6 @@
-import { CoordinateValueInt } from "../modules";
-import { normalizeAngle } from ".";
-import { atan2, pow, round, sqrt } from "mathjs";
+import { CoordinateValueInt } from '../modules';
+import { normalizeAngle } from '.';
+import { atan2, pow, round, sqrt } from 'mathjs';
 
 /**
  * method for normalizing a given value according within a range
@@ -29,7 +29,10 @@ export const normalizeValueRange = (
  * @param {CoordinateValueInt<number>} to
  * @returns {number} angle value
  */
-export const getAngle = (from: CoordinateValueInt<number>, to: CoordinateValueInt<number>): number => {
+export const getAngle = (
+    from: CoordinateValueInt<number>,
+    to: CoordinateValueInt<number>
+): number => {
     const xDiff = to.x - from.x;
     const yDiff = to.y - from.y;
     return normalizeAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
@@ -41,7 +44,10 @@ export const getAngle = (from: CoordinateValueInt<number>, to: CoordinateValueIn
  * @param {CoordinateValueInt<number>} to
  * @returns {number} distance value
  */
-export const getDistance = (from: CoordinateValueInt<number>, to: CoordinateValueInt<number>): number => {
+export const getDistance = (
+    from: CoordinateValueInt<number>,
+    to: CoordinateValueInt<number>
+): number => {
     const xDiff = to.x - from.x;
     const yDiff = to.y - from.y;
     return round(sqrt(Number(pow(xDiff, 2)) + Number(pow(yDiff, 2))), 2);
