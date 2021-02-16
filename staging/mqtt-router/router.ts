@@ -156,18 +156,15 @@ export class MQTTRouter {
         this._mqttClient.on(
             'message',
             (topic: string, message: Buffer, packet: IPublishPacket) => {
-                if (this._unique && topic === this._discoveryTopic) {
-                    if (logLevel !== 'info') {
-                        console.log('Service:Discovery');
-                    }
+                if (logLevel !== 'info') {
+                    console.log('Received::::MQTT_Message from topic >', topic);
+                }
+                if (this._unique && topic === resolveChannelTopic(this._discoveryTopic)) {
                     this.handlDiscoverySubscription(topic, message);
                 } else if (
                     this._unique &&
-                    topic === `${this._terminateTopic}/${this._id}`
+                    topic === resolveChannelTopic(`${this._terminateTopic}/${this._id}`)
                 ) {
-                    if (logLevel !== 'info') {
-                        console.log('Service:Termination');
-                    }
                     this.terminate();
                 } else {
                     for (let i = 0; i < this._routes.length; i += 1) {
@@ -409,19 +406,26 @@ export class MQTTRouter {
      * @param {string} message mqtt message
      */
     handlDiscoverySubscription = (topic: string, message: Buffer) => {
-        // TODO: @luk3Sky Please review
-        // Note: message decoder is replaced with JSON.parse(), otherwise compile is failing
-        if (topic === this._discoveryTopic) {
+        if (topic === resolveChannelTopic(this._discoveryTopic)) {
             try {
                 const data: { uuid: string; timestamp: string } = JSON.parse(
                     message.toString()
                 );
-                if (data !== undefined && this._id !== data.uuid) {
-                    console.log('Received', data.uuid, data.timestamp, this._created);
-                    const that = this;
-                    setTimeout(function () {
+                if (logLevel !== 'info') {
+                    console.log('Service::Discovery::This_Data >', {
+                        id: this._id,
+                        created: this._created
+                    });
+                    console.log('Service::Discovery::Parsed_Data >', data);
+                }
+                if (
+                    data !== undefined &&
+                    this._id !== String(data.uuid) &&
+                    Number(this._created) < Number(new Date(data.timestamp))
+                ) {
+                    setTimeout(() => {
                         // Adding a timeout to make sure the the 'sender' is ready to receive messages
-                        that.publishTerminationMessage(data.uuid);
+                        this.publishTerminationMessage(data.uuid);
                     }, 2500);
                 }
             } catch (error) {
@@ -435,7 +439,7 @@ export class MQTTRouter {
      * method for publishing service discovery message
      */
     publishDiscoveryMessage = () => {
-        this._mqttClient.publish(
+        this.pushToPublishQueue(
             this._discoveryTopic,
             JSON.stringify({ uuid: this._id, timestamp: this._created })
         );
@@ -445,7 +449,7 @@ export class MQTTRouter {
      * method for publishing service termination message
      */
     publishTerminationMessage = (id: string) => {
-        this._mqttClient.publish(`${this._terminateTopic}/${id}`, JSON.stringify({ id }));
+        this.pushToPublishQueue(`${this._terminateTopic}/${id}`, JSON.stringify({ id }));
     };
 
     /**
@@ -458,7 +462,7 @@ export class MQTTRouter {
                 allowRetained: false,
                 subscribe: true,
                 publish: false,
-                channelPrefix: false,
+                channelPrefix: true,
                 type: 'JSON',
                 handler: () => {}
             },
@@ -467,7 +471,7 @@ export class MQTTRouter {
                 allowRetained: false,
                 subscribe: true,
                 publish: false,
-                channelPrefix: false,
+                channelPrefix: true,
                 type: 'JSON',
                 handler: () => {}
             }
@@ -475,16 +479,12 @@ export class MQTTRouter {
     };
 
     /**
-     * Method for gracefully terminating the mqtt router
+     * Method for terminating the mqtt router
      */
     terminate = () => {
-        // TODO: @NuwanJ Please review this
-        // this._mqttClient.end(false, {}, () => {
-        //     console.log('GRACEFUL EXIT');
-        // });
+        if (logLevel !== 'info') {
+            console.log('Service::Termination');
+        }
         throw new Error('MQTT_Channel_Occupied: Please change the mqtt channel!');
-        // process.kill(process.pid, 'SIGTERM');
-        // process.exit(1);
-        // TODO: Process exiting was not effective as I thought. It still kept running :-(
     };
 }
