@@ -27,7 +27,7 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
         const dist = Math.min(obstacleDist, robotDist);
 
         console.log(
-            `Dist: ${dist} \tmeasured from (${x},${y})  ^${heading} for R_${robot.id}`
+            `Dist: V:${dist}\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
         );
         this.publish(`sensor/distance/${robot.id}`, dist);
 
@@ -53,7 +53,7 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
                 publish: false,
                 handler: (msg) => {
                     // Listen for the virtual distance sensor reading requests
-                    // console.log('MQTT.Sensor: sensor/distance', msg);
+                    console.log('MQTT.Sensor: sensor/distance', msg);
 
                     //this._robots.createIfNotExists(msg.id, () => {
                     let robot = this._robots.findRobotById(msg.id);
