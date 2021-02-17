@@ -4,7 +4,7 @@
 const ROBOT_DIAMETER = 6;
 
 const { sqrt, pow, round, atan2, abs } = require('mathjs');
-const { normalizeAngle } = require('../../../dist/pera-swarm');
+const { normalizedAngle } = require('../../../dist/pera-swarm');
 // -----------------------------
 
 const { Robot } = require('../robot/robot');
@@ -443,7 +443,7 @@ class Robots {
     _getAngle = (from, to) => {
         const xDiff = to.x - from.x;
         const yDiff = to.y - from.y;
-        return normalizeAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
+        return normalizedAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
     };
 
     _getDistance = (from, to) => {

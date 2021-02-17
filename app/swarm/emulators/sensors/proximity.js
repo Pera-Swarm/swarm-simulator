@@ -23,23 +23,37 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
         let obstacleDist = [];
         let robotDist = [];
         let dist = [];
-        let distHeadings = [-150, -90, 0, 90, 150];
 
-        console.log(
-            `Proximity: (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
-        );
+        // Virtual proximity sensors are located on those directions,
+        //    relative to the heading of the robot
+        const distHeadings = [
+            normalizeAngle(heading - 150),
+            normalizeAngle(heading - 90),
+            normalizeAngle(heading),
+            normalizeAngle(heading + 90),
+            normalizeAngle(heading + 150)
+        ];
 
         for (var i = 0; i < distHeadings.length; i++) {
-            let h = normalizeAngle(heading + distHeadings[i]);
             // Minimum Proximity to obstacles
-            obstacleDist[i] = this._obstacleController.getDistance(h, x, y, reality);
+            obstacleDist[i] = this._obstacleController.getDistance(
+                distHeadings[i],
+                x,
+                y,
+                reality
+            );
 
             // Minimum Proximity to robots
-            robotDist[i] = this._robots.getRobotDistance(h, x, y);
+            robotDist[i] = this._robots.getRobotDistance(distHeadings[i], x, y);
             dist[i] = Math.ceil(Math.min(obstacleDist[i], robotDist[0])); // return as an int
 
-            console.log(` ${h} > obst:${obstacleDist[i]} robot:${robotDist[i]}`);
+            // console.log(` ${h} > obst:${obstacleDist[i]} robot:${robotDist[i]}`);
         }
+
+        console.log('Proximity:', dist, 'for', distHeadings, 'directions');
+        console.log(
+            `\t (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
+        );
 
         this.publish(`sensor/proximity/${robot.id}`, dist.join(' '));
 
