@@ -1,7 +1,8 @@
 const {
     VirtualDistanceSensorEmulator,
     ArenaType,
-    AbstractObstacleBuilder
+    AbstractObstacleBuilder,
+    realityResolver
 } = require('../../../../dist/pera-swarm');
 
 class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
@@ -16,18 +17,18 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
         this._obstacleController = obstacleController;
     }
 
-    getReading = (robot, callback) => {
+    getReading = (robot, reality = 'M', callback) => {
         const { x, y, heading } = robot.getCoordinatesPretty();
 
         // Minimum distance to obstacles
-        const obstacleDist = this._obstacleController.getDistance(heading, x, y);
+        const obstacleDist = this._obstacleController.getDistance(heading, x, y, reality);
 
         // Minimum distance to robots
         const robotDist = this._robots.getRobotDistance(heading, x, y);
         const dist = Math.min(obstacleDist, robotDist);
 
         console.log(
-            `Dist: V:${dist}\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
+            `Dist: ${dist} (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
         );
         this.publish(`sensor/distance/${robot.id}`, dist);
 
@@ -53,17 +54,20 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
                 publish: false,
                 handler: (msg) => {
                     // Listen for the virtual distance sensor reading requests
-                    console.log('MQTT.Sensor: sensor/distance', msg);
+                    console.log('MQTT_Sensor: sensor/distance', msg);
+                    const { id, reality } = msg;
 
-                    //this._robots.createIfNotExists(msg.id, () => {
-                    let robot = this._robots.findRobotById(msg.id);
+                    let robot = this._robots.findRobotById(id);
 
                     if (robot != -1) {
-                        this.getReading(robot, (dist) => {
-                            // console.log('MQTT:Sensor:DistanceEmulator', dist);
+                        const reqReality = realityResolver(reality, robot.reality);
+                        // console.log(reqReality);
+
+                        this.getReading(robot, reqReality, (dist) => {
+                            // console.log('MQTT_Sensor:DistanceEmulator', dist);
                         });
                     } else {
-                        console.log('MQTT_Sensor:DistanceEmulator', 'Robot not found');
+                        console.log('MQTT_Sensor:Distance', 'Robot not found');
                     }
                     //});
                 }
