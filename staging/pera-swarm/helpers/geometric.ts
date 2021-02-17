@@ -1,6 +1,16 @@
 import { CoordinateValueInt } from '../modules';
-import { normalizeAngle } from '.';
 import { atan2, pow, round, sqrt } from 'mathjs';
+
+/**
+ * method for normalizing a given angle
+ * @param {number} a angle
+ */
+export const normalizeAngle = (a: number) => {
+    let b = (a + 180) % 360;
+    if (b <= 0) b += 360;
+    b = b - 180;
+    return b;
+};
 
 /**
  * method for normalizing a given value according within a range

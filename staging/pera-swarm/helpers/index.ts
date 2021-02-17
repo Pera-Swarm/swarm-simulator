@@ -1,4 +1,4 @@
-import { RGBType } from '../modules';
+import { RGBType, RGBCType } from '../modules';
 
 /**
  * method for normalizing a given angle
@@ -36,22 +36,44 @@ export const realityResolver = (
 };
 
 /**
+ * method for converting a hex value to RGB+C
+ * @param {string} value color value in hex, c is the average color reading
+ */
+export const hexToRGBC = (value: string = '#000000'): RGBCType<number, number> | null => {
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(value);
+    // let r = parseInt(result[1], 16);
+    // let g = parseInt(result[2], 16);
+    // let b = parseInt(result[3], 16);
+    // let c = Math.round((r + g + b) / 3);
+
+    return result
+        ? {
+              R: parseInt(result[1], 16),
+              G: parseInt(result[2], 16),
+              B: parseInt(result[3], 16),
+              C: Math.round(
+                  (parseInt(result[1], 16) +
+                      parseInt(result[2], 16) +
+                      parseInt(result[3], 16)) /
+                      3
+              )
+          }
+        : null;
+};
+/**
  * method for converting a hex value to RGB
  * @param {string} value color value in hex
  */
 export const hexToRGB = (value: string = '#000000'): RGBType<number, number> | null => {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(value);
-    const r = parseInt(result[1], 16);
-    const g = parseInt(result[2], 16);
-    const b = parseInt(result[3], 16);
-    const c = Math.round((r + g + b) / 3);
-
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(value);
+    // let r = parseInt(result[1], 16);
+    // let g = parseInt(result[2], 16);
+    // let b = parseInt(result[3], 16);
     return result
         ? {
-              R: r,
-              G: g,
-              B: b,
-              C: c
+              R: parseInt(result[1], 16),
+              G: parseInt(result[2], 16),
+              B: parseInt(result[3], 16)
           }
         : null;
 };

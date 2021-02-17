@@ -25,7 +25,7 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
 
         // Minimum distance to robots
         const robotDist = this._robots.getRobotDistance(heading, x, y);
-        const dist = Math.min(obstacleDist, robotDist);
+        const dist = Math.ceil(Math.min(obstacleDist, robotDist)); // return as in int
 
         console.log(
             `Dist: ${dist} (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`

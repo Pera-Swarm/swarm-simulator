@@ -9,13 +9,20 @@ const { normalizeAngle } = require('../../../dist/pera-swarm');
 
 const { Robot } = require('../robot/robot');
 
-const { DistanceSensorEmulator, ColorSensorEmulator } = require('../emulators/sensors');
+// Robot sensor emulators
+const {
+    DistanceSensorEmulator,
+    ColorSensorEmulator,
+    ProximitySensorEmulator
+} = require('../emulators/sensors');
+
+// Robot communication emulators
 const {
     SimpleCommunicationEmulator,
     DirectionalCommunicationEmulator
 } = require('../emulators/communication');
-const { NeoPixelAgent } = require('../emulators/agents');
 
+const { NeoPixelAgent } = require('../emulators/agents');
 const { LocalizationController } = require('../controllers');
 
 // Class for representing the robots level functionality
@@ -59,6 +66,13 @@ class Robots {
             this.obstacleController
         );
 
+        // Proximity Sensor Emulator
+        this.proximitySensor = new ProximitySensorEmulator(
+            this,
+            this.mqttPublish,
+            this.obstacleController
+        );
+
         // Color Sensor Emulator
         this.colorSensor = new ColorSensorEmulator(
             this,
@@ -84,6 +98,7 @@ class Robots {
 
             // Sensor Emulators
             ...this.distanceSensor.defaultSubscriptions(),
+            ...this.proximitySensor.defaultSubscriptions(),
             ...this.colorSensor.defaultSubscriptions(),
             // ...this.proximitySensor.defaultSubscriptions(),
 

@@ -8,6 +8,14 @@ export type RGBType<TId, TValue> = {
     B: TValue;
 };
 
+export type RGBCType<TId, TValue> = {
+    id?: TId;
+    R: TValue;
+    G: TValue;
+    B: TValue;
+    C: TValue;
+};
+
 /**
  * @class VirtualNeoPixelRelayModule
  * @classdesc Provides a General Virtual Neo Pixel Relay Module Representation
