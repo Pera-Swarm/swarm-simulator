@@ -27,19 +27,27 @@ export class DirectedCommunication extends Communication {
      * @param message {string} message
      * @param callback {Function} callback function
      */
-    broadcast = (robotId: string, message: string, callback: Function) => {
+    broadcast = (
+        robotId: string,
+        message: string,
+        distance: number,
+        topic: string,
+        callback: Function
+    ) => {
         if (robotId === undefined) console.error('robotId unspecified');
         if (message === undefined) console.error('message unspecified');
 
         const allCoordinates = this._robots.getCoordinatesAll();
         const thisCoordinate = this._robots.getCoordinatesById(Number(robotId));
         let receivers = 0;
+        let receiveList: number[] = [];
 
         allCoordinates.forEach(
             (coordinate: CoordinateValueInt<number>, index: number) => {
                 if (thisCoordinate !== -1 && coordinate.id != thisCoordinate.id) {
                     const distCheck = this.distanceCheck(
-                        this._getDistance(thisCoordinate, coordinate)
+                        this._getDistance(thisCoordinate, coordinate),
+                        distance
                     );
                     const angleCheck = this.angleCheck(
                         thisCoordinate.heading,
@@ -47,14 +55,16 @@ export class DirectedCommunication extends Communication {
                     );
 
                     if (distCheck && angleCheck) {
-                        // within the distance range & angle threshold, so send the messaage
                         receivers++;
-                        if (this._debug) console.log(`robot #${coordinate.id}: pass`);
-                        this._mqttPublish(`/communication/${coordinate.id}`, message);
+                        receiveList.push(coordinate.id);
                     }
                 }
             }
         );
+        receiveList.forEach((id) => {
+            if (this._debug) console.log(`robot #${id}: pass`);
+            this._mqttPublish(`${topic}/${id}`, message);
+        });
 
         if (callback != undefined) callback({ receivers: receivers });
     };
@@ -64,24 +74,7 @@ export class DirectedCommunication extends Communication {
      * this will be handled by mqtt-router
      */
     defaultSubscriptions = (): Route[] => {
-        return [
-            {
-                topic: 'comm/out/directional',
-                type: 'JSON',
-                allowRetained: false,
-                subscribe: true,
-                publish: false,
-                handler: (msg: any) => {
-                    // The robots can transmit messages to other robots using a transmission protocol.
-                    // Server will decide the robots who can receive the message
-                    console.log('MQTT.Comm: comm/out/directional', msg);
-
-                    this.broadcast(msg.id, msg.msg, (data: any) => {
-                        console.log('Sent to', data.receivers, 'robots');
-                    });
-                }
-            }
-        ];
+        return [];
     };
 
     /**

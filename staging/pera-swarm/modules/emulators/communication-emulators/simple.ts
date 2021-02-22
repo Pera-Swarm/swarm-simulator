@@ -15,9 +15,16 @@ export class SimpleCommunication extends Communication {
      * broadcast method
      * @param robotId {TId} robot id
      * @param message {string} message
+     * @param topic {string} topic
      * @param callback {Function} callback function
      */
-    broadcast = (robotId: number, message: string, callback: Function) => {
+    broadcast = (
+        robotId: number,
+        message: string,
+        distance: number,
+        topic: string,
+        callback: Function
+    ) => {
         if (robotId === undefined) console.error('robotId unspecified');
         if (message === undefined) console.error('message unspecified');
 
@@ -29,24 +36,21 @@ export class SimpleCommunication extends Communication {
         allCoordinates.forEach(
             (coordinate: CoordinateValueInt<number>, index?: number) => {
                 if (thisCoordinate !== -1 && coordinate.id !== thisCoordinate.id) {
-                    const withinRange = this.distanceCheck(
-                        this._getDistance(thisCoordinate, coordinate)
+                    const distCheck = this.distanceCheck(
+                        this._getDistance(thisCoordinate, coordinate),
+                        distance
                     );
-                    if (withinRange) {
-                        // within the distance range, so send the messaage
+                    if (distCheck) {
                         receivers++;
                         receiveList.push(coordinate.id);
-                        //if (this._debug) console.log(`robot #${coordinate.id}: pass`);
-                        //this._mqttPublish(`/comm/in/${coordinate.id}`, message);
                     }
                 }
             }
         );
 
-        console.log(`robot ${robotId} sending to`, receiveList);
         receiveList.forEach((id) => {
-            //console.log('sending to', id);
-            this._mqttPublish(`/comm/in/${id}`, message);
+            if (this._debug) console.log(`robot #${id}: pass`);
+            this._mqttPublish(`${topic}/${id}`, message);
         });
 
         if (callback != undefined) callback({ receivers: receivers });

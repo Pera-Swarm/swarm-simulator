@@ -1,4 +1,4 @@
-import { normalizeAngle } from '../../../helpers/';
+// import { normalizeAngle } from '../../../helpers/';
 import { AbstractSensorEmulator } from './';
 import { ArenaType } from '../../environment/';
 import { Robots } from '../../';

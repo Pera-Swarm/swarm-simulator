@@ -4,7 +4,7 @@
 const ROBOT_DIAMETER = 6;
 
 const { sqrt, pow, round, atan2, abs } = require('mathjs');
-const { normalizedAngle } = require('../../../dist/pera-swarm');
+const { normalizeAngle } = require('../../../dist/pera-swarm');
 // -----------------------------
 
 const { Robot } = require('../robot/robot');
@@ -164,12 +164,13 @@ class Robots {
                             id: id,
                             reality: robot.reality,
                             coordinates: robot.getCoordinatesPretty(),
+                            live: robot.lastUpdate,
                             data: {
                                 distance: robot.getData('distance')
                             }
                         };
 
-                        // console.log(robot);
+                        console.log(resp);
 
                         swarm.mqttPublish('mgt/robots/?', resp);
                     }
@@ -443,7 +444,7 @@ class Robots {
     _getAngle = (from, to) => {
         const xDiff = to.x - from.x;
         const yDiff = to.y - from.y;
-        return normalizedAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
+        return normalizeAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
     };
 
     _getDistance = (from, to) => {
