@@ -415,7 +415,7 @@ class Robots {
                 const dist = this._getDistance(from, to);
                 const angleTolerence = this._angleToleranceWithDistance(
                     dist,
-                    ROBOT_DIAMETER + 6
+                    ROBOT_DIAMETER + 10
                 );
                 const angleDiff = abs(heading - angle);
                 // console.log(
