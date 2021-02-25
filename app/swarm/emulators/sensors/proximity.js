@@ -1,12 +1,12 @@
-// const { abs, round, cos, sin } = require('mathjs');
 const {
     VirtualProximitySensorEmulator,
     ArenaType,
-    AbstractObstacleBuilder
+    AbstractObstacleBuilder,
+    normalizeAngle,
+    realityResolver
 } = require('../../../../dist/pera-swarm');
 
 class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
-    _obstacleController;
     /**
      * ProximitySensorEmulator
      * @param {Robots} robots robot object
@@ -14,28 +14,59 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
      */
     constructor(robots, mqttPublish, obstacleController = undefined) {
-        super(robots);
+        super(robots, mqttPublish);
         this._obstacleController = obstacleController;
     }
 
-    getReading = (robot, callback) => {
-        const { x, y, heading } = robot.getCoordinates();
+    getReading = (robot, reality = 'M', callback) => {
+        const { x, y, heading } = robot.getCoordinatesPretty();
+        let obstacleDist = [];
+        let robotDist = [];
+        let dist = [];
+
+        // Virtual proximity sensors are located on those directions,
+        //    relative to the heading of the robot
+        const distHeadings = [
+            normalizeAngle(heading - 150),
+            normalizeAngle(heading - 90),
+            normalizeAngle(heading),
+            normalizeAngle(heading + 90),
+            normalizeAngle(heading + 150)
+        ];
+
+        for (var i = 0; i < distHeadings.length; i++) {
+            // Minimum Proximity to obstacles
+            obstacleDist[i] = this._obstacleController.getDistance(
+                distHeadings[i],
+                x,
+                y,
+                reality
+            );
+
+            // Minimum Proximity to robots
+            robotDist[i] = this._robots.getRobotDistance(distHeadings[i], x, y);
+            dist[i] = Math.ceil(Math.min(obstacleDist[i], robotDist[0])); // return as an int
+
+            // console.log(` ${h} > obst:${obstacleDist[i]} robot:${robotDist[i]}`);
+        }
+
+        console.log('Proximity:', dist, 'for', distHeadings, 'directions');
+        console.log(
+            `\t (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
+        );
+
+        this.publish(`sensor/proximity/${robot.id}`, dist.join(' '));
 
         robot.updateHeartbeat();
-        console.log('proximity from ', { x, y, heading });
-
-        let proximity = [0, 0, 0, 0, 0];
-
-        this.publish(`sensor/proximity/${robot.id}`, proximity);
-        this.setData(robot, proximity);
+        this.setData(robot, dist);
 
         if (callback != undefined) callback(dist);
     };
 
-    setReading = (robot, value) => {
+    setData = (robot, value) => {
         if (robot === undefined) throw new TypeError('robot unspecified');
         if (value === undefined) throw new TypeError('value unspecified');
-        return robot.setData('proximity', value);
+        return robot.setData('proximity', Number(value));
     };
 
     defaultSubscriptions = () => {
@@ -43,22 +74,27 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
             {
                 topic: 'sensor/proximity',
                 type: 'JSON',
-                allowRetained: true,
+                allowRetained: false,
                 subscribe: true,
                 publish: false,
                 handler: (msg) => {
                     // Listen for the virtual proximity sensor reading requests
-                    console.log('MQTT.Sensor: sensor/proximity', msg);
+                    console.log('MQTT_Sensor: sensor/proximity', msg);
+                    const { id, reality } = msg;
 
-                    let robot = this._robots.findRobotById(msg.id);
+                    let robot = this._robots.findRobotById(id);
 
                     if (robot != -1) {
-                        this.getReading(robot, (dist) => {
-                            console.log('MQTT:Sensor:ProximityEmulator', dist);
+                        const reqReality = realityResolver(reality, robot.reality);
+                        // console.log(reqReality);
+
+                        this.getReading(robot, reqReality, (proximity) => {
+                            // console.log('MQTT_Sensor:ProximityEmulator', dist);
                         });
                     } else {
-                        console.log('MQTT_Sensor:ProximityEmulator', 'Robot not found');
+                        console.log('MQTT_Sensor:Proximity', 'Robot not found');
                     }
+                    //});
                 }
             }
         ];

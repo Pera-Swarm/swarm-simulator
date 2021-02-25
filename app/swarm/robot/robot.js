@@ -27,6 +27,15 @@ class Robot extends AbstractCoordinateRobot {
     }
 
     /**
+     * method for getting last updated time
+     */
+    get lastUpdate() {
+        const d = new Date(this._updated);
+        // TODO: add padding '0's and properly format the code
+        return `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+    }
+
+    /**
      * method for getting coordinates
      */
     get coordinates() {

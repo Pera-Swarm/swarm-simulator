@@ -6,10 +6,18 @@ class DirectionalCommunicationEmulator extends DirectedCommunication {
         super(robots, mqttPublish, maxDistance, debug);
     }
 
+    // broadcast = (id, msg, callback) => {
+    //     super.broadcast(id, msg, 'comm/in/direct', callback);
+    //     const robot = this._robots.findRobotById(id);
+    //     if (robot != undefined) {
+    //         robot.setData('comm_simple:in', msg);
+    //     }
+    // };
+
     defaultSubscriptions = () => {
         return [
             {
-                topic: 'comm/out/directional',
+                topic: 'comm/out/direct',
                 type: 'JSON',
                 allowRetained: false,
                 subscribe: true,
@@ -17,11 +25,17 @@ class DirectionalCommunicationEmulator extends DirectedCommunication {
                 handler: (msg) => {
                     // The robots can transmit messages to other robots using a transmission protocol.
                     // Server will decide the robots who can receive the message
-                    console.log('MQTT.Comm: comm/out/directional', msg);
+                    console.log('MQTT.Comm: comm/out/direct', msg);
+                    const { id, dist } = msg;
 
-                    this.broadcast(msg.id, msg.msg, (data) => {
-                        console.log('Sent to', data.receivers, 'robots');
-                    });
+                    const robot = this._robots.findRobotById(id);
+                    if (robot != undefined) {
+                        // TODO:  implementation for custom distances
+                        // robot.setData('comm_simple:out', msg.id, msg.msg);
+                        this.broadcast(id, msg.msg, dist, 'comm/in/direct', (data) => {
+                            console.log('Sent to', data.receivers, 'robots');
+                        });
+                    }
                 }
             }
         ];

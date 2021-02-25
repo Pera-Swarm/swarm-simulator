@@ -45,12 +45,17 @@ export abstract class AbstractCommunication<
      * @param {number} dist distance value
      * @returns {boolean} whether a given distance is below the max distance or not
      */
-    distanceCheck = (dist?: number): boolean => {
+    distanceCheck = (
+        dist?: number,
+        threshold: number | undefined = undefined
+    ): boolean => {
         if (dist === undefined) {
             console.error('Distance unspecified');
             return false;
         }
-        return dist <= this._maxDistance;
+        // TODO: test functionality
+        if (threshold === undefined) return dist <= this._maxDistance;
+        return dist <= threshold;
     };
 }
 

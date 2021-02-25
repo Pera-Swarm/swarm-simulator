@@ -1,10 +1,18 @@
 const { SimpleCommunication } = require('../../../../dist/pera-swarm');
 
 class SimpleCommunicationEmulator extends SimpleCommunication {
-    // TODO: @NuwanJ
     constructor(robots, mqttPublish, maxDistance = 100, debug = false) {
         super(robots, mqttPublish, maxDistance, debug);
     }
+
+    // broadcast = (id, msg, topic, callback) => {
+    //   super.broadcast(id, msg, topic, callback);
+    //     // console.log(id, msg);
+    //     const robot = this._robots.findRobotById(id);
+    //     if (robot != undefined) {
+    //         robot.setData('comm_simple:in', msg);
+    //     }
+    // };
 
     defaultSubscriptions = () => {
         return [
@@ -18,10 +26,16 @@ class SimpleCommunicationEmulator extends SimpleCommunication {
                     // The robots can transmit messages to other robots using a transmission protocol.
                     // Server will decide the robots who can receive the message
                     console.log('MQTT.Comm: comm/out/simple', msg);
+                    const { id, dist } = msg;
 
-                    this.broadcast(msg.id, msg.msg, (data) => {
-                        console.log('Sent to', data.receivers, 'robots');
-                    });
+                    const robot = this._robots.findRobotById(id);
+                    if (robot != undefined) {
+                        // TODO:  implementation for custom distances
+                        // robot.setData('comm_simple:out', msg.id, msg.msg);
+                        this.broadcast(id, msg.msg, dist, 'comm/in/simple', (data) => {
+                            console.log('Sent to', data.receivers, 'robots');
+                        });
+                    }
                 }
             }
         ];

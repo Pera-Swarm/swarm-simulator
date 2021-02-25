@@ -36,6 +36,7 @@ export type VisualizeType = {
 export abstract class AbstractObstacle {
     protected _id: string;
     protected _type: string;
+    protected _name: string;
 
     protected _position: ObjectCoordinate; /* center coordinate of the Obstacle */
     protected _color: string; /* color of the Obstacle */
@@ -57,6 +58,9 @@ export abstract class AbstractObstacle {
         this._id = uuid();
         this._position = position;
 
+        // TODO: @luk3Sky, can you impelement this using name provided in env.config
+        this._name = '';
+
         this._debug = debug;
         this._type = 'Object';
         this._geometryType = 'Geometry';
@@ -73,6 +77,13 @@ export abstract class AbstractObstacle {
      */
     get id(): string {
         return `${this._id} (${this._type})`;
+    }
+
+    /**
+     * get name
+     */
+    get name(): string {
+        return `${this._name}`;
     }
 
     /**

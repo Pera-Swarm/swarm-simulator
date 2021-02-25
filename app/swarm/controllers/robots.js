@@ -1,12 +1,28 @@
+// Temp zone -------------------
+
+// TODO: move following to env configs or any suitable place
+const ROBOT_DIAMETER = 6;
+
+const { sqrt, pow, round, atan2, abs } = require('mathjs');
+const { normalizeAngle } = require('../../../dist/pera-swarm');
+// -----------------------------
+
 const { Robot } = require('../robot/robot');
 
-const { DistanceSensorEmulator, ColorSensorEmulator } = require('../emulators/sensors');
+// Robot sensor emulators
+const {
+    DistanceSensorEmulator,
+    ColorSensorEmulator,
+    ProximitySensorEmulator
+} = require('../emulators/sensors');
+
+// Robot communication emulators
 const {
     SimpleCommunicationEmulator,
     DirectionalCommunicationEmulator
 } = require('../emulators/communication');
-const { NeoPixelAgent } = require('../emulators/agents');
 
+const { NeoPixelAgent } = require('../emulators/agents');
 const { LocalizationController } = require('../controllers');
 
 // Class for representing the robots level functionality
@@ -50,6 +66,13 @@ class Robots {
             this.obstacleController
         );
 
+        // Proximity Sensor Emulator
+        this.proximitySensor = new ProximitySensorEmulator(
+            this,
+            this.mqttPublish,
+            this.obstacleController
+        );
+
         // Color Sensor Emulator
         this.colorSensor = new ColorSensorEmulator(
             this,
@@ -75,6 +98,7 @@ class Robots {
 
             // Sensor Emulators
             ...this.distanceSensor.defaultSubscriptions(),
+            ...this.proximitySensor.defaultSubscriptions(),
             ...this.colorSensor.defaultSubscriptions(),
             // ...this.proximitySensor.defaultSubscriptions(),
 
@@ -134,10 +158,35 @@ class Robots {
                         // Handle robot snapshot request
                         const { id } = msg;
                         console.log('MQTT.Robot: mgt/robots/snapshot', msg);
-                        const resp = this.findRobotById(id);
-                        // TODO: @NuwanJ Please review this: response data type not yet finalized in the server I think
+                        const robot = this.findRobotById(id);
+                        // TODO: Response data type not yet finalized in the server I think
+                        const resp = {
+                            id: id,
+                            reality: robot.reality,
+                            coordinates: robot.getCoordinatesPretty(),
+                            live: robot.lastUpdate,
+                            data: {
+                                distance: robot.getData('distance')
+                            }
+                        };
+
+                        console.log(resp);
+
                         swarm.mqttPublish('mgt/robots/?', resp);
                     }
+                }
+            },
+            {
+                topic: 'test',
+                type: 'JSON',
+                allowRetained: false,
+                subscribe: true,
+                publish: false,
+                handler: (msg) => {
+                    //console.log(msg);
+                    const { x, y, heading } = msg;
+                    const dist = this.getRobotDistance(heading, x, y);
+                    console.log('Dist:', dist);
                 }
             }
         ];
@@ -347,6 +396,67 @@ class Robots {
 
     robotBuilder = (id, heading, x, y) => {
         return new Robot(id, heading, x, y);
+    };
+
+    // Robot as an obstacle functions:
+
+    getRobotDistance = (heading, x, y) => {
+        const allCoord = this.getCoordinatesAll();
+        const from = { x, y, heading };
+        let minDist = Infinity;
+
+        // TODO: reality filtering
+        allCoord.forEach((to, index) => {
+            // Target should not be the same robot,
+            // TODO: use a better logic, ex: round to 2 digits and compare
+            if (this._getDistance(from, to) >= 1) {
+                // Obtain the angle difference and distance
+                const angle = this._getAngle(from, to);
+                const dist = this._getDistance(from, to);
+                const angleTolerence = this._angleToleranceWithDistance(
+                    dist,
+                    ROBOT_DIAMETER + 10
+                );
+                const angleDiff = abs(heading - angle);
+                // console.log(
+                //     `angle=${angle}, dist=${dist}, angleDiff=${angleDiff}, angleTolerence=${angleTolerence}`
+                // );
+
+                // Robot is in front, if the angel is close to heading
+                // The tolerance is depends with distance, tanInverse(Radius/Dist)
+                // Added additional 5 deg additional threshold
+                if (angleDiff < angleTolerence + 5) {
+                    const realDist = dist - ROBOT_DIAMETER / 2;
+                    // console.log(`\tYes, dist=${realDist}`);
+
+                    if (realDist < minDist) {
+                        minDist = realDist;
+                    }
+                }
+            }
+        });
+
+        return minDist;
+    };
+
+    // TODO: implement followings on pera-swarm/helpers/geometricHelpers.ts
+    _getAngle = (from, to) => {
+        const xDiff = to.x - from.x;
+        const yDiff = to.y - from.y;
+        return normalizeAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
+    };
+
+    _getDistance = (from, to) => {
+        const xDiff = to.x - from.x;
+        const yDiff = to.y - from.y;
+        return round(sqrt(Number(pow(xDiff, 2)) + Number(pow(yDiff, 2))), 2);
+    };
+
+    _angleToleranceWithDistance = (dist, width) => {
+        const r = width / 2;
+        const angleDiff = (Math.atan(r / dist) * 180) / Math.PI;
+
+        return Math.round(angleDiff * 100) / 100;
     };
 }
 

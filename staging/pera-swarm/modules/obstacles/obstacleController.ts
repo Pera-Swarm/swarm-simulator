@@ -286,15 +286,22 @@ export class ObstacleController
      * @param {number} heading heading coordinate
      * @param {number} x x coordinate
      * @param {number} y y coordinate
+     * @param {reality} reality 'R'|'V'|'M', reality flag
      * @returns {boolean} true : if there any obstacle in heading direction
      */
-    isObstacleThere = (heading: number, x: number, y: number) => {
+    isObstacleThere = (
+        heading: number,
+        x: number,
+        y: number,
+        reality: 'R' | 'V' | 'M' = 'M'
+    ) => {
         let found = false;
 
         for (let i = 0; i < this._list.length; i++) {
             found = this._list[i].isInRange(heading, x, y);
             //console.log(found);
-            if (found == true) return true;
+            if (found == true && (reality === 'M' || reality == this._list[i].reality))
+                return true;
         }
         return found;
     };
@@ -304,6 +311,7 @@ export class ObstacleController
      * @param {number} heading heading coordinate
      * @param {number} x x coordinate
      * @param {number} y y coordinate
+     * @param {reality} reality 'R'|'V'|'M', reality flag
      * @param {number} distanceThreshold distance threshold
      * @returns {string | null} if thre any obstacle in heading front, return the color to the closest one
      */
@@ -311,18 +319,19 @@ export class ObstacleController
         heading: number,
         x: number,
         y: number,
+        reality: 'R' | 'V' | 'M' = 'M',
         distanceThreshold: number = 10
     ) => {
         let minDist = Infinity;
-        let color = '#00000';
+        let color = '#000000';
 
         for (let i = 0; i < this._list.length; i++) {
-            const found = this._list[i].isInRange(heading, x, y);
+            const found = this._list[i].isInRange(heading, x, y, reality);
             //console.log(found);
             if (found == true) {
                 const dist = this._list[i].getDistance(heading, x, y);
                 color = this._list[i].appearance.color;
-                console.log(dist, color);
+                console.log(`obstacle > dist: ${dist}, color:${color}`);
 
                 if (dist > 0 && dist <= minDist) {
                     minDist = dist;
@@ -330,7 +339,7 @@ export class ObstacleController
             }
         }
         if (minDist > distanceThreshold) {
-            color = '#00000';
+            color = '#000000';
         }
         return color;
     };
@@ -340,19 +349,24 @@ export class ObstacleController
      * @param {number} heading heading coordinate
      * @param {number} x x coordinate
      * @param {number} y y coordinate
+     * @param {reality} reality 'R'|'V'|'M', reality flag
      * @returns {number | Infinity} if thre any obstacle in heading front, return the distance to the closest one
      */
-    getDistance = (heading: number, x: number, y: number) => {
-        // TODO: @NuwanJ please review this
+    getDistance = (
+        heading: number,
+        x: number,
+        y: number,
+        reality: 'R' | 'V' | 'M' = 'M'
+    ) => {
         let minDist = Infinity;
 
         for (let i = 0; i < this._list.length; i++) {
-            const found = this._list[i].isInRange(heading, x, y);
+            const found = this._list[i].isInRange(heading, x, y, reality);
             // console.log(this._list[i].id, 'isInRange ? ', found);
 
             if (found == true) {
                 const dist = this._list[i].getDistance(heading, x, y);
-                //console.log(dist);
+                // console.log(dist, this._list[i].reality);
 
                 if (dist >= 0 && dist <= minDist) {
                     minDist = dist;

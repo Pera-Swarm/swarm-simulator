@@ -1,7 +1,8 @@
 const {
     VirtualColorSensorEmulator,
     ArenaType,
-    AbstractObstacleBuilder
+    AbstractObstacleBuilder,
+    realityResolver
 } = require('../../../../dist/pera-swarm');
 
 class ColorSensorEmulator extends VirtualColorSensorEmulator {
@@ -16,23 +17,32 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
         this._obstacleController = obstacleController;
     }
 
-    getReading = (robot, callback) => {
+    getReading = (robot, reality = 'M', callback) => {
         const { x, y, heading } = robot.getCoordinates();
 
-        console.log('color measure from ', { x, y, heading });
+        // TODO: what about other robot colors ?
 
-        // TODO: @NuwanJ implement full logic
-        //let obstacleColor = { R: 0, G: 0, B: 0 }; //this._obstacleController.getDistance(heading, x, y);
+        // Color reading of the obstacle, if it less than given threshold (in cm)
+        const COLOR_SENSE_DISTANCE = 10;
 
-        const hexColor = this._obstacleController.getColor(heading, x, y);
-
-        console.log(hexColor);
-
+        const hexColor = this._obstacleController.getColor(
+            heading,
+            x,
+            y,
+            reality,
+            COLOR_SENSE_DISTANCE
+        );
         let obstacleColor = this.colorToRGB(hexColor);
+
+        console.log(
+            'Color:',
+            obstacleColor,
+            ` (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
+        );
 
         this.publish(
             `sensor/color/${robot.id}`,
-            `${obstacleColor.R} ${obstacleColor.G} ${obstacleColor.B}`
+            `${obstacleColor.R} ${obstacleColor.G} ${obstacleColor.B} ${obstacleColor.C}`
         );
 
         this.setData(robot, obstacleColor);
@@ -57,16 +67,20 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
                 publish: false,
                 handler: (msg) => {
                     // Listen for the virtual color sensor reading requests
-                    console.log('MQTT.Sensor: sensor/color', msg);
+                    console.log('MQTT_Sensor: sensor/color', msg);
 
-                    let robot = this._robots.findRobotById(msg.id);
+                    const { id, reality } = msg;
+                    let robot = this._robots.findRobotById(id);
 
                     if (robot != -1) {
-                        this.getReading(robot, (color) => {
-                            console.log('MQTT:Sensor:ColorEmulator', color);
+                        const reqReality = realityResolver(reality, robot.reality);
+                        // console.log(reqReality);
+
+                        this.getReading(robot, reqReality, (color) => {
+                            // console.log('MQTT_Sensor:Color', color);
                         });
                     } else {
-                        console.log('MQTT_Sensor:ColorEmulator', 'Robot not found');
+                        console.log('MQTT_Sensor:Color', 'Robot not found');
                     }
                 }
             }
