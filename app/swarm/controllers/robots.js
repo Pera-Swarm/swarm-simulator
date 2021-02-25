@@ -405,8 +405,7 @@ class Robots {
         const from = { x, y, heading };
         let minDist = Infinity;
 
-        // console.log('\n');
-
+        // TODO: reality filtering
         allCoord.forEach((to, index) => {
             // Target should not be the same robot,
             // TODO: use a better logic, ex: round to 2 digits and compare
