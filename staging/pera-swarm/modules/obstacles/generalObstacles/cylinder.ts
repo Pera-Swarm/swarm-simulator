@@ -62,42 +62,43 @@ export class Cylinder extends AbstractCylinder {
 
     isInRange = (heading: number, x: number, y: number, angleThreshold: number = 0) => {
         const from = { x: x, y: y };
-        const head = normalizeAngle(heading);
+        const head = normalizeAngle(heading * 1);
 
         // Angle from robot to obstacle
         const angle = this._getAngle(from, this.position);
 
         // Distance from robot to obstacle center
         const dist = this._point2PointDistance(from, this.position);
-
+        const angleTolerence = this._angleToleranceWithDistance(dist, this._radius + 5);
         // Angle difference of the tangents of the cylinder from its center
-        const deltaT = dist > 0 ? abs(asin(this._radius / dist) * (180 / Math.PI)) : 0;
+        // const deltaT = dist > 0 ? abs(asin(this._radius / dist) * (180 / Math.PI)) : 0;
 
-        console.log(`from (${x}, ${y}) head: ${head} (${heading})`);
-        console.log(
-            `to (${this.position.x}, ${this.position.y}), relativeAngle: ${angle}`
-        );
+        // console.log(`from (${x}, ${y}) head: ${head} (${heading})`);
+        // console.log(
+        //     `to (${this.position.x}, ${this.position.y}), relativeAngle: ${angle}`
+        // );
 
         // Angles of the two tangents of the cylinder and the heading.
         // ___ 360 added to avoid corner cases
         // ___ angleThreshold is the allowed threshold from the cylinder edges
-        const aCW = angle - deltaT + 360 - angleThreshold;
-        const aCCW = angle + deltaT + 360 + angleThreshold;
-        const aHeading = normalizeAngle(head) + 360;
+        const aCW = angle - angleTolerence + 360;
+        const aCCW = angle + angleTolerence + 360;
+        const aHeading = heading * 1 + 360;
 
-        if (this._debug || true) {
-            console.log(`Calculated Angle: ${angle}, deltaT: ${deltaT}`);
-            console.log(
-                'heading:',
-                head,
-                'CCW:',
-                round(aCCW - 360, 2),
-                'CW:',
-                round(aCW - 360, 2)
-            );
-        }
+        // if (this._debug || true) {
+        //     console.log(`Calculated Angle: ${angle}, deltaT: ${angleTolerence}`);
+        //     console.log('heading:', aHeading, 'CCW:', aCCW, 'CW:', aCW);
+        // }
 
         return aCW <= aHeading && aHeading <= aCCW;
+    };
+
+    // TEMP
+    _angleToleranceWithDistance = (dist: number, width: number) => {
+        const r = width / 2;
+        const angleDiff = (Math.atan(r / dist) * 180) / Math.PI;
+
+        return Math.round(angleDiff * 100) / 100;
     };
 
     visualize = (): VisualizeType[] => {

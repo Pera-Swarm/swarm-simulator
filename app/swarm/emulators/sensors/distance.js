@@ -55,7 +55,7 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
                 handler: (msg) => {
                     // Listen for the virtual distance sensor reading requests
                     console.log('MQTT_Sensor: sensor/distance', msg);
-                    const { id, reality } = msg;
+                    const { id, reality, dist} = msg;
 
                     let robot = this._robots.findRobotById(id);
 

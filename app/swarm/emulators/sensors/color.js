@@ -2,7 +2,8 @@ const {
     VirtualColorSensorEmulator,
     ArenaType,
     AbstractObstacleBuilder,
-    realityResolver
+    realityResolver,
+    hexToRGBC
 } = require('../../../../dist/pera-swarm');
 
 class ColorSensorEmulator extends VirtualColorSensorEmulator {
@@ -32,7 +33,7 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
             reality,
             COLOR_SENSE_DISTANCE
         );
-        let obstacleColor = this.colorToRGB(hexColor);
+        let obstacleColor = hexToRGBC(hexColor);
 
         console.log(
             'Color:',
