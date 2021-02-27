@@ -85,10 +85,12 @@ export class Cylinder extends AbstractCylinder {
         const aCCW = angle + angleTolerence + 360;
         const aHeading = heading * 1 + 360;
 
-        // if (this._debug || true) {
-        //     console.log(`Calculated Angle: ${angle}, deltaT: ${angleTolerence}`);
-        //     console.log('heading:', aHeading, 'CCW:', aCCW, 'CW:', aCW);
-        // }
+        if (this._debug || true) {
+            console.log(
+                `Calculated Dist:${dist}, Angle: ${angle}, deltaT: ${angleTolerence}`
+            );
+            console.log('heading:', aHeading - 360, 'CCW:', aCCW - 360, 'CW:', aCW - 360);
+        }
 
         return aCW <= aHeading && aHeading <= aCCW;
     };
