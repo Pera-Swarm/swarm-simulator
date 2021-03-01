@@ -24,7 +24,7 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
         // TODO: what about other robot colors ?
 
         // Color reading of the obstacle, if it less than given threshold (in cm)
-        const COLOR_SENSE_DISTANCE = 10;
+        const COLOR_SENSE_DISTANCE = 30;
 
         const hexColor = this._obstacleController.getColor(
             heading,
