@@ -2,7 +2,8 @@ const {
     VirtualColorSensorEmulator,
     ArenaType,
     AbstractObstacleBuilder,
-    realityResolver
+    realityResolver,
+    hexToRGBC
 } = require('../../../../dist/pera-swarm');
 
 class ColorSensorEmulator extends VirtualColorSensorEmulator {
@@ -23,7 +24,7 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
         // TODO: what about other robot colors ?
 
         // Color reading of the obstacle, if it less than given threshold (in cm)
-        const COLOR_SENSE_DISTANCE = 10;
+        const COLOR_SENSE_DISTANCE = 30;
 
         const hexColor = this._obstacleController.getColor(
             heading,
@@ -32,7 +33,7 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
             reality,
             COLOR_SENSE_DISTANCE
         );
-        let obstacleColor = this.colorToRGB(hexColor);
+        let obstacleColor = hexToRGBC(hexColor);
 
         console.log(
             'Color:',
