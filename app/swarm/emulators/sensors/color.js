@@ -35,11 +35,11 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
         );
         let obstacleColor = hexToRGBC(hexColor);
 
-        console.log(
-            'Color:',
-            obstacleColor,
-            ` (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
-        );
+        // console.log(
+        //     'Color:',
+        //     obstacleColor,
+        //     ` (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
+        // );
 
         this.publish(
             `sensor/color/${robot.id}`,
@@ -68,7 +68,7 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
                 publish: false,
                 handler: (msg) => {
                     // Listen for the virtual color sensor reading requests
-                    console.log('MQTT_Sensor: sensor/color', msg);
+                    // console.log('MQTT_Sensor: sensor/color', msg);
 
                     const { id, reality } = msg;
                     let robot = this._robots.findRobotById(id);
