@@ -1,6 +1,7 @@
-# FYP-swarm-robotics
+![Node.js CI](https://github.com/Pera-Swarm/e15-fyp-swarm-server/workflows/Node.js%20CI/badge.svg) 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-![Node.js CI](https://github.com/Pera-Swarm/e15-fyp-swarm-server/workflows/Node.js%20CI/badge.svg)
+# Mixed Reality Simulator
 
 Repository for Web UI / Central Server / Virtual nodes of Swarm Robots
 
