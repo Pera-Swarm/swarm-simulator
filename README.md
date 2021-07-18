@@ -3,8 +3,6 @@
 
 # Mixed Reality Simulator
 
-Repository for Web UI / Central Server / Virtual nodes of Swarm Robots
-
 ### Requirements
 
 Please install node dependencies as follows:
