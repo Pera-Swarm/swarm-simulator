@@ -51,9 +51,8 @@ npm run compile:staging
 ```
 
 ### Read More
-- [Sequelize](https://sequelize.org/master/index.html)
-- [Express](https://expressjs.com/)
+- [TypeScript](https://www.typescriptlang.org/)
 - [NodeJS](https://nodejs.org/)
+- [NPM](https://www.npmjs.com/)
 - [MQTT](https://github.com/mqttjs/MQTT.js)
-- [Cron](https://github.com/merencia/node-cron)
-- [React](https://reactjs.org/)
+- [Node Cron](https://github.com/merencia/node-cron)
