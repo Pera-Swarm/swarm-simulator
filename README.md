@@ -13,21 +13,17 @@ npm install
 
 ### Environment Variables
 
-Please copy the _sample.env_ file and rename into _.env_ and complete the configurations for http, mysql and mqtt
-
-### Database
-
-Start a MySQL database server with a database named 'swarm-robotics'.
+Please copy the _sample.env_ file and rename into _.env_ and complete the configurations for http and mqtt
 
 ### Run the scripts
 
-Development environment [TBD]
+Development environment
 
 ```
 npm run dev
 ```
 
-Production environment [TBD]
+Production environment
 
 ```
 npm start
