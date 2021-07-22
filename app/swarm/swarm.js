@@ -32,9 +32,12 @@ class Swarm {
         this.mqttRouter = new MQTTRouter(mqtt, wrapper([], this), mqttConfig, setup);
         this.mqttRouter.start();
 
-        // const envSetup = './app/config/env.config_min.json';
-        const envSetup = './app/config/env.config_walls.json';
+        // const envSetup = './app/config/env.config_empty.json';
+        const envSetup = './app/config/env.config_min.json';
+        // const envSetup = './app/config/env.config_walls.json';
         // const envSetup = './app/config/env.config_findRed.json';
+        // const envSetup = './app/config/env.config_obstacleSet.json';
+        // const envSetup = './app/config/env.config_maze.json';
 
         // Create the environment
         this.environment = new EnvironmentController(obstacleController(), envSetup);
