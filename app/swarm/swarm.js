@@ -33,7 +33,8 @@ class Swarm {
         this.mqttRouter.start();
 
         // const envSetup = './app/config/env.config_empty.json';
-        const envSetup = './app/config/env.config_min.json';
+        // const envSetup = './app/config/env.config_min.json';
+        const envSetup = './app/config/env.config_large.json';
         // const envSetup = './app/config/env.config_walls.json';
         // const envSetup = './app/config/env.config_findRed.json';
         // const envSetup = './app/config/env.config_obstacleSet.json';
