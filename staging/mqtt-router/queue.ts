@@ -1,6 +1,6 @@
 import { IClientSubscribeOptions, MqttClient } from 'mqtt';
 import queue from 'queue';
-import { logLevel } from './config';
+import { logLevel, mqttConfigOptions } from './config';
 import { resolveChannelTopic } from './helper';
 
 type MessageType = {
@@ -11,6 +11,7 @@ type MessageType = {
 class Message {
     topic: string;
     data: string | Buffer;
+    options?: mqttConfigOptions;
     constructor(topic: string, data: string | Buffer) {
         this.topic = topic;
         this.data = data;
@@ -82,9 +83,9 @@ export class Queue implements AbstractQueue {
      * @param {string} topic
      * @param {string|Buffer} data message data
      */
-    add = (topic: string, data: string | Buffer): void => {
+    add = (topic: string, data: string | Buffer, options?: mqttConfigOptions): void => {
         this._queue.push((callback) => {
-            this.publish(new Message(topic, data));
+            this.publish(new Message(topic, data), options);
             if (logLevel !== 'info') {
                 console.log('Added_To_Queue', `{topic: '${topic}', data: '${data}}'`);
             }
@@ -98,19 +99,20 @@ export class Queue implements AbstractQueue {
      * method for publishing a message in the queue
      * @param {Message} message message to be published
      */
-    publish = (message: Message) => {
+    publish = (message: Message, options?:mqttConfigOptions) => {
         if (logLevel !== 'info') {
             console.log(
                 'MQTT_Publish >',
                 message,
                 'to topic:',
-                resolveChannelTopic(message.topic)
+                resolveChannelTopic(message.topic),
+                options
             );
         }
         this._mqttClient.publish(
             resolveChannelTopic(message.topic),
             message.data,
-            this._mqttOptions
+            options || {}
         );
     };
 
