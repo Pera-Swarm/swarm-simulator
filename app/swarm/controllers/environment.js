@@ -22,7 +22,6 @@ class EnvironmentController extends Environment {
 
                     swarm.mqttPublish('obstacles', obstacles, {
                         qos: 2,
-                        dup: false,
                         retain: true
                     });
                 }
@@ -30,13 +29,18 @@ class EnvironmentController extends Environment {
         ];
     }
 
-    // TODO: publish areanConfig to the visualizer as a initial publisher
-    // This will help to change the size of the arena for each experiment
 
     initialPublishers = [
         {
             topic: '/obstacles/delete/all',
             data: '?'
+        },
+        {
+            topic: '/config/arena/',
+            data: this._config.arena,
+            options: {
+               retain: true
+            }
         }
     ];
 }
