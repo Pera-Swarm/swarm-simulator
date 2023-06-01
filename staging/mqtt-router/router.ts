@@ -49,8 +49,6 @@ export type Route = {
     fallbackRetainHandler?: Function;
 };
 
-
-
 const defaultOptions: IClientSubscribeOptions = { qos: 2, rap: true, nl: true };
 
 const defaultSetup = function () {};
@@ -319,7 +317,11 @@ export class MQTTRouter {
      * @param {string} topic message topic
      * @param {string|Buffer} data message data
      */
-    pushToPublishQueue = (topic: string, data: string | Buffer, options?: mqttConfigOptions) => {
+    pushToPublishQueue = (
+        topic: string,
+        data: string | Buffer,
+        options?: mqttConfigOptions
+    ) => {
         this._publishQueue.add(topic, String(data), options);
     };
 

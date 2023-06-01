@@ -29,7 +29,6 @@ class EnvironmentController extends Environment {
         ];
     }
 
-
     initialPublishers = [
         {
             topic: '/obstacles/delete/all',
@@ -39,7 +38,7 @@ class EnvironmentController extends Environment {
             topic: '/config/arena/',
             data: this._config.arena,
             options: {
-               retain: true
+                retain: true
             }
         }
     ];

@@ -99,7 +99,7 @@ export class Queue implements AbstractQueue {
      * method for publishing a message in the queue
      * @param {Message} message message to be published
      */
-    publish = (message: Message, options?:mqttConfigOptions) => {
+    publish = (message: Message, options?: mqttConfigOptions) => {
         if (logLevel !== 'info') {
             console.log(
                 'MQTT_Publish >',

@@ -24,7 +24,10 @@
             "depth": 5,
             "orientation": 0
         },
-        "material": { "type": "MeshMaterial", "properties": { "color": "#505050" } },
+        "material": {
+            "type": "MeshMaterial",
+            "properties": { "color": "#505050" }
+        },
         "position": { "x": 0, "y": -50 },
         "rotation": { "x": 0, "y": 0, "z": 0 }
     },
@@ -45,7 +48,12 @@
     },
     {
         "id": 1000,
-        "geometry": { "type": "BoxGeometry", "width": 300, "height": 20, "depth": 5 },
+        "geometry": {
+            "type": "BoxGeometry",
+            "width": 300,
+            "height": 20,
+            "depth": 5
+        },
         "material": {
             "type": "MeshStandardMaterial",
             "properties": { "color": "#505050" }
@@ -55,7 +63,12 @@
     },
     {
         "id": 1001,
-        "geometry": { "type": "BoxGeometry", "width": 300, "height": 20, "depth": 5 },
+        "geometry": {
+            "type": "BoxGeometry",
+            "width": 300,
+            "height": 20,
+            "depth": 5
+        },
         "material": {
             "type": "MeshStandardMaterial",
             "properties": { "color": "#505050" }
@@ -65,7 +78,12 @@
     },
     {
         "id": 1002,
-        "geometry": { "type": "BoxGeometry", "width": 300, "height": 20, "depth": 5 },
+        "geometry": {
+            "type": "BoxGeometry",
+            "width": 300,
+            "height": 20,
+            "depth": 5
+        },
         "material": {
             "type": "MeshStandardMaterial",
             "properties": { "color": "#505050" }
@@ -75,7 +93,12 @@
     },
     {
         "id": 1003,
-        "geometry": { "type": "BoxGeometry", "width": 300, "height": 20, "depth": 5 },
+        "geometry": {
+            "type": "BoxGeometry",
+            "width": 300,
+            "height": 20,
+            "depth": 5
+        },
         "material": {
             "type": "MeshStandardMaterial",
             "properties": { "color": "#505050" }
