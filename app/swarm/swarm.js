@@ -76,7 +76,6 @@ class Swarm {
 
         // Initial Publishers according to swarm configuration
         initialPublishers.forEach((publisher) => {
-            console.log(publisher);
             this.mqttPublish(publisher.topic, publisher.data, publisher.options);
         });
     }
