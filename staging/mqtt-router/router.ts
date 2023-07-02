@@ -1,9 +1,8 @@
 import { IClientSubscribeOptions, IPacket, IPublishPacket, MqttClient } from 'mqtt';
-import { channel, logLevel } from './config';
+import { channel, logLevel, mqttConfigOptions } from './config';
 import { resolveChannelTopic } from './helper';
 import { Queue } from './queue';
 import { v4 as uuidv4 } from 'uuid';
-
 /**
  * constraints:
  * all fresh messages will be picked up by handler
@@ -318,8 +317,12 @@ export class MQTTRouter {
      * @param {string} topic message topic
      * @param {string|Buffer} data message data
      */
-    pushToPublishQueue = (topic: string, data: string | Buffer) => {
-        this._publishQueue.add(topic, String(data));
+    pushToPublishQueue = (
+        topic: string,
+        data: string | Buffer,
+        options?: mqttConfigOptions
+    ) => {
+        this._publishQueue.add(topic, String(data), options);
     };
 
     /**

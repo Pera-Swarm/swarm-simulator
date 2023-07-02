@@ -64,7 +64,6 @@ class Swarm {
             self.environment.createObstacles((obstacles) => {
                 // Callback for publishing each obstacle into the environment
                 self.mqttPublish('/obstacles', obstacles, {
-                    ...mqttConfig.options,
                     retain: false
                 });
             });
@@ -77,7 +76,7 @@ class Swarm {
 
         // Initial Publishers according to swarm configuration
         initialPublishers.forEach((publisher) => {
-            this.mqttPublish(publisher.topic, publisher.data);
+            this.mqttPublish(publisher.topic, publisher.data, publisher.options);
         });
     }
 
@@ -101,7 +100,7 @@ class Swarm {
     mqttPublish = (topic, message, options = mqttConfig.mqttOptions) => {
         // Encode the JSON type messages
         if (typeof message === 'object') message = JSON.stringify(message);
-        this.mqttRouter.pushToPublishQueue(topic, message.toString());
+        this.mqttRouter.pushToPublishQueue(topic, message.toString(), options);
         // publishToTopic(mqtt, topic, message.toString(), options);
     };
 }

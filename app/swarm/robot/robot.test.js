@@ -88,7 +88,11 @@ describe('Robot', function () {
 
     describe('#setCoordinates()', function () {
         it('should set the coordinates of the robot instance', function () {
-            r.setCoordinates({ heading: SAMPLE_HEADING_1, x: SAMPLE_X_1, y: SAMPLE_Y_1 });
+            r.setCoordinates({
+                heading: SAMPLE_HEADING_1,
+                x: SAMPLE_X_1,
+                y: SAMPLE_Y_1
+            });
             expect(r.updated).gte(updated);
             const coordinates = r.coordinates;
             assert.typeOf(coordinates, 'object');
