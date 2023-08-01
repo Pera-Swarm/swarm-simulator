@@ -18,8 +18,6 @@ class Robot extends AbstractCoordinateRobot {
         // Robot status details
         this.created = new Date();
         this.timestamp = Date.now();
-
-        //console.log(reality);
         this.reality = reality;
 
         // This is to keep the customized data in the robot object
@@ -31,8 +29,11 @@ class Robot extends AbstractCoordinateRobot {
      */
     get lastUpdate() {
         const d = new Date(this._updated);
-        // TODO: add padding '0's and properly format the code
-        return `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+        const hour = d.getHours().toString().padStart(2, '0');
+        const minute = d.getMinutes().toString().padStart(2, '0');
+        const second = d.getSeconds().toString().padStart(2, '0');
+
+        return `${hour}:${minute}:${second}`;
     }
 
     /**

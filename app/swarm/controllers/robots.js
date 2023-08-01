@@ -1,11 +1,7 @@
-// Temp zone -------------------
-
-// TODO: move following to env configs or any suitable place
-const ROBOT_DIAMETER = 6;
-
 const { sqrt, pow, round, atan2, abs } = require('mathjs');
 const { normalizeAngle } = require('../../../dist/pera-swarm');
-// -----------------------------
+
+const robotConfig = require('../../config/robot.config');
 
 const { Robot } = require('../robot/robot');
 
@@ -28,7 +24,9 @@ const { LocalizationController } = require('../controllers');
 // Class for representing the robots level functionality
 class Robots {
     /**
-     * Robots constructor
+     * Robots
+     * @param {swarm} swarm swarm object
+     * @param {Function} mqttPublish mqtt publish function
      */
     constructor(swarm, mqttPublish) {
         if (swarm === undefined) throw new TypeError('Swarm unspecified');
@@ -46,7 +44,7 @@ class Robots {
         this.simpleCommunication = new SimpleCommunicationEmulator(
             this,
             this.mqttPublish,
-            60,
+            robotConfig.simpleCommunication.maxDistance,
             this.debug
         );
 
@@ -54,8 +52,8 @@ class Robots {
         this.directedCommunication = new DirectionalCommunicationEmulator(
             this,
             this.mqttPublish,
-            60,
-            30,
+            robotConfig.directedCommunication.maxDistance,
+            robotConfig.directedCommunication.angleThreshold,
             this.debug
         );
 
@@ -77,7 +75,8 @@ class Robots {
         this.colorSensor = new ColorSensorEmulator(
             this,
             this.mqttPublish,
-            this.obstacleController
+            this.obstacleController,
+            robotConfig.colorSensor.distanceThreshold
         );
 
         // NeoPixel Agent Module
@@ -415,7 +414,7 @@ class Robots {
                 const dist = this._getDistance(from, to);
                 const angleTolerence = this._angleToleranceWithDistance(
                     dist,
-                    ROBOT_DIAMETER + 10
+                    robotConfig.diameter + 10
                 );
                 const angleDiff = abs(heading - angle);
                 // console.log(
@@ -426,7 +425,7 @@ class Robots {
                 // The tolerance is depends with distance, tanInverse(Radius/Dist)
                 // Added additional 5 deg additional threshold
                 if (angleDiff < angleTolerence + 5) {
-                    const realDist = dist - ROBOT_DIAMETER / 2;
+                    const realDist = dist - robotConfig.diameter / 2;
                     // console.log(`\tYes, dist=${realDist}`);
 
                     if (realDist < minDist) {

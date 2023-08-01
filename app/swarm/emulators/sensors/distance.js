@@ -1,9 +1,10 @@
 const {
     VirtualDistanceSensorEmulator,
-    ArenaType,
     AbstractObstacleBuilder,
     realityResolver
 } = require('../../../../dist/pera-swarm');
+
+const robotConfig = require('../../../config/robot.config');
 
 class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
     /**
@@ -20,12 +21,17 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
     getReading = (robot, reality = 'M', callback) => {
         const { x, y, heading } = robot.getCoordinatesPretty();
 
-        // Minimum distance to obstacles
-        const obstacleDist = this._obstacleController.getDistance(heading, x, y, reality);
+        // Minimum distance to the nearst obstacles
+        const obstacleDist =
+            this._obstacleController.getDistance(heading, x, y, reality) -
+            robotConfig.diameter;
 
-        // Minimum distance to robots
-        const robotDist = this._robots.getRobotDistance(heading, x, y);
-        const dist = Math.ceil(Math.min(obstacleDist - 8, robotDist - 8)); // return as in int
+        // Minimum distance to the nearest robots
+        const robotDist =
+            this._robots.getRobotDistance(heading, x, y) - robotConfig.diameter;
+
+        // Minumum distance
+        const dist = Math.ceil(Math.min(obstacleDist, robotDist));
 
         // console.log(
         //     `Dist: ${dist} (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
@@ -69,7 +75,6 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
                     } else {
                         console.log('MQTT_Sensor:Distance', 'Robot not found');
                     }
-                    //});
                 }
             }
         ];

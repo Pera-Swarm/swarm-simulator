@@ -1,6 +1,5 @@
 const {
     VirtualColorSensorEmulator,
-    ArenaType,
     AbstractObstacleBuilder,
     realityResolver,
     hexToRGBC
@@ -12,26 +11,27 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
      * @param {Robots} robots robot object
      * @param {Function} mqttPublish mqtt publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
+     * @param {number} distanceThreshold maximum distance that color sensor can sense, in cm, default=30
      */
-    constructor(robots, mqttPublish, obstacleController = undefined) {
-        super(robots, mqttPublish);
+    constructor(
+        robots,
+        mqttPublish,
+        obstacleController = undefined,
+        distanceThreshold = 30
+    ) {
+        super(robots, mqttPublish, distanceThreshold);
         this._obstacleController = obstacleController;
     }
 
     getReading = (robot, reality = 'M', callback) => {
         const { x, y, heading } = robot.getCoordinates();
 
-        // TODO: what about other robot colors ?
-
-        // Color reading of the obstacle, if it less than given threshold (in cm)
-        const COLOR_SENSE_DISTANCE = 30;
-
         const hexColor = this._obstacleController.getColor(
             heading,
             x,
             y,
             reality,
-            COLOR_SENSE_DISTANCE
+            this._distanceThreshold
         );
         let obstacleColor = hexToRGBC(hexColor);
 

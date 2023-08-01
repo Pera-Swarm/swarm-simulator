@@ -1,18 +1,23 @@
 const { DirectedCommunication } = require('../../../../dist/pera-swarm');
 
 class DirectionalCommunicationEmulator extends DirectedCommunication {
-    // TODO: @NuwanJ
-    constructor(robots, mqttPublish, maxDistance = 100, debug = false) {
-        super(robots, mqttPublish, maxDistance, debug);
+    /**
+     * SimpleCommunicationEmulator
+     * @param {Robots} robots robot object
+     * @param {Function} mqttPublish mqtt publish function
+     * @param {number} maxDistance max transmission distance, in cm, default=100
+     * @param {number} angleThreshold transmission angle threshold, in degrees, default=30
+     * @param {boolean} debug default=false
+     */
+    constructor(
+        robots,
+        mqttPublish,
+        maxDistance = 100,
+        angleThreshold = 30,
+        debug = false
+    ) {
+        super(robots, mqttPublish, maxDistance, angleThreshold, debug);
     }
-
-    // broadcast = (id, msg, callback) => {
-    //     super.broadcast(id, msg, 'comm/in/direct', callback);
-    //     const robot = this._robots.findRobotById(id);
-    //     if (robot != undefined) {
-    //         robot.setData('comm_simple:in', msg);
-    //     }
-    // };
 
     defaultSubscriptions = () => {
         return [

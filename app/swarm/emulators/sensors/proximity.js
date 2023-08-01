@@ -1,10 +1,11 @@
 const {
     VirtualProximitySensorEmulator,
-    ArenaType,
     AbstractObstacleBuilder,
     normalizeAngle,
     realityResolver
 } = require('../../../../dist/pera-swarm');
+
+const robotConfig = require('../../../config/robot.config');
 
 class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
     /**
@@ -36,18 +37,16 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
 
         for (var i = 0; i < distHeadings.length; i++) {
             // Minimum Proximity to obstacles
-            obstacleDist[i] = this._obstacleController.getDistance(
-                distHeadings[i],
-                x,
-                y,
-                reality
-            );
+            obstacleDist[i] =
+                this._obstacleController.getDistance(distHeadings[i], x, y, reality) -
+                robotConfig.diameter;
 
             // Minimum Proximity to robots
-            robotDist[i] = this._robots.getRobotDistance(distHeadings[i], x, y);
-            dist[i] = Math.ceil(Math.min(obstacleDist[i], robotDist[0])); // return as an int
+            robotDist[i] =
+                this._robots.getRobotDistance(distHeadings[i], x, y) -
+                robotConfig.diameter;
 
-            // console.log(` ${h} > obst:${obstacleDist[i]} robot:${robotDist[i]}`);
+            dist[i] = Math.ceil(Math.min(obstacleDist[i], robotDist[0])); // return as an int
         }
 
         console.log('Proximity:', dist, 'for', distHeadings, 'directions');
@@ -94,7 +93,6 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
                     } else {
                         console.log('MQTT_Sensor:Proximity', 'Robot not found');
                     }
-                    //});
                 }
             }
         ];

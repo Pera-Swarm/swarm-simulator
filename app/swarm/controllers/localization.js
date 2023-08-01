@@ -19,7 +19,6 @@ class LocalizationController extends VirtualLocalizationController {
 
                     const reality = msg == 'V' || msg == 'R' ? msg : 'M';
                     const resp = JSON.stringify(swarm.robots.getCoordinatesAll(reality));
-
                     swarm.mqttPublish('localization/data', resp);
                 }
             },
