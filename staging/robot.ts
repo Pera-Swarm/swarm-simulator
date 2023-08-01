@@ -1,5 +1,4 @@
 import { AbstractCoordinateRobot, Coordinate, CoordinateValueInt } from 'pera-swarm';
-
 /**
  * @class Robot Representation
  * @classdesc representing the specific robot level functionality in the Swarm Server

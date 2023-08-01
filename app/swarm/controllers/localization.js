@@ -1,10 +1,19 @@
 const { VirtualLocalizationController } = require('../../../dist/pera-swarm');
 
 class LocalizationController extends VirtualLocalizationController {
+    /**
+     * LocalizationController
+     * @param {Function} mqttPublish mqtt publish function
+     * @param {string} topic basePath of the MQTT topic
+     */
     constructor(mqttPublish, publishTopic = 'localization/') {
         super(mqttPublish, publishTopic);
     }
 
+    /**
+     * defaultSubscriptions
+     * @returns {object[]} MQTT routes
+     */
     defaultSubscriptions = () => {
         return [
             {

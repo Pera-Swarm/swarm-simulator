@@ -1,4 +1,5 @@
 const { AbstractCoordinateRobot, Coordinate, CoordinateValueInt } = require('pera-swarm');
+const { TReality, Reality } = require('../../../dist/pera-swarm/');
 
 /**
  * @class Robot Representation
@@ -12,7 +13,7 @@ class Robot extends AbstractCoordinateRobot {
      * @param {number} x x coordinate
      * @param {number} y y coordinate
      */
-    constructor(id, heading = 0, x = 0, y = 0, reality = 'V') {
+    constructor(id, heading = 0, x = 0, y = 0, reality = Reality.V) {
         super(id, new Coordinate(id, heading, x, y));
 
         // Robot status details
@@ -26,6 +27,7 @@ class Robot extends AbstractCoordinateRobot {
 
     /**
      * method for getting last updated time
+     * @returns {string} time in hh:mm:ss format
      */
     get lastUpdate() {
         const d = new Date(this._updated);
@@ -38,6 +40,7 @@ class Robot extends AbstractCoordinateRobot {
 
     /**
      * method for getting coordinates
+     * @returns {TCoordinate} coordinate
      */
     get coordinates() {
         return this._coordinates.values;
@@ -45,20 +48,23 @@ class Robot extends AbstractCoordinateRobot {
 
     /**
      * method for getting data
+     * @returns {any[]} robot's stored data
      */
     get data() {
         return this._data;
     }
 
     /**
-     * method for getting the reality of the robot, 'R' | 'V'
+     * method for getting the reality of the robot,
+     * @returns {Reality} robot's reality
      */
     get reality() {
         return this._reality;
     }
 
     /**
-     * method for setting the reality of the robot, 'R' | 'V'
+     * method for setting the reality of the robot
+     * @param {Reality} reality reality of the robot
      */
     set reality(reality) {
         this._reality = reality;
@@ -90,7 +96,7 @@ class Robot extends AbstractCoordinateRobot {
 
     /**
      * method for getting coordinates
-     * @returns coordinate values
+     * @returns {TCoordinate} coordinate values
      */
     getCoordinates = () => {
         return this._coordinates.values;
@@ -133,7 +139,7 @@ class Robot extends AbstractCoordinateRobot {
 
     /**
      * method for updating the heartbeat of the robot
-     * @returns {number} updated datetime value
+     * @returns {string} updated datetime value
      */
     updateHeartbeat = () => {
         this._updated = Date.now();
@@ -144,7 +150,7 @@ class Robot extends AbstractCoordinateRobot {
      * method for return the live status of the robot
      * @param {number} interval the maximum allowed time in 'seconds' for being counted as 'alive' for a robot unit
      * @returns {boolean} true : if the robot is counted as 'alive'
-     * @returns false : if the robot is counted as 'dead'
+     * @returns {boolean} false : if the robot is counted as 'dead'
      */
     isAlive = (interval) => {
         if (interval === undefined) throw new TypeError('interval unspecified');

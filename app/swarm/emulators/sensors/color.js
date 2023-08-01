@@ -1,8 +1,10 @@
+const { Robot } = require('pera-swarm');
 const {
     VirtualColorSensorEmulator,
     AbstractObstacleBuilder,
     realityResolver,
-    hexToRGBC
+    hexToRGBC,
+    ExtendedRealities
 } = require('../../../../dist/pera-swarm');
 
 class ColorSensorEmulator extends VirtualColorSensorEmulator {
@@ -23,6 +25,12 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
         this._obstacleController = obstacleController;
     }
 
+    /**
+     * getReading
+     * @param {Robot} robot robot object
+     * @param {ExtendedRealities} reality reality need to be considered
+     * @param {Function} callback function
+     */
     getReading = (robot, reality = 'M', callback) => {
         const { x, y, heading } = robot.getCoordinates();
 
@@ -35,12 +43,6 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
         );
         let obstacleColor = hexToRGBC(hexColor);
 
-        // console.log(
-        //     'Color:',
-        //     obstacleColor,
-        //     ` (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
-        // );
-
         this.publish(
             `sensor/color/${robot.id}`,
             `${obstacleColor.R} ${obstacleColor.G} ${obstacleColor.B} ${obstacleColor.C}`
@@ -52,12 +54,22 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
         if (callback != undefined) callback(obstacleColor);
     };
 
+    /**
+     * setData
+     * @param {Robot} robot robot object
+     * @param {any} value color value
+     * @returns {boolean} success status
+     */
     setData = (robot, value) => {
         if (robot === undefined) throw new TypeError('robot unspecified');
         if (value === undefined) throw new TypeError('value unspecified');
         return robot.setData('color', value);
     };
 
+    /**
+     * defaultSubscriptions
+     * @returns {object[]} MQTT routes
+     */
     defaultSubscriptions = () => {
         return [
             {

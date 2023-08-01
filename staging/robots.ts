@@ -1,12 +1,9 @@
 import {
-    Robot,
     Robots as AbstractRobots,
     DistanceSensor,
     SimpleCommunication,
     DirectedCommunication
 } from 'pera-swarm';
-
-// const { DistanceSensor } = require('../../modules/distanceSensor');
 
 // Class for representing the robots level functionality
 class Robots extends AbstractRobots {
@@ -21,9 +18,7 @@ class Robots extends AbstractRobots {
     constructor(swarm: { arenaConfig: number; mqttPublish: number }, debug = false) {
         super(debug);
         if (swarm === undefined) throw new TypeError('Swarm unspecified');
-        // this.robotList = {};
-        // this.size = 0;
-        // this.updated = Date.now();
+
         this.swarm = swarm;
         // this.debug = true;
 

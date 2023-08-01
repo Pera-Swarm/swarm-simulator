@@ -1,7 +1,8 @@
 const {
     VirtualDistanceSensorEmulator,
     AbstractObstacleBuilder,
-    realityResolver
+    realityResolver,
+    ExtendedRealities
 } = require('../../../../dist/pera-swarm');
 
 const robotConfig = require('../../../config/robot.config');
@@ -18,6 +19,12 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
         this._obstacleController = obstacleController;
     }
 
+    /**
+     * getReading
+     * @param {Robot} robot robot object
+     * @param {ExtendedRealities} reality reality need to be considered
+     * @param {Function} callback function
+     */
     getReading = (robot, reality = 'M', callback) => {
         const { x, y, heading } = robot.getCoordinatesPretty();
 
@@ -44,12 +51,22 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
         if (callback != undefined) callback(dist);
     };
 
+    /**
+     * setData
+     * @param {Robot} robot robot object
+     * @param {any} value distance value
+     * @returns {boolean} success status
+     */
     setData = (robot, value) => {
         if (robot === undefined) throw new TypeError('robot unspecified');
         if (value === undefined) throw new TypeError('value unspecified');
         return robot.setData('distance', Number(value));
     };
 
+    /**
+     * defaultSubscriptions
+     * @returns {object[]} MQTT routes
+     */
     defaultSubscriptions = () => {
         return [
             {

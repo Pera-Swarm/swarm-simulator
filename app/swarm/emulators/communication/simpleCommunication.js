@@ -12,6 +12,10 @@ class SimpleCommunicationEmulator extends SimpleCommunication {
         super(robots, mqttPublish, maxDistance, debug);
     }
 
+    /**
+     * defaultSubscriptions
+     * @returns {object[]} MQTT routes
+     */
     defaultSubscriptions = () => {
         return [
             {

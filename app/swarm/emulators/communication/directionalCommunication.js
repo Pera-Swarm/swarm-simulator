@@ -19,6 +19,10 @@ class DirectionalCommunicationEmulator extends DirectedCommunication {
         super(robots, mqttPublish, maxDistance, angleThreshold, debug);
     }
 
+    /**
+     * defaultSubscriptions
+     * @returns {object[]} MQTT routes
+     */
     defaultSubscriptions = () => {
         return [
             {
