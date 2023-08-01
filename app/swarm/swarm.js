@@ -27,18 +27,12 @@ class Swarm {
      * @param {function} setup a fuction to run when the swarm object created
      */
     constructor(setup) {
-        // @luk3Sky, please review this, about change of the wrapper
         // Initiate the MQTT router for communication
         this.mqttRouter = new MQTTRouter(mqtt, wrapper([], this), mqttConfig, setup);
         this.mqttRouter.start();
 
-        // const envSetup = './app/config/env.config_empty.json';
-        const envSetup = './app/config/env.config_min.json';
-        // const envSetup = './app/config/env.config_large.json';
-        // const envSetup = './app/config/env.config_walls.json';
-        // const envSetup = './app/config/env.config_findRed.json';
-        // const envSetup = './app/config/env.config_obstacleSet.json';
-        // const envSetup = './app/config/env.config_maze.json';
+        const envSetup =
+            process.env.ARENA_CONFIG || './app/config/arena/arena_default.json';
 
         // Create the environment
         this.environment = new EnvironmentController(obstacleController(), envSetup);
