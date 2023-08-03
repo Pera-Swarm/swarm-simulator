@@ -65,3 +65,4 @@ nodemon.json
 .idea
 .vscode
 dist
+.DS_Store

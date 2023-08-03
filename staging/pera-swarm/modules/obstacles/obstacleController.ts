@@ -378,6 +378,7 @@ export class ObstacleController
 
         if (minDist === Infinity) {
             console.error(`Infinity detected from (${x},${y}), heading:${heading} !!!`);
+            return 1000;
         }
         return minDist;
     };
