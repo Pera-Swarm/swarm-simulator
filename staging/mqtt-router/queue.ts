@@ -1,12 +1,7 @@
 import { IClientSubscribeOptions, MqttClient } from 'mqtt';
-import queue from 'queue';
+import Queue from 'queue';
 import { logLevel, mqttConfigOptions } from './config';
 import { resolveChannelTopic } from './helper';
-
-type MessageType = {
-    topic: string;
-    data: string | Buffer;
-};
 
 class Message {
     topic: string;
@@ -23,7 +18,7 @@ const defaultOptions: IClientSubscribeOptions = { qos: 2, rap: true, nl: true };
 interface AbstractQueue {
     _mqttClient: MqttClient;
     _mqttOptions: IClientSubscribeOptions;
-    _queue: queue;
+    _queue: Queue;
     _schedulerInterval: number;
     add: Function;
     publish: Function;
@@ -32,10 +27,10 @@ interface AbstractQueue {
     end: Function;
 }
 
-export class Queue implements AbstractQueue {
+export class MQTTQueue implements AbstractQueue {
     _mqttClient: MqttClient;
     _mqttOptions: IClientSubscribeOptions;
-    _queue: queue;
+    _queue: Queue;
     _schedulerInterval: number;
 
     constructor(
@@ -46,24 +41,29 @@ export class Queue implements AbstractQueue {
         this._mqttClient = mqttClient;
         this._mqttOptions = options;
         this._schedulerInterval = interval;
-        this._queue = queue({ results: [] });
+        this._queue = new Queue({ results: [] });
         this._queue.timeout = this._schedulerInterval;
         this._queue.autostart = true;
-        this._queue.on('success', function (result) {
+
+        this._queue.addListener('success', (result: any) => {
             if (logLevel !== 'info') {
                 console.log('Queue processed: > ', result);
             }
         });
-        this._queue.on('timeout', function (next, job) {
+
+        this._queue.addListener('timeout', (e: any) => {
             if (logLevel !== 'info') {
-                console.log('Queue timed out:', job.toString().replace(/\n/g, ''));
+                console.log(
+                    'Queue timed out:',
+                    e.detail.job.toString().replace(/\n/g, '')
+                );
             }
-            next();
+            e.detail.next();
         });
     }
 
     /**
-     * method for starting queue processing
+     * Method for starting queue processing
      */
     start = () => {
         this._queue.start((error) => {
@@ -79,7 +79,7 @@ export class Queue implements AbstractQueue {
     };
 
     /**
-     * method for adding a message to the queue
+     * Method for adding a message to the queue
      * @param {string} topic
      * @param {string|Buffer} data message data
      */
@@ -96,35 +96,27 @@ export class Queue implements AbstractQueue {
     };
 
     /**
-     * method for publishing a message in the queue
+     * Method for publishing a message in the queue
      * @param {Message} message message to be published
      */
     publish = (message: Message, options?: mqttConfigOptions) => {
+        const topic = resolveChannelTopic(message.topic);
+
         if (logLevel !== 'info') {
-            console.log(
-                'MQTT_Publish >',
-                message,
-                'to topic:',
-                resolveChannelTopic(message.topic),
-                options
-            );
+            console.log('MQTT_Publish >', message, 'to topic:', topic, options);
         }
-        this._mqttClient.publish(
-            resolveChannelTopic(message.topic),
-            message.data,
-            options || {}
-        );
+        this._mqttClient.publish(topic, message.data, options || {});
     };
 
     /**
-     * method for stoping queue processing
+     * Method for stoping queue processing
      */
     stop = () => {
         this._queue.stop();
     };
 
     /**
-     * method for stoping and emptying the queue immediately
+     * Method for stoping and emptying the queue immediately
      * @param {any} error error description
      * @param {Function} callback callback function
      */
