@@ -7,7 +7,7 @@ const {
 // MQTT
 const mqttClient = require('mqtt');
 const mqttConfig = require('../config/mqtt.config');
-const { MQTTRouter, publishToTopic, wrapper } = require('../../dist/mqtt-router');
+const { MQTTRouter, publishToTopic, wrapper } = require('@pera-swarm/mqtt-router');
 
 // MQTT Client module
 const mqtt = mqttClient.connect(mqttConfig.HOST, mqttConfig.options);
