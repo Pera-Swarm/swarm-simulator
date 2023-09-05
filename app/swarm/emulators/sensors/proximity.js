@@ -2,7 +2,8 @@ const {
     VirtualProximitySensorEmulator,
     AbstractObstacleBuilder,
     normalizeAngle,
-    realityResolver
+    realityResolver,
+    hexToRGBC
 } = require('../../../../dist/pera-swarm');
 
 const robotConfig = require('../../../config/robot.config');
@@ -14,32 +15,35 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
      * @param {Function} mqttPublish mqtt publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
      */
-    constructor(robots, mqttPublish, obstacleController = undefined) {
+    constructor(
+        robots,
+        mqttPublish,
+        obstacleController = undefined,
+        colorSenseThreshold = 30
+    ) {
         super(robots, mqttPublish);
         this._obstacleController = obstacleController;
+        this._colorSenseThreshold = colorSenseThreshold;
     }
 
     /**
      * getReading
      * @param {Robot} robot robot object
+     * @param {Array} relativeAngles
      * @param {ExtendedRealities} reality reality need to be considered
      * @param {Function} callback function
      */
-    getReading = (robot, reality = 'M', callback) => {
+    getReading = (robot, relativeAngles = [0], reality = 'M', callback) => {
         const { x, y, heading } = robot.getCoordinatesPretty();
         let obstacleDist = [];
         let robotDist = [];
         let dist = [];
+        let color = [];
 
         // Virtual proximity sensors are located on those directions,
         //    relative to the heading of the robot
-        const distHeadings = [
-            normalizeAngle(heading - 150),
-            normalizeAngle(heading - 90),
-            normalizeAngle(heading),
-            normalizeAngle(heading + 90),
-            normalizeAngle(heading + 150)
-        ];
+        const distHeadings = relativeAngles.map((a) => normalizeAngle(heading - a));
+        console.log('Heading Angles', distHeadings);
 
         for (var i = 0; i < distHeadings.length; i++) {
             // Minimum Proximity to obstacles
@@ -53,14 +57,34 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
                 robotConfig.diameter;
 
             dist[i] = Math.ceil(Math.min(obstacleDist[i], robotDist[0])); // return as an int
+
+            const hexColor = this._obstacleController.getColor(
+                distHeadings[i],
+                x,
+                y,
+                reality,
+                this._colorSenseThreshold
+            );
+            color[i] = hexToRGBC(hexColor);
         }
 
-        console.log('Proximity:', dist, 'for', distHeadings, 'directions');
+        console.log(
+            'Proximity:',
+            dist,
+            'Color:',
+            color,
+            'for',
+            distHeadings,
+            'directions'
+        );
         console.log(
             `\t (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
         );
 
-        this.publish(`sensor/proximity/${robot.id}`, dist.join(' '));
+        this.publish(
+            `sensor/proximity/${robot.id}`,
+            `${dist.join(' ')} | ${color.join(' ')}`
+        );
 
         robot.updateHeartbeat();
         this.setData(robot, dist);
@@ -95,7 +119,7 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
                 handler: (msg) => {
                     // Listen for the virtual proximity sensor reading requests
                     console.log('MQTT_Sensor: sensor/proximity', msg);
-                    const { id, reality } = msg;
+                    const { id, reality, angles } = msg;
 
                     let robot = this._robots.findRobotById(id);
 
@@ -103,8 +127,8 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
                         const reqReality = realityResolver(reality, robot.reality);
                         // console.log(reqReality);
 
-                        this.getReading(robot, reqReality, (proximity) => {
-                            // console.log('MQTT_Sensor:ProximityEmulator', dist);
+                        this.getReading(robot, angles, reqReality, (proximity) => {
+                            console.log('MQTT_Sensor:ProximityEmulator', proximity);
                         });
                     } else {
                         console.log('MQTT_Sensor:Proximity', 'Robot not found');

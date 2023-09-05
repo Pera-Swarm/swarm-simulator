@@ -1,7 +1,5 @@
-const { abs, cos, sin } = require('mathjs');
-import { normalizeAngle, hexToRGB } from '../../../helpers';
+import { hexToRGB } from '../../../helpers';
 import { AbstractSensorEmulator } from './';
-import { ArenaType } from '../../environment';
 import { Robots } from '../../';
 
 /**
