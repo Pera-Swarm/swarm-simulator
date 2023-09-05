@@ -1,4 +1,4 @@
-import { Route } from '../../../../mqtt-router';
+import { Route } from '@pera-swarm/mqtt-router';
 import { CoordinateValueInt } from '../../coordinate';
 import { Robots } from '../../robots';
 import { Communication } from './index';
