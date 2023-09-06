@@ -11,7 +11,7 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
     /**
      * DistanceSensorEmulator
      * @param {Robots} robots robot object
-     * @param {Function} mqttPublish mqtt publish function
+     * @param {Function} mqttPublish MQTT publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
      */
     constructor(robots, mqttPublish, obstacleController = undefined) {
@@ -37,12 +37,9 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
         const robotDist =
             this._robots.getRobotDistance(heading, x, y) - robotConfig.diameter;
 
-        // Minumum distance
+        // Minimum distance
         const dist = Math.ceil(Math.min(obstacleDist, robotDist));
 
-        // console.log(
-        //     `Dist: ${dist} (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
-        // );
         this.publish(`sensor/distance/${robot.id}`, dist);
 
         robot.updateHeartbeat();

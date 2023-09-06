@@ -4,7 +4,7 @@ class DirectionalCommunicationEmulator extends DirectedCommunication {
     /**
      * SimpleCommunicationEmulator
      * @param {Robots} robots robot object
-     * @param {Function} mqttPublish mqtt publish function
+     * @param {Function} mqttPublish MQTT publish function
      * @param {number} maxDistance max transmission distance, in cm, default=100
      * @param {number} angleThreshold transmission angle threshold, in degrees, default=30
      * @param {boolean} debug default=false

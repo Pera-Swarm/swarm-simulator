@@ -11,7 +11,7 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
     /**
      * ColorSensorEmulator
      * @param {Robots} robots robot object
-     * @param {Function} mqttPublish mqtt publish function
+     * @param {Function} mqttPublish MQTT publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
      * @param {number} distanceThreshold maximum distance that color sensor can sense, in cm, default=30
      */

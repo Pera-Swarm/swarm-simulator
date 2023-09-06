@@ -12,7 +12,7 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
     /**
      * ProximitySensorEmulator
      * @param {Robots} robots robot object
-     * @param {Function} mqttPublish mqtt publish function
+     * @param {Function} mqttPublish MQTT publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
      */
     constructor(
@@ -29,11 +29,10 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
     /**
      * getReading
      * @param {Robot} robot robot object
-     * @param {Array} relativeAngles
      * @param {ExtendedRealities} reality reality need to be considered
      * @param {Function} callback function
      */
-    getReading = (robot, relativeAngles = [0], reality = 'M', callback) => {
+    getReading = (robot, reality = 'M', callback) => {
         const { x, y, heading } = robot.getCoordinatesPretty();
         let obstacleDist = [];
         let robotDist = [];
@@ -57,15 +56,6 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
                 robotConfig.diameter;
 
             dist[i] = Math.ceil(Math.min(obstacleDist[i], robotDist[0])); // return as an int
-
-            const hexColor = this._obstacleController.getColor(
-                distHeadings[i],
-                x,
-                y,
-                reality,
-                this._colorSenseThreshold
-            );
-            color[i] = hexToRGBC(hexColor);
         }
 
         console.log(

@@ -1,10 +1,8 @@
 const { sqrt, pow, round, atan2, abs } = require('mathjs');
 const {
-    normalizeAngle,
     Reality,
     ExtendedRealities,
     TInstruction,
-    TPositionVector,
     getAngle
 } = require('../../../dist/pera-swarm');
 
@@ -33,7 +31,7 @@ class Robots {
     /**
      * Robots
      * @param {swarm} swarm swarm object
-     * @param {Function} mqttPublish mqtt publish function
+     * @param {Function} mqttPublish MQTT publish function
      */
     constructor(swarm, mqttPublish) {
         if (swarm === undefined) throw new TypeError('Swarm unspecified');
@@ -448,16 +446,12 @@ class Robots {
                     robotConfig.diameter + 10
                 );
                 const angleDiff = abs(heading - angle);
-                // console.log(
-                //     `angle=${angle}, dist=${dist}, angleDiff=${angleDiff}, angleTolerence=${angleTolerence}`
-                // );
 
                 // Robot is in front, if the angel is close to heading
                 // The tolerance is depends with distance, tanInverse(Radius/Dist)
                 // Added additional 5 deg additional threshold
                 if (angleDiff < angleTolerence + 5) {
                     const realDist = dist - robotConfig.diameter / 2;
-                    // console.log(`\tYes, dist=${realDist}`);
 
                     if (realDist < minDist) {
                         minDist = realDist;
