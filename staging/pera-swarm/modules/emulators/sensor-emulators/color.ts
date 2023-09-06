@@ -9,8 +9,11 @@ import { Robots } from '../../';
  * @classdesc Virtual Color Sensor Emulator Representation
  */
 export class VirtualColorSensorEmulator extends AbstractSensorEmulator {
-    constructor(robots: Robots, mqttPublish: Function) {
+    _distanceThreshold: number;
+
+    constructor(robots: Robots, mqttPublish: Function, distanceThreshold: number) {
         super(robots, mqttPublish);
+        this._distanceThreshold = distanceThreshold;
     }
 
     colorToRGB = (color: string) => {

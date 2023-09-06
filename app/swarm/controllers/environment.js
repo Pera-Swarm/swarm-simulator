@@ -1,6 +1,10 @@
 const { Environment } = require('../../../dist/pera-swarm');
 
 class EnvironmentController extends Environment {
+    /**
+     * defaultSubscriptions
+     * @returns {object[]} MQTT routes
+     */
     get defaultSubscriptionRoutes() {
         return [
             {

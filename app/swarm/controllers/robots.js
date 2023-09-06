@@ -1,11 +1,12 @@
-// Temp zone -------------------
-
-// TODO: move following to env configs or any suitable place
-const ROBOT_DIAMETER = 6;
-
 const { sqrt, pow, round, atan2, abs } = require('mathjs');
-const { normalizeAngle } = require('../../../dist/pera-swarm');
-// -----------------------------
+const {
+    Reality,
+    ExtendedRealities,
+    TInstruction,
+    getAngle
+} = require('../../../dist/pera-swarm');
+
+const robotConfig = require('../../config/robot.config');
 
 const { Robot } = require('../robot/robot');
 
@@ -28,7 +29,9 @@ const { LocalizationController } = require('../controllers');
 // Class for representing the robots level functionality
 class Robots {
     /**
-     * Robots constructor
+     * Robots
+     * @param {swarm} swarm swarm object
+     * @param {Function} mqttPublish MQTT publish function
      */
     constructor(swarm, mqttPublish) {
         if (swarm === undefined) throw new TypeError('Swarm unspecified');
@@ -46,7 +49,7 @@ class Robots {
         this.simpleCommunication = new SimpleCommunicationEmulator(
             this,
             this.mqttPublish,
-            60,
+            robotConfig.simpleCommunication.maxDistance,
             this.debug
         );
 
@@ -54,8 +57,8 @@ class Robots {
         this.directedCommunication = new DirectionalCommunicationEmulator(
             this,
             this.mqttPublish,
-            60,
-            30,
+            robotConfig.directedCommunication.maxDistance,
+            robotConfig.directedCommunication.angleThreshold,
             this.debug
         );
 
@@ -77,7 +80,8 @@ class Robots {
         this.colorSensor = new ColorSensorEmulator(
             this,
             this.mqttPublish,
-            this.obstacleController
+            this.obstacleController,
+            robotConfig.colorSensor.distanceThreshold
         );
 
         // NeoPixel Agent Module
@@ -89,6 +93,7 @@ class Robots {
 
     /**
      * method for obtaining default routes
+     * @returns {object[]} MQTT routes
      */
     get defaultSubscriptionRoutes() {
         const commRoutes = [
@@ -198,13 +203,13 @@ class Robots {
     /**
      * method for adding a robot to the robotList
      * @param {number} id robot id
-     * @param {number} heading heading coordinate
+     * @param {number} heading heading angle
      * @param {number} x x coordinate
      * @param {number} y y coordinate
-     * @param {'V'|'R'} reality reality of the robot, default: 'V'
+     * @param {Reality} reality reality of the robot, default: 'V'
      * @returns {Robot} Robot : if successful
      */
-    addRobot = (id, heading, x, y, reality = 'V') => {
+    addRobot = (id, heading, x, y, reality = Reality.V) => {
         if (id === undefined) throw new TypeError('id unspecified');
 
         // only add a robot if the id doesn't exist
@@ -224,7 +229,7 @@ class Robots {
      * @param {number} id robot id
      * @param {function} callback a callback function
      * @returns {boolean} true : if successful
-     * @returns false : if it fails
+     * @returns {boolean} false : if it fails
      */
     removeRobot = (id, callback) => {
         if (id === undefined) throw new TypeError('id unspecified');
@@ -255,10 +260,11 @@ class Robots {
     /**
      * method for finding a robot exists in the robotList or not
      * @param {number} id robot id
+     * @param {Reality} reality reality of the robot, default: 'V'
+     * @param {function} callback a callback function
      * @returns nothing
      */
-
-    createIfNotExists = (id, reality = 'V', callback) => {
+    createIfNotExists = (id, reality = Reality.V, callback) => {
         if (id === undefined) throw new TypeError('id unspecified');
         if (this.isExistsRobot(id) == false) {
             const robot = this.addRobot(id); // create since robot doesn't exists
@@ -274,6 +280,7 @@ class Robots {
      * method for finding a robot exists or not
      * @param {number} id robot id
      * @returns {boolean} true : if robot exists
+     * @returns {boolean} false : if a robot doesn't alive
      */
     isExistsRobot = (id) => {
         if (id === undefined) throw new TypeError('id unspecified');
@@ -285,7 +292,7 @@ class Robots {
      * @param {number} id robot id
      * @param {number} interval considered time interval
      * @returns {boolean} true : if robot is alive
-     * @returns false : if a robot doesn't alive
+     * @returns {boolean} false : if a robot doesn't alive
      */
     isAliveRobot = (id, interval) => {
         if (id === undefined) throw new TypeError('id unspecified');
@@ -321,6 +328,7 @@ class Robots {
 
     /**
      * method for getting the coordinates of all robots
+     * @param {ExtendedRealities} reality reality need to be filtered, default: 'M'
      * @returns {Coordinate[]} current robot coordinates : that are existing in the list
      */
     getCoordinatesAll = (reality = 'M') => {
@@ -343,24 +351,20 @@ class Robots {
 
     /**
      * method for updating the coordinates of the given robots coordinates data
-     * @param {'V'|'R'} reality Reality of the coordinates, default: 'V'
+     * @param {Reality} reality Reality of the coordinates, default: 'V'
      * @param {Coordinate[]} coordinates coordinate data
      */
     updateCoordinates = (coordinates) => {
         if (coordinates === undefined) throw new TypeError('coordinates unspecified');
 
-        //console.log(('reality', reality));
-
         coordinates.forEach((item) => {
             const { id, x, y, heading } = item;
-            const reality = item.reality == undefined ? 'V' : item.reality;
+            const reality = item.reality == undefined ? Reality.V : item.reality;
 
             if (this.isExistsRobot(id)) {
-                //console.log(id, this.isExistsRobot(id));
                 this.findRobotById(id).setCoordinateValues(heading, x, y);
                 this.findRobotById(id).reality = reality;
             } else {
-                //console.log('robot added', id);
                 this.addRobot(id, heading, x, y, reality);
             }
             this.updated = Date.now();
@@ -382,6 +386,12 @@ class Robots {
         }
     };
 
+    /**
+     * method for broadcasting message for all active robots
+     * @param {TInstruction} instruction Instruction Type
+     * @param {any} value Value associated with the instruction
+     * @param {any | {}} options Optional parameters
+     */
     broadcast = (instType, value, options = {}) => {
         if (instType === undefined) throw new TypeError('instruction type unspecified');
         if (value === undefined) throw new TypeError('value unspecified');
@@ -390,16 +400,34 @@ class Robots {
         this.mqttPublish('robot/msg/broadcast', msg, options);
     };
 
-    changeMode = (mode, options = {}) => {
+    /**
+     * method for changing the MODE of the robots
+     * @param {any | {}} options Optional parameters
+     */
+    changeMode = (options = {}) => {
         this.broadcast('MODE', value);
     };
 
-    robotBuilder = (id, heading, x, y) => {
-        return new Robot(id, heading, x, y);
+    /**
+     * generates a new robot instance
+     * @param {number} id robot id
+     * @param {number} heading heading angle
+     * @param {number} x x coordinate
+     * @param {number} y y coordinate
+     * @param {Reality} reality reality of the robot, default: 'V'
+     * @returns {Robot} robot
+     */
+    robotBuilder = (id, heading, x, y, reality = Reality.V) => {
+        return new Robot(id, heading, x, y, reality);
     };
 
-    // Robot as an obstacle functions:
-
+    /**
+     * returns the distance to the nearest robot in given coordinate and direction
+     * @param {number} heading heading angle
+     * @param {number} x x coordinate
+     * @param {number} y y coordinate
+     * @returns {number} distance
+     */
     getRobotDistance = (heading, x, y) => {
         const allCoord = this.getCoordinatesAll();
         const from = { x, y, heading };
@@ -411,23 +439,19 @@ class Robots {
             // TODO: use a better logic, ex: round to 2 digits and compare
             if (this._getDistance(from, to) >= 1) {
                 // Obtain the angle difference and distance
-                const angle = this._getAngle(from, to);
+                const angle = getAngle(from, to);
                 const dist = this._getDistance(from, to);
                 const angleTolerence = this._angleToleranceWithDistance(
                     dist,
-                    ROBOT_DIAMETER + 10
+                    robotConfig.diameter + 10
                 );
                 const angleDiff = abs(heading - angle);
-                // console.log(
-                //     `angle=${angle}, dist=${dist}, angleDiff=${angleDiff}, angleTolerence=${angleTolerence}`
-                // );
 
                 // Robot is in front, if the angel is close to heading
                 // The tolerance is depends with distance, tanInverse(Radius/Dist)
                 // Added additional 5 deg additional threshold
                 if (angleDiff < angleTolerence + 5) {
-                    const realDist = dist - ROBOT_DIAMETER / 2;
-                    // console.log(`\tYes, dist=${realDist}`);
+                    const realDist = dist - robotConfig.diameter / 2;
 
                     if (realDist < minDist) {
                         minDist = realDist;
@@ -439,27 +463,35 @@ class Robots {
         return minDist;
     };
 
-    // TODO: implement followings on pera-swarm/helpers/geometricHelpers.ts
-    _getAngle = (from, to) => {
-        const xDiff = to.x - from.x;
-        const yDiff = to.y - from.y;
-        return normalizeAngle((atan2(yDiff, xDiff) * 180) / Math.PI);
-    };
-
+    /**
+     * returns the distance n between two points
+     * @param {PositionVector} from
+     * @param {PositionVector} to
+     * @returns {number} distance
+     */
     _getDistance = (from, to) => {
         const xDiff = to.x - from.x;
         const yDiff = to.y - from.y;
         return round(sqrt(Number(pow(xDiff, 2)) + Number(pow(yDiff, 2))), 2);
     };
 
+    /**
+     * returns toleratable angle for given distance and width
+     * @param {number} distance
+     * @param {number} width
+     * @returns {number} angle
+     */
     _angleToleranceWithDistance = (dist, width) => {
         const r = width / 2;
         const angleDiff = (Math.atan(r / dist) * 180) / Math.PI;
-
         return Math.round(angleDiff * 100) / 100;
     };
 }
 
+/**
+ * returns Robots object
+ * @returns {Robots} robots
+ */
 const initRobots = () => {
     return new Robots(this.swarm);
 };
