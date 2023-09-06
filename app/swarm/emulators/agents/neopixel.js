@@ -4,7 +4,7 @@ class NeoPixelAgent extends AbstractAgentEmulator {
     /**
      * SimpleCommunicationEmulator
      * @param {Robots} robots robot object
-     * @param {Function} mqttPublish mqtt publish function
+     * @param {Function} mqttPublish MQTT publish function
      */
     constructor(mqttPublish) {
         super(null, mqttPublish);

@@ -11,7 +11,7 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
     /**
      * ProximitySensorEmulator
      * @param {Robots} robots robot object
-     * @param {Function} mqttPublish mqtt publish function
+     * @param {Function} mqttPublish MQTT publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
      */
     constructor(robots, mqttPublish, obstacleController = undefined) {
@@ -31,8 +31,7 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
         let robotDist = [];
         let dist = [];
 
-        // Virtual proximity sensors are located on those directions,
-        //    relative to the heading of the robot
+        // Virtual proximity sensors are located on those directions, relative to the heading of the robot
         const distHeadings = [
             normalizeAngle(heading - 150),
             normalizeAngle(heading - 90),
