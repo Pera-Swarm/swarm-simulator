@@ -9,7 +9,13 @@ import { obstacleBuilder, AbstractObstacleBuilder } from './obstacleBuilder';
 import { Box, Cylinder, Wall } from './generalObstacles';
 
 // PropTypes of implemented obstacles
-import { BoxPropType, CylinderPropType, WallPropType } from './generalObstacles';
+import { CylinderPropType, WallPropType } from './generalObstacles';
+import {
+    ExtendedReality,
+    ObstacleMaterialTypes,
+    ObstacleType,
+    Reality
+} from '../../types';
 
 const defaultArenaConfig = {
     xMin: 150,
@@ -30,6 +36,10 @@ export interface AbstractObstacleController {
     visualizeObstacles: Function;
 }
 
+/**
+ * @class ObstacleController
+ * @classdesc Obstacle related control methods
+ */
 export class ObstacleController
     implements AbstractObstacleBuilder, AbstractObstacleController {
     _list: AbstractObstacle[];
@@ -52,7 +62,20 @@ export class ObstacleController
         return ObstacleController.instance;
     }
 
-    createWall(
+    /**
+     *
+     * @param {number} width width of a wall
+     * @param {number} height height of the wall
+     * @param {number} orientation in which direction wall orient, from the origin (x,y)
+     * @param {number} originX origin x coordinate
+     * @param {number} originY origin y coordinate
+     * @param {number} depth thickness of the wall
+     * @param {string } color color of the wall
+     * @param {Reality} reality reality of the wall, [R,V]
+     * @param {boolean} debug boolean to enable debug flag
+     * @returns Wall object
+     */
+    public createWall(
         width: number,
         height: number,
         orientation: number,
@@ -60,7 +83,7 @@ export class ObstacleController
         originY: number,
         depth: number,
         color: string,
-        reality: 'R' | 'V',
+        reality: Reality,
         debug: boolean
     ): Wall {
         const obj = this.builder.createWall(
@@ -78,7 +101,20 @@ export class ObstacleController
         return obj;
     }
 
-    createBox(
+    /**
+     *
+     * @param {number} width width of the box (in xy plane)
+     * @param {number} height height of the box (in z direction)
+     * @param {number} depth depth of the box (in xy plane)
+     * @param {number} orientation orientation of the box
+     * @param {number} originX origin x coordinate
+     * @param {number} originY origin y coordinate
+     * @param {string} color color of the wall
+     * @param {Reality} reality reality of the wall, [R,V]
+     * @param {boolean} debug boolean to enable debug flag
+     * @returns Box object
+     */
+    public createBox(
         width: number,
         height: number,
         depth: number,
@@ -86,7 +122,7 @@ export class ObstacleController
         originX: number,
         originY: number,
         color: string,
-        reality: 'R' | 'V',
+        reality: Reality,
         debug: boolean
     ): Box {
         const obj = this.builder.createBox(
@@ -104,13 +140,24 @@ export class ObstacleController
         return obj;
     }
 
-    createCylinder(
+    /**
+     *
+     * @param {number} radius radius of the cylinder
+     * @param {number} height height of the cylinder
+     * @param {number} originX origin x coordinate
+     * @param {number} originY origin y coordinate
+     * @param {string} color color of the wall
+     * @param {Reality} reality reality of the wall, [R,V]
+     * @param {boolean} debug boolean to enable debug flag
+     * @returns Cylinder object
+     */
+    public createCylinder(
         radius: number,
         height: number,
         originX: number,
         originY: number,
         color: string,
-        reality: 'R' | 'V',
+        reality: Reality,
         debug: boolean
     ): Cylinder {
         const obj = this.builder.createCylinder(
@@ -128,11 +175,12 @@ export class ObstacleController
 
     /**
      * @param {JSON} data json config data for the arena
+     * @param {ArenaType} config arena configurations
      */
-    createObstaclesJSON = (data: JSON, config: ArenaType = defaultArenaConfig) => {
+    public createObstaclesJSON = (data: JSON, config: ArenaType = defaultArenaConfig) => {
         if (Array.isArray(data)) {
             data.forEach((element) => {
-                const { id, type, parameters, reality } = element;
+                const { type, parameters, reality } = element;
                 const debug = false;
                 const {
                     x,
@@ -176,7 +224,7 @@ export class ObstacleController
                         this.createCylinder(radius, height, x, y, color, reality, debug);
                         break;
                     case 'cone':
-                        console.error('cone obstacles not implemented.');
+                        console.error('cone obstacles not yet implemented.');
                         break;
                     default:
                         console.error('undefined obstacle found in env.config.json');
@@ -187,56 +235,16 @@ export class ObstacleController
     };
 
     /**
-     * create a wall obstacle from JSON data
-     * @param {VisualizeType} data obstacle JSON data
-     */
-    // createWallJSON = (data: VisualizeType, config: ArenaType) => {
-    //     const decodedProps = this._decodeWallPropsFromJSON(data);
-    //     if (decodedProps !== -1) {
-    //         const { width, height, x, y, orientation, depth } = decodedProps;
-    //         this.createWall(
-    //             width,
-    //             height,
-    //             orientation,
-    //             normalizeValueRange(x, config.xMin, config.xMax),
-    //             normalizeValueRange(y, config.yMin, config.yMax),
-    //             depth,
-    //             false
-    //         );
-    //         // this.createWall(width, height, orientation, originX, originY, depth, debug);
-    //     }
-    // };
-
-    /**
-     * create a cylinder obstacle from JSON data
-     * @param {VisualizeType} data obstacle JSON data
-     */
-    // createCylinderJSON = (data: VisualizeType, config: ArenaType) => {
-    //     const decodedProps = this._decodeCylinderPropsFromJSON(data);
-    //     if (decodedProps !== -1) {
-    //         const { radius, radiusTop, radiusBottom, height, x, y } = decodedProps;
-    //         // const radius = (radiusTop + radiusBottom) / 2; // Temp
-    //         this.createCylinder(
-    //             radius,
-    //             height,
-    //             x, // normalizeValueRange(x, config.xMin, config.xMax),
-    //             y, // normalizeValueRange(y, config.yMin, config.yMax),
-    //             false
-    //         );
-    //     }
-    // };
-
-    /**
-     * get obstacle list
+     * Get obstacle list
      */
     get list(): AbstractObstacle[] {
         return this.list;
     }
 
     /**
-     * method for finding an obstacle in the list with a given id
-     * @param {string} type
-     * @returns {AbstractObstacle|-1}
+     * A method for finding an obstacle in the list with a given id
+     * @param {string} id
+     * @returns {AbstractObstacle | -1}
      */
     findObstacleById = (id: string): AbstractObstacle | -1 => {
         if (id === undefined) {
@@ -258,11 +266,11 @@ export class ObstacleController
     };
 
     /**
-     * method for finding obstacles in the list with a given type
-     * @param {string} type
+     * A method for finding obstacles in the list with a given type
+     * @param {ObstacleType} type obstacle type
      * @returns {AbstractObstacle[]}
      */
-    findObstaclesByType = (type: string): AbstractObstacle[] => {
+    findObstaclesByType = (type: ObstacleType): AbstractObstacle[] => {
         if (type === undefined) {
             console.error('Invalid type');
             return [];
@@ -282,36 +290,38 @@ export class ObstacleController
     };
 
     /**
-     * method for finding is there any obstacle in front
+     * A method for finding is there any obstacle in front
      * @param {number} heading heading coordinate
      * @param {number} x x coordinate
      * @param {number} y y coordinate
-     * @param {reality} reality 'R'|'V'|'M', reality flag
+     * @param {ExtendedReality} reality 'R'|'V'|'M', reality flag
      * @returns {boolean} true : if there any obstacle in heading direction
      */
     isObstacleThere = (
         heading: number,
         x: number,
         y: number,
-        reality: 'R' | 'V' | 'M' = 'M'
-    ) => {
+        reality: ExtendedReality = ExtendedReality.M
+    ): boolean => {
         let found = false;
 
         for (let i = 0; i < this._list.length; i++) {
             found = this._list[i].isInRange(heading, x, y);
-            //console.log(found);
-            if (found == true && (reality === 'M' || reality == this._list[i].reality))
+            if (
+                found == true &&
+                (reality === ExtendedReality.M || reality == this._list[i].reality)
+            )
                 return true;
         }
         return found;
     };
 
     /**
-     * method for obtain the virtaul distance sensor readings with these virtual objects
+     * A method for obtain the virtaul distance sensor readings with these virtual objects
      * @param {number} heading heading coordinate
      * @param {number} x x coordinate
      * @param {number} y y coordinate
-     * @param {reality} reality 'R'|'V'|'M', reality flag
+     * @param {ExtendedReality} reality 'R'|'V'|'M', reality flag
      * @param {number} distanceThreshold distance threshold
      * @returns {string | null} if thre any obstacle in heading front, return the color to the closest one
      */
@@ -319,7 +329,7 @@ export class ObstacleController
         heading: number,
         x: number,
         y: number,
-        reality: 'R' | 'V' | 'M' = 'M',
+        reality: ExtendedReality = ExtendedReality.M,
         distanceThreshold: number = 20
     ) => {
         let minDist = Infinity;
@@ -347,18 +357,18 @@ export class ObstacleController
     };
 
     /**
-     * method for obtain the virtaul distance sensor readings with these virtual objects
+     * A method for obtain the virtaul distance sensor readings with these virtual objects
      * @param {number} heading heading coordinate
      * @param {number} x x coordinate
      * @param {number} y y coordinate
-     * @param {reality} reality 'R'|'V'|'M', reality flag
+     * @param {ExtendedReality} reality 'R'|'V'|'M', reality flag
      * @returns {number | Infinity} if thre any obstacle in heading front, return the distance to the closest one
      */
     getDistance = (
         heading: number,
         x: number,
         y: number,
-        reality: 'R' | 'V' | 'M' = 'M'
+        reality: ExtendedReality = ExtendedReality.M
     ) => {
         let minDist = Infinity;
 
@@ -384,7 +394,7 @@ export class ObstacleController
     };
 
     /**
-     * method for removing an obstacle in the list by a given id
+     * A method for removing an obstacle in the list by a given id
      * @param {string} id
      */
     removeObstacleById = (id: string) => {
@@ -401,11 +411,14 @@ export class ObstacleController
     };
 
     /**
-     * change material
+     * Change material
      * @param {AbstractObstacle} id
-     * @param {string} materialType
+     * @param {ObstacleMaterialTypes} materialType
      */
-    changeMaterial(obstacle: AbstractObstacle, materialType: string): void {
+    changeMaterial(
+        obstacle: AbstractObstacle,
+        materialType: ObstacleMaterialTypes
+    ): void {
         if (materialType === undefined) {
             console.error('Invalid material type');
         } else {
@@ -420,9 +433,9 @@ export class ObstacleController
     /**
      * set material by id
      * @param {string} id
-     * @param {string} materialType
+     * @param {ObstacleMaterialTypes} materialType
      */
-    setMaterialById = (id: string, materialType: string) => {
+    setMaterialById = (id: string, materialType: ObstacleMaterialTypes) => {
         if (id === undefined && materialType === undefined) {
             console.error('Invalid params');
         } else {
@@ -452,18 +465,18 @@ export class ObstacleController
     };
 
     /**
-     * method for obtaining a list of visualize object representation of obstacles
+     * A method for obtaining a list of visualize object representation of obstacles
      * @returns {any} ObstacleAPI defined Objects
      */
-    visualizeObstacles = (filter: 'M' | 'V' | 'R' = 'M'): VisualizeType[] => {
+    visualizeObstacles = (
+        filter: ExtendedReality = ExtendedReality.M
+    ): VisualizeType[] => {
         let visualizeList: VisualizeType[] = [];
-        //console.log('filter:', filter);
 
         this._list.forEach((item: AbstractObstacle) => {
             // one obstacle object can have multiple geometrics.
-            //console.log(item.reality);
 
-            if (item.reality === filter || filter == 'M') {
+            if (item.reality === filter || filter == ExtendedReality.M) {
                 item.visualize().forEach((itemChild: VisualizeType) => {
                     visualizeList.push(itemChild);
                 });
@@ -562,16 +575,6 @@ export class ObstacleController
                 typeof this._arenaConfig.yMin
             );
             return -1;
-            // }else if(){
-            //     return {
-            //         width,
-            // height,
-            // depth,
-            // x,
-            // y,
-            // orientation
-            //     }
-            // }
         } else {
             let normalizedX = normalizeValueRange(
                 x,
@@ -600,9 +603,4 @@ export class ObstacleController
  */
 export const obstacleController = (config: ArenaType = defaultArenaConfig) => {
     return ObstacleController.getInstance(config);
-};
-
-export const obstacleList = {
-    WALL: 'WALL',
-    CYLINDER: 'CYLINDER'
 };

@@ -3,7 +3,7 @@ export enum Reality {
     V = 'V'
 }
 
-export enum ExtendedRealities {
+export enum ExtendedReality {
     R = 'R',
     V = 'V',
     M = 'M'
@@ -23,4 +23,19 @@ export interface TPositionVector {
     x: number;
     y: number;
     heading: number;
+}
+
+export enum ObstacleType {
+    WALL = 'wall',
+    BOX = 'box',
+    CYLINDER = 'cylinder',
+    CONE = 'cone'
+}
+
+export enum ObstacleMaterialTypes {
+    MeshBasicMaterial = 'MeshBasicMaterial',
+    MeshNormalMaterial = 'MeshNormalMaterial',
+    MeshPhongMaterial = 'MeshPhongMaterial',
+    MeshPhysicalMaterial = 'MeshPhysicalMaterial',
+    MeshStandardMaterial = 'MeshStandardMaterial'
 }

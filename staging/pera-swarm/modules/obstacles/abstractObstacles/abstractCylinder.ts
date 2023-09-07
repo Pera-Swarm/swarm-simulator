@@ -1,3 +1,4 @@
+import { Reality } from '../../../types';
 import {
     AbstractObstacle,
     ObjectCoordinate,
@@ -22,7 +23,7 @@ export abstract class AbstractCylinder extends AbstractObstacle {
         radius: number,
         height: number,
         position: ObjectCoordinate,
-        reality: 'R' | 'V',
+        reality: Reality,
         debug: boolean
     ) {
         super(position, reality, debug);

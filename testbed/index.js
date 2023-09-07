@@ -1,3 +1,4 @@
+const { ExtendedReality } = require('../dist/pera-swarm');
 const {
     obstacleController
 } = require('../dist/pera-swarm/modules/obstacles/obstacleController');
@@ -34,7 +35,7 @@ const w2 = controller.createWall(
     50,
     wallDepth,
     wallColor,
-    'R',
+    ExtendedReality.R,
     obstacleDebug
 );
 const w3 = controller.createWall(
@@ -45,7 +46,7 @@ const w3 = controller.createWall(
     -50,
     wallDepth,
     wallColor,
-    'R',
+    ExtendedReality.R,
     obstacleDebug
 );
 
@@ -55,7 +56,7 @@ const c1 = controller.createCylinder(
     cylinderX,
     cylinderY,
     cylinderColor,
-    'V',
+    ExtendedReality.V,
     obstacleDebug
 );
 
@@ -65,6 +66,6 @@ const color = controller.getColor(heading, x, y);
 
 console.log('\n\nisObstacle:', isObstacle, 'distance:', dist, 'color', color);
 
-const jsonObstacles = controller.visualizeObstacles('M');
+const jsonObstacles = controller.visualizeObstacles(ExtendedReality.M);
 
 console.log(JSON.stringify(jsonObstacles));

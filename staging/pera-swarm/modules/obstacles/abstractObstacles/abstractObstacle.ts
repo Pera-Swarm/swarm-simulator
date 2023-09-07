@@ -1,4 +1,5 @@
 import { v4 as uuid } from 'uuid';
+import { Reality } from '../../../types';
 
 export type ObjectCoordinate = {
     x: number;
@@ -52,7 +53,7 @@ export abstract class AbstractObstacle {
 
     protected constructor(
         position: ObjectCoordinate,
-        reality: 'R' | 'V',
+        reality: Reality,
         debug: boolean = false
     ) {
         this._id = uuid();

@@ -1,9 +1,5 @@
-// import { normalizeAngle } from '../../../helpers/';
 import { AbstractSensorEmulator } from './';
-import { ArenaType } from '../../environment/';
 import { Robots } from '../../';
-
-const { abs, cos, sin } = require('mathjs');
 
 /**
  * @class VirtualDistanceSensorEmulator

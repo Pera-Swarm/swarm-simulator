@@ -1,7 +1,7 @@
 const { sqrt, pow, round, atan2, abs } = require('mathjs');
 const {
     Reality,
-    ExtendedRealities,
+    ExtendedReality,
     TInstruction,
     getAngle
 } = require('../../../dist/pera-swarm');
@@ -73,6 +73,7 @@ class Robots {
         this.proximitySensor = new ProximitySensorEmulator(
             this,
             this.mqttPublish,
+            robotConfig.colorSensor.distanceThreshold,
             this.obstacleController
         );
 
@@ -328,13 +329,13 @@ class Robots {
 
     /**
      * method for getting the coordinates of all robots
-     * @param {ExtendedRealities} reality reality need to be filtered, default: 'M'
+     * @param {ExtendedReality} reality reality need to be filtered, default: 'M'
      * @returns {Coordinate[]} current robot coordinates : that are existing in the list
      */
-    getCoordinatesAll = (reality = 'M') => {
+    getCoordinatesAll = (reality = ExtendedReality.M) => {
         let result = [];
         for (const key in this.robotList) {
-            if (this.robotList[key].reality == reality || reality == 'M') {
+            if (this.robotList[key].reality == reality || reality == ExtendedReality.M) {
                 const { x, y, heading } = this.robotList[key].getCoordinates();
                 const resp = {
                     id: key,

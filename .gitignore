@@ -60,9 +60,8 @@ dkms.conf
 /dist
 nodemon.json
 
-/package-lock.json
-
 .idea
 .vscode
 dist
 .DS_Store
+package-lock.json
