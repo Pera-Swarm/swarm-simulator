@@ -1,38 +1,43 @@
 import { RGBType, RGBCType } from '../modules';
+import { ExtendedReality, Reality } from '../types';
 
 /**
  * method for normalizing a given angle
  * @param {number} a angle
  */
 export const realityResolver = (
-    requestReality: 'R' | 'V' | 'M' | undefined,
-    robotReality: 'R' | 'V' | undefined = undefined
+    requestReality: ExtendedReality | undefined,
+    robotReality: Reality | undefined = undefined
 ) => {
     // console.log(`realityResolver: req:${requestReality},  robot:${robotReality}`);
     if (requestReality === undefined) {
         if (robotReality === undefined) {
             // Robot also not defined the reality
-            return 'M';
+            return ExtendedReality.M;
         }
-        if (robotReality === 'V') {
+        if (robotReality === Reality.V) {
             // Virtual robots should need both realities
-            return 'M';
+            return ExtendedReality.M;
         }
 
-        if (robotReality === 'R') {
+        if (robotReality === Reality.R) {
             // Physical robots only need virtual reality
-            return 'V';
+            return ExtendedReality.V;
         }
         // return the robot's reality
         return robotReality;
     }
 
-    if (requestReality == 'V' || requestReality == 'R' || requestReality == 'M') {
+    if (
+        requestReality == ExtendedReality.V ||
+        requestReality == ExtendedReality.R ||
+        requestReality == ExtendedReality.M
+    ) {
         // return the requested and valid reality
         return requestReality;
     }
 
-    return 'M';
+    return ExtendedReality.M;
 };
 
 /**

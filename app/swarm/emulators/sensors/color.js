@@ -4,7 +4,7 @@ const {
     AbstractObstacleBuilder,
     realityResolver,
     hexToRGBC,
-    ExtendedRealities
+    ExtendedReality
 } = require('../../../../dist/pera-swarm');
 
 class ColorSensorEmulator extends VirtualColorSensorEmulator {
@@ -28,7 +28,7 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
     /**
      * getReading
      * @param {Robot} robot robot object
-     * @param {ExtendedRealities} reality reality need to be considered
+     * @param {ExtendedReality} reality reality need to be considered
      * @param {Function} callback function
      */
     getReading = (robot, reality = 'M', callback) => {

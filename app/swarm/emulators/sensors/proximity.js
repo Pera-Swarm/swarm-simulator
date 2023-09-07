@@ -13,13 +13,14 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
      * ProximitySensorEmulator
      * @param {Robots} robots robot object
      * @param {Function} mqttPublish MQTT publish function
+     * @param {number} colorSenseThreshold color sensing threshold
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
      */
     constructor(
         robots,
         mqttPublish,
-        obstacleController = undefined,
-        colorSenseThreshold = 30
+        colorSenseThreshold = 30,
+        obstacleController = undefined
     ) {
         super(robots, mqttPublish);
         this._obstacleController = obstacleController;
@@ -29,10 +30,11 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
     /**
      * getReading
      * @param {Robot} robot robot object
-     * @param {ExtendedRealities} reality reality need to be considered
+     * @param {Number[]} relativeAngles, in degrees, as an array
+     * @param {ExtendedReality} reality reality need to be considered
      * @param {Function} callback function
      */
-    getReading = (robot, reality = 'M', callback) => {
+    getReading = (robot, relativeAngles = [0], reality = 'M', callback) => {
         const { x, y, heading } = robot.getCoordinatesPretty();
         let obstacleDist = [];
         let robotDist = [];
@@ -41,39 +43,39 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
 
         // Virtual proximity sensors are located on those directions,
         //    relative to the heading of the robot
-        const distHeadings = relativeAngles.map((a) => normalizeAngle(heading - a));
-        console.log('Heading Angles', distHeadings);
+        const sensorHeadings = relativeAngles.map((a) => normalizeAngle(heading - a));
 
-        for (var i = 0; i < distHeadings.length; i++) {
+        for (var i = 0; i < sensorHeadings.length; i++) {
             // Minimum Proximity to obstacles
             obstacleDist[i] =
-                this._obstacleController.getDistance(distHeadings[i], x, y, reality) -
+                this._obstacleController.getDistance(sensorHeadings[i], x, y, reality) -
                 robotConfig.diameter;
 
             // Minimum Proximity to robots
             robotDist[i] =
-                this._robots.getRobotDistance(distHeadings[i], x, y) -
+                this._robots.getRobotDistance(sensorHeadings[i], x, y) -
                 robotConfig.diameter;
 
             dist[i] = Math.ceil(Math.min(obstacleDist[i], robotDist[0])); // return as an int
+            color[i] = this._obstacleController.getColor(
+                sensorHeadings[i],
+                x,
+                y,
+                reality,
+                this._distanceThreshold
+            );
         }
 
-        console.log(
-            'Proximity:',
-            dist,
-            'Color:',
-            color,
-            'for',
-            distHeadings,
-            'directions'
-        );
-        console.log(
-            `\t (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
-        );
+        // console.log(
+        //     `${dist.join(' ')} ${color.join(' ')} for [${sensorHeadings.join(' ')}\]`
+        // );
+        // console.log(
+        //     `\t (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
+        // );
 
         this.publish(
             `sensor/proximity/${robot.id}`,
-            `${dist.join(' ')} | ${color.join(' ')}`
+            `${dist.join(' ')} ${color.join(' ')}`
         );
 
         robot.updateHeartbeat();

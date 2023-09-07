@@ -1,7 +1,8 @@
-import { Cylinder, CylinderPropType } from './generalObstacles/cylinder';
-import { Wall, WallPropType } from './generalObstacles/wall';
-import { Box, BoxPropType } from './generalObstacles/box';
+import { Cylinder } from './generalObstacles/cylinder';
+import { Wall } from './generalObstacles/wall';
+import { Box } from './generalObstacles/box';
 import { AbstractObstacle } from './abstractObstacles/abstractObstacle';
+import { ObstacleMaterialTypes, Reality } from '../../types';
 
 export interface AbstractObstacleBuilder {
     createWall(
@@ -12,7 +13,7 @@ export interface AbstractObstacleBuilder {
         originY: number,
         depth: number,
         color: string,
-        reality: 'R' | 'V',
+        reality: Reality,
         debug: boolean
     ): Wall;
 
@@ -24,7 +25,7 @@ export interface AbstractObstacleBuilder {
         originX: number,
         originY: number,
         color: string,
-        reality: 'R' | 'V',
+        reality: Reality,
         debug: boolean
     ): Box;
 
@@ -34,11 +35,11 @@ export interface AbstractObstacleBuilder {
         originX: number,
         originY: number,
         color: string,
-        reality: 'R' | 'V',
+        reality: Reality,
         debug: boolean
     ): Cylinder;
 
-    changeMaterial(obstacle: AbstractObstacle, materialType: string): void;
+    changeMaterial(obstacle: AbstractObstacle, materialType: ObstacleMaterialTypes): void;
 }
 
 export class ObstacleBuilder implements AbstractObstacleBuilder {
@@ -51,7 +52,20 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         return ObstacleBuilder.instance;
     }
 
-    createWall(
+    /**
+     *
+     * @param {number} width width of a wall
+     * @param {number} height height of the wall
+     * @param {number} orientation in which direction wall orient, from the origin (x,y)
+     * @param {number} originX origin x coordinate
+     * @param {number} originY origin y coordinate
+     * @param {number} depth thickness of the wall
+     * @param {string } color color of the wall
+     * @param {Reality} reality reality of the wall, [R,V]
+     * @param {boolean} debug boolean to enable debug flag
+     * @returns {Wall} object
+     */
+    public createWall(
         width: number,
         height: number,
         orientation: number,
@@ -59,7 +73,7 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         originY: number,
         depth: number,
         color: string,
-        reality: 'R' | 'V',
+        reality: Reality,
         debug: boolean
     ): Wall {
         return new Wall(
@@ -75,7 +89,20 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         );
     }
 
-    createBox(
+    /**
+     *
+     * @param {number} width width of the box (in xy plane)
+     * @param {number} height height of the box (in z direction)
+     * @param {number} depth depth of the box (in xy plane)
+     * @param {number} orientation orientation of the box
+     * @param {number} originX origin x coordinate
+     * @param {number} originY origin y coordinate
+     * @param {string} color color of the wall
+     * @param {Reality} reality reality of the wall, [R,V]
+     * @param {boolean} debug boolean to enable debug flag
+     * @returns {Box} object
+     */
+    public createBox(
         width: number,
         height: number,
         depth: number,
@@ -83,7 +110,7 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         originX: number,
         originY: number,
         color: string,
-        reality: 'R' | 'V',
+        reality: Reality,
         debug: boolean
     ): Box {
         return new Box(
@@ -99,19 +126,38 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
         );
     }
 
-    createCylinder(
+    /**
+     *
+     * @param {number} radius radius of the cylinder
+     * @param {number} height height of the cylinder
+     * @param {number} originX origin x coordinate
+     * @param {number} originY origin y coordinate
+     * @param {string} color color of the wall
+     * @param {Reality} reality reality of the wall, [R,V]
+     * @param {boolean} debug boolean to enable debug flag
+     * @returns {Cylinder} object
+     */
+    public createCylinder(
         radius: number,
         height: number,
         originX: number,
         originY: number,
         color: string,
-        reality: 'R' | 'V',
+        reality: Reality,
         debug: boolean
     ): Cylinder {
         return new Cylinder(radius, height, originX, originY, color, reality, debug);
     }
 
-    changeMaterial = (obstacle: AbstractObstacle, materialType: string) => {
+    /**
+     *
+     * @param {AbstractObstacle} obstacle
+     * @param {ObstacleMaterialTypes} materialType
+     */
+    public changeMaterial = (
+        obstacle: AbstractObstacle,
+        materialType: ObstacleMaterialTypes
+    ) => {
         obstacle.setMaterial(materialType);
     };
 }
