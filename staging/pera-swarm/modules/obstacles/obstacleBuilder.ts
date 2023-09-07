@@ -54,7 +54,7 @@ export class ObstacleBuilder implements AbstractObstacleBuilder {
 
     /**
      *
-     * @param {number} width width of a wall
+     * @param {number} width width of the wall
      * @param {number} height height of the wall
      * @param {number} orientation in which direction wall orient, from the origin (x,y)
      * @param {number} originX origin x coordinate
