@@ -3,7 +3,8 @@ const {
     AbstractObstacleBuilder,
     normalizeAngle,
     realityResolver,
-    hexToRGBC
+    hexToRGBC,
+    ExtendedReality
 } = require('../../../../dist/pera-swarm');
 
 const robotConfig = require('../../../config/robot.config');
@@ -34,7 +35,7 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
      * @param {ExtendedReality} reality reality need to be considered
      * @param {Function} callback function
      */
-    getReading = (robot, relativeAngles = [0], reality = 'M', callback) => {
+    getReading = (robot, relativeAngles = [0], reality = ExtendedReality.M, callback) => {
         const { x, y, heading } = robot.getCoordinatesPretty();
         let obstacleDist = [];
         let robotDist = [];

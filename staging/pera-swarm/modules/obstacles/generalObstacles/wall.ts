@@ -7,6 +7,7 @@ import {
     validateObjectCoordinate,
     VisualizeType
 } from '../abstractObstacles';
+import { Reality } from '../../../types';
 
 export type WallPropType = {
     width: number;
@@ -30,7 +31,7 @@ export class Wall extends AbstractBox {
         originY: number,
         depth: number = 2,
         color: string = '#404040',
-        reality: 'R' | 'V',
+        reality: Reality,
         debug = false
     ) {
         super(

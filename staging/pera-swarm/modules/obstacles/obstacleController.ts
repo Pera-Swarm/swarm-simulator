@@ -476,7 +476,7 @@ export class ObstacleController
         this._list.forEach((item: AbstractObstacle) => {
             // one obstacle object can have multiple geometrics.
 
-            if (item.reality === filter || filter == 'M') {
+            if (item.reality === filter || filter == ExtendedReality.M) {
                 item.visualize().forEach((itemChild: VisualizeType) => {
                     visualizeList.push(itemChild);
                 });

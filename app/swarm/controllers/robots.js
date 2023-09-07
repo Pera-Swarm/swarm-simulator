@@ -332,10 +332,10 @@ class Robots {
      * @param {ExtendedReality} reality reality need to be filtered, default: 'M'
      * @returns {Coordinate[]} current robot coordinates : that are existing in the list
      */
-    getCoordinatesAll = (reality = 'M') => {
+    getCoordinatesAll = (reality = ExtendedReality.M) => {
         let result = [];
         for (const key in this.robotList) {
-            if (this.robotList[key].reality == reality || reality == 'M') {
+            if (this.robotList[key].reality == reality || reality == ExtendedReality.M) {
                 const { x, y, heading } = this.robotList[key].getCoordinates();
                 const resp = {
                     id: key,

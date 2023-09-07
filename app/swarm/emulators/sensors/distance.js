@@ -25,7 +25,7 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
      * @param {ExtendedReality} reality reality need to be considered
      * @param {Function} callback function
      */
-    getReading = (robot, reality = 'M', callback) => {
+    getReading = (robot, reality = ExtendedReality.M, callback) => {
         const { x, y, heading } = robot.getCoordinatesPretty();
 
         // Minimum distance to the nearst obstacles

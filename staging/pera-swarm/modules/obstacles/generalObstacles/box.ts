@@ -1,3 +1,4 @@
+import { Reality } from '../../../types';
 import { AbstractBox, VisualizeType, BoxPropType } from '../abstractObstacles';
 
 export class Box extends AbstractBox {
@@ -9,7 +10,7 @@ export class Box extends AbstractBox {
         originX: number,
         originY: number,
         color: string = '#404040',
-        reality: 'R' | 'V',
+        reality: Reality,
         debug = false
     ) {
         super(

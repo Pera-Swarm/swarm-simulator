@@ -1,6 +1,7 @@
 const { sqrt, pow, abs, round, atan2, max, asin } = require('mathjs');
 
 import { normalizeAngle } from '../../../helpers';
+import { Reality } from '../../../types';
 import {
     AbstractCylinder,
     ObjectCoordinate,
@@ -16,7 +17,7 @@ export class Cylinder extends AbstractCylinder {
         originX: number,
         originY: number,
         color: string = '#404040',
-        reality: 'R' | 'V',
+        reality: Reality,
         debug = false
     ) {
         super(radius, height, { x: originX, y: originY }, reality, debug);
