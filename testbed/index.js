@@ -1,7 +1,5 @@
-const { ExtendedReality } = require('../dist/pera-swarm');
-const {
-    obstacleController
-} = require('../dist/pera-swarm/modules/obstacles/obstacleController');
+const { ExtendedReality } = require('pera-swarm');
+const { obstacleController } = require('pera-swarmmodules/obstacles/obstacleController');
 const fs = require('fs');
 
 const x = 0;

@@ -1,8 +1,5 @@
 // Main pera-swarm library components
-const {
-    obstacleController,
-    DEFAULT_ROBOT_ALIVE_INTERVAL
-} = require('../../dist/pera-swarm');
+const { obstacleController, DEFAULT_ROBOT_ALIVE_INTERVAL } = require('pera-swarm');
 
 // MQTT
 const mqttClient = require('mqtt');
@@ -87,7 +84,7 @@ class Swarm {
     };
 
     /**
-     * method for publishing a message to a given topic
+     * Method for publishing a message to a given topic
      * @param {string} topic mqtt topic
      * @param {string} message mqtt message object
      */

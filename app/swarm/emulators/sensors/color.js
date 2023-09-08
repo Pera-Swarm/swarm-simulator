@@ -5,7 +5,7 @@ const {
     realityResolver,
     hexToRGBC,
     ExtendedReality
-} = require('../../../../dist/pera-swarm');
+} = require('pera-swarm');
 
 class ColorSensorEmulator extends VirtualColorSensorEmulator {
     /**

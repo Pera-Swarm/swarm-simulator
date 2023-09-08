@@ -1,4 +1,4 @@
-const { Environment, ExtendedReality } = require('../../../dist/pera-swarm');
+const { Environment, ExtendedReality } = require('pera-swarm');
 
 class EnvironmentController extends Environment {
     /**

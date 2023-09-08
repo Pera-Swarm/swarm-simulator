@@ -1,5 +1,5 @@
 const { AbstractCoordinateRobot, Coordinate, CoordinateValueInt } = require('pera-swarm');
-const { TReality, Reality } = require('../../../dist/pera-swarm/');
+const { Reality } = require('pera-swarm');
 
 /**
  * @class Robot Representation
@@ -26,7 +26,7 @@ class Robot extends AbstractCoordinateRobot {
     }
 
     /**
-     * method for getting last updated time
+     * Method for getting last updated time
      * @returns {string} time in hh:mm:ss format
      */
     get lastUpdate() {
@@ -39,7 +39,7 @@ class Robot extends AbstractCoordinateRobot {
     }
 
     /**
-     * method for getting coordinates
+     * Method for getting coordinates
      * @returns {TCoordinate} coordinate
      */
     get coordinates() {
@@ -47,7 +47,7 @@ class Robot extends AbstractCoordinateRobot {
     }
 
     /**
-     * method for getting data
+     * Method for getting data
      * @returns {any[]} robot's stored data
      */
     get data() {
@@ -55,7 +55,7 @@ class Robot extends AbstractCoordinateRobot {
     }
 
     /**
-     * method for getting the reality of the robot,
+     * Method for getting the reality of the robot,
      * @returns {Reality} robot's reality
      */
     get reality() {
@@ -63,7 +63,7 @@ class Robot extends AbstractCoordinateRobot {
     }
 
     /**
-     * method for setting the reality of the robot
+     * Method for setting the reality of the robot
      * @param {Reality} reality reality of the robot
      */
     set reality(reality) {
@@ -71,7 +71,7 @@ class Robot extends AbstractCoordinateRobot {
     }
 
     /**
-     * method for get a data by its key
+     * Method for get a data by its key
      * @param {number} key key for the data
      * @returns {Object} the data object : if it exists
      * @returns undefined : if it doesn't exist
@@ -82,7 +82,7 @@ class Robot extends AbstractCoordinateRobot {
     };
 
     /**
-     * method for set a data by its key
+     * Method for set a data by its key
      * @param {number} key key for the data object
      * @param {Object} the data object
      * @returns true
@@ -95,7 +95,7 @@ class Robot extends AbstractCoordinateRobot {
     };
 
     /**
-     * method for getting coordinates
+     * Method for getting coordinates
      * @returns {TCoordinate} coordinate values
      */
     getCoordinates = () => {
@@ -103,7 +103,7 @@ class Robot extends AbstractCoordinateRobot {
     };
 
     /**
-     * method for getting coordinates
+     * Method for getting coordinates
      * @returns coordinate values, with only 2 decimals
      */
     getCoordinatesPretty = () => {
@@ -113,7 +113,7 @@ class Robot extends AbstractCoordinateRobot {
         return { x, y, heading };
     };
     /**
-     * method for setting coordinates
+     * Method for setting coordinates
      * @param {CoordinateValueInt<number>} heading heading coordinate
      * @param {number} x x coordinate
      * @param {number} y y coordinate
@@ -126,7 +126,7 @@ class Robot extends AbstractCoordinateRobot {
     };
 
     /**
-     * method for setting coordinates
+     * Method for setting coordinates
      * @param {number} heading heading coordinate
      * @param {number} x x coordinate
      * @param {number} y y coordinate
@@ -138,7 +138,7 @@ class Robot extends AbstractCoordinateRobot {
     };
 
     /**
-     * method for updating the heartbeat of the robot
+     * Method for updating the heartbeat of the robot
      * @returns {string} updated datetime value
      */
     updateHeartbeat = () => {
@@ -147,7 +147,7 @@ class Robot extends AbstractCoordinateRobot {
     };
 
     /**
-     * method for return the live status of the robot
+     * Method for return the live status of the robot
      * @param {number} interval the maximum allowed time in 'seconds' for being counted as 'alive' for a robot unit
      * @returns {boolean} true : if the robot is counted as 'alive'
      * @returns {boolean} false : if the robot is counted as 'dead'

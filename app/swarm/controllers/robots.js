@@ -1,10 +1,5 @@
 const { sqrt, pow, round, atan2, abs } = require('mathjs');
-const {
-    Reality,
-    ExtendedReality,
-    TInstruction,
-    getAngle
-} = require('../../../dist/pera-swarm');
+const { Reality, ExtendedReality, TInstruction, getAngle } = require('pera-swarm');
 
 const robotConfig = require('../../config/robot.config');
 
@@ -93,7 +88,7 @@ class Robots {
     }
 
     /**
-     * method for obtaining default routes
+     * Method for obtaining default routes
      * @returns {object[]} MQTT routes
      */
     get defaultSubscriptionRoutes() {
@@ -202,7 +197,7 @@ class Robots {
     initialPublishers = [];
 
     /**
-     * method for adding a robot to the robotList
+     * Method for adding a robot to the robotList
      * @param {number} id robot id
      * @param {number} heading heading angle
      * @param {number} x x coordinate
@@ -226,7 +221,7 @@ class Robots {
     };
 
     /**
-     * method for removing the robot by id
+     * Method for removing the robot by id
      * @param {number} id robot id
      * @param {function} callback a callback function
      * @returns {boolean} true : if successful
@@ -251,7 +246,7 @@ class Robots {
     };
 
     /**
-     * method for getting the size of the robot robotList
+     * Method for getting the size of the robot robotList
      * @returns {number} the size of the robot instances : are in the list
      */
     getSize = () => {
@@ -259,7 +254,7 @@ class Robots {
     };
 
     /**
-     * method for finding a robot exists in the robotList or not
+     * Method for finding a robot exists in the robotList or not
      * @param {number} id robot id
      * @param {Reality} reality reality of the robot, default: 'V'
      * @param {function} callback a callback function
@@ -278,7 +273,7 @@ class Robots {
     };
 
     /**
-     * method for finding a robot exists or not
+     * Method for finding a robot exists or not
      * @param {number} id robot id
      * @returns {boolean} true : if robot exists
      * @returns {boolean} false : if a robot doesn't alive
@@ -289,7 +284,7 @@ class Robots {
     };
 
     /**
-     * method for finding a robot alive or not
+     * Method for finding a robot alive or not
      * @param {number} id robot id
      * @param {number} interval considered time interval
      * @returns {boolean} true : if robot is alive
@@ -302,7 +297,7 @@ class Robots {
     };
 
     /**
-     * method for finding the robot by id
+     * Method for finding the robot by id
      * @param {number} id robot id
      * @returns {Robot|number} the robot instance : if it exists
      * @returns -1 : if it doesn't exist
@@ -315,7 +310,7 @@ class Robots {
     };
 
     /**
-     * method for getting the robot coordinates by id
+     * Method for getting the robot coordinates by id
      * @param {number} id robot id
      * @returns {Coordinate|number} the robot coordinates : if it exists
      * @returns -1 : if it doesn't exist
@@ -328,7 +323,7 @@ class Robots {
     };
 
     /**
-     * method for getting the coordinates of all robots
+     * Method for getting the coordinates of all robots
      * @param {ExtendedReality} reality reality need to be filtered, default: 'M'
      * @returns {Coordinate[]} current robot coordinates : that are existing in the list
      */
@@ -351,7 +346,7 @@ class Robots {
     };
 
     /**
-     * method for updating the coordinates of the given robots coordinates data
+     * Method for updating the coordinates of the given robots coordinates data
      * @param {Reality} reality Reality of the coordinates, default: 'V'
      * @param {Coordinate[]} coordinates coordinate data
      */
@@ -373,7 +368,7 @@ class Robots {
     };
 
     /**
-     * method for updating the coordinates of the given robots coordinates data
+     * Method for updating the coordinates of the given robots coordinates data
      * @param {number} interval the maximum allowed time in 'seconds' for being counted as 'alive' for a robot unit
      * @param {function} callback a callback function. 'id' will be given as a parameter
      */
@@ -388,7 +383,7 @@ class Robots {
     };
 
     /**
-     * method for broadcasting message for all active robots
+     * Method for broadcasting message for all active robots
      * @param {TInstruction} instruction Instruction Type
      * @param {any} value Value associated with the instruction
      * @param {any | {}} options Optional parameters
@@ -402,7 +397,7 @@ class Robots {
     };
 
     /**
-     * method for changing the MODE of the robots
+     * Method for changing the MODE of the robots
      * @param {any | {}} options Optional parameters
      */
     changeMode = (options = {}) => {
