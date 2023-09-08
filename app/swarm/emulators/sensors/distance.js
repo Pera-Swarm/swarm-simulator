@@ -1,15 +1,17 @@
 const {
     VirtualDistanceSensorEmulator,
-    ArenaType,
     AbstractObstacleBuilder,
-    realityResolver
-} = require('../../../../dist/pera-swarm');
+    realityResolver,
+    ExtendedReality
+} = require('pera-swarm');
+
+const robotConfig = require('../../../config/robot.config');
 
 class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
     /**
      * DistanceSensorEmulator
      * @param {Robots} robots robot object
-     * @param {Function} mqttPublish mqtt publish function
+     * @param {Function} mqttPublish MQTT publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
      */
     constructor(robots, mqttPublish, obstacleController = undefined) {
@@ -17,19 +19,27 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
         this._obstacleController = obstacleController;
     }
 
-    getReading = (robot, reality = 'M', callback) => {
+    /**
+     * getReading
+     * @param {Robot} robot robot object
+     * @param {ExtendedReality} reality reality need to be considered
+     * @param {Function} callback function
+     */
+    getReading = (robot, reality = ExtendedReality.M, callback) => {
         const { x, y, heading } = robot.getCoordinatesPretty();
 
-        // Minimum distance to obstacles
-        const obstacleDist = this._obstacleController.getDistance(heading, x, y, reality);
+        // Minimum distance to the nearst obstacles
+        const obstacleDist =
+            this._obstacleController.getDistance(heading, x, y, reality) -
+            robotConfig.diameter;
 
-        // Minimum distance to robots
-        const robotDist = this._robots.getRobotDistance(heading, x, y);
-        const dist = Math.ceil(Math.min(obstacleDist - 8, robotDist - 8)); // return as in int
+        // Minimum distance to the nearest robots
+        const robotDist =
+            this._robots.getRobotDistance(heading, x, y) - robotConfig.diameter;
 
-        // console.log(
-        //     `Dist: ${dist} (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
-        // );
+        // Minimum distance
+        const dist = Math.ceil(Math.min(obstacleDist, robotDist));
+
         this.publish(`sensor/distance/${robot.id}`, dist);
 
         robot.updateHeartbeat();
@@ -38,12 +48,22 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
         if (callback != undefined) callback(dist);
     };
 
+    /**
+     * setData
+     * @param {Robot} robot robot object
+     * @param {any} value distance value
+     * @returns {boolean} success status
+     */
     setData = (robot, value) => {
         if (robot === undefined) throw new TypeError('robot unspecified');
         if (value === undefined) throw new TypeError('value unspecified');
         return robot.setData('distance', Number(value));
     };
 
+    /**
+     * defaultSubscriptions
+     * @returns {object[]} MQTT routes
+     */
     defaultSubscriptions = () => {
         return [
             {
@@ -69,7 +89,6 @@ class DistanceSensorEmulator extends VirtualDistanceSensorEmulator {
                     } else {
                         console.log('MQTT_Sensor:Distance', 'Robot not found');
                     }
-                    //});
                 }
             }
         ];

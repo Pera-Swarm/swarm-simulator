@@ -1,10 +1,21 @@
-const { AbstractAgentEmulator } = require('../../../../dist/pera-swarm');
+const { AbstractAgentEmulator } = require('pera-swarm');
 
 class NeoPixelAgent extends AbstractAgentEmulator {
+    /**
+     * NeoPixelEmulator
+     * @param {Function} mqttPublish MQTT publish function
+     */
     constructor(mqttPublish) {
         super(null, mqttPublish);
     }
 
+    /**
+     * update
+     * @param {Robot} robot robot object
+     * @param {number} Red Red color value
+     * @param {number} Green Green color value
+     * @param {number} Blue Blue color value
+     */
     update = (robot, R, G, B) => {
         const id = robot.id;
         const msg = `${R} ${G} ${B}`;
@@ -16,6 +27,10 @@ class NeoPixelAgent extends AbstractAgentEmulator {
         //this.publish(`output/neopixel/${id}`, msg);
     };
 
+    /**
+     * defaultSubscriptions
+     * @returns {object[]} MQTT routes
+     */
     defaultSubscriptions = () => {
         return [
             {

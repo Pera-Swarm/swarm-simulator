@@ -1,4 +1,0 @@
-/**
- * @class Algorithm
- */
-class Algorithm {}

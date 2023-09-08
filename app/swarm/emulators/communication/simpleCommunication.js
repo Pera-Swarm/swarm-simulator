@@ -1,19 +1,21 @@
-const { SimpleCommunication } = require('../../../../dist/pera-swarm');
+const { SimpleCommunication } = require('pera-swarm');
 
 class SimpleCommunicationEmulator extends SimpleCommunication {
+    /**
+     * SimpleCommunicationEmulator
+     * @param {Robots} robots robot object
+     * @param {Function} mqttPublish MQTT publish function
+     * @param {number} maxDistance max transmission distance, in cm, default=100
+     * @param {boolean} debug default=false
+     */
     constructor(robots, mqttPublish, maxDistance = 100, debug = false) {
         super(robots, mqttPublish, maxDistance, debug);
     }
 
-    // broadcast = (id, msg, topic, callback) => {
-    //   super.broadcast(id, msg, topic, callback);
-    //     // console.log(id, msg);
-    //     const robot = this._robots.findRobotById(id);
-    //     if (robot != undefined) {
-    //         robot.setData('comm_simple:in', msg);
-    //     }
-    // };
-
+    /**
+     * defaultSubscriptions
+     * @returns {object[]} MQTT routes
+     */
     defaultSubscriptions = () => {
         return [
             {

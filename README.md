@@ -15,6 +15,18 @@ npm install
 
 Please copy the _sample.env_ file and rename into _.env_ and complete the configurations for http and mqtt
 
+```bash
+MQTT_HOST=mqtt://localhost
+MQTT_USER=user
+MQTT_PASS=password
+MQTT_CLIENT=mqtt_server
+MQTT_CHANNEL=v1
+
+ARENA_CONFIG="./app/config/arena/{arean_config}.json"
+
+LOG_LEVEL='info'
+```
+
 ### Run the scripts
 
 Development environment
@@ -29,20 +41,9 @@ Production environment
 npm start
 ```
 
-### Setup Staging environment
+### Documentation
 
-You need to install typescript as a global npm package in order to use the staging versions of pera-swarm typescript libraries.
-
-```js
-npm install -g typescript tcs
-```
-
-After that, you can use either one of following command line instructions to build the *./dist* folder
-
-```
-npm run dev:staging
-npm run compile:staging
-```
+You can find more information about pera-swarm on the [Official Documentation Page](https://pera-swarm.ce.pdn.ac.lk/docs/).
 
 ### Read More
 - [TypeScript](https://www.typescriptlang.org/)

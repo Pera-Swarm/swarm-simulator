@@ -1,10 +1,19 @@
-const { VirtualLocalizationController } = require('../../../dist/pera-swarm');
+const { VirtualLocalizationController, ExtendedReality } = require('pera-swarm');
 
 class LocalizationController extends VirtualLocalizationController {
+    /**
+     * LocalizationController
+     * @param {Function} mqttPublish MQTT publish function
+     * @param {string} topic basePath of the MQTT topic
+     */
     constructor(mqttPublish, publishTopic = 'localization/') {
         super(mqttPublish, publishTopic);
     }
 
+    /**
+     * defaultSubscriptions
+     * @returns {object[]} MQTT routes
+     */
     defaultSubscriptions = () => {
         return [
             {
@@ -17,9 +26,11 @@ class LocalizationController extends VirtualLocalizationController {
                     // This will print all available localization detail into topic 'localization/info'
                     // console.log('MQTT_Localization: localization/?', msg);
 
-                    const reality = msg == 'V' || msg == 'R' ? msg : 'M';
+                    const reality =
+                        msg == ExtendedReality.V || msg == ExtendedReality.R
+                            ? msg
+                            : ExtendedReality.M;
                     const resp = JSON.stringify(swarm.robots.getCoordinatesAll(reality));
-
                     swarm.mqttPublish('localization/data', resp);
                 }
             },

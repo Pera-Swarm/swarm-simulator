@@ -1,6 +1,10 @@
-const { Environment } = require('../../../dist/pera-swarm');
+const { Environment, ExtendedReality } = require('pera-swarm');
 
 class EnvironmentController extends Environment {
+    /**
+     * defaultSubscriptions
+     * @returns {object[]} MQTT routes
+     */
     get defaultSubscriptionRoutes() {
         return [
             {
@@ -14,10 +18,10 @@ class EnvironmentController extends Environment {
                     console.log('MQTT.Obstacles: obstacles/?', msg);
                     let obstacles;
 
-                    if (msg === 'V' || msg === 'R') {
+                    if (msg === ExtendedReality.R || msg === ExtendedReality.V) {
                         obstacles = this.getObstaclesList(msg);
                     } else {
-                        obstacles = this.getObstaclesList('M');
+                        obstacles = this.getObstaclesList(ExtendedReality.M);
                     }
 
                     swarm.mqttPublish('obstacles', obstacles, {

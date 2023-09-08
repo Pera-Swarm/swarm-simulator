@@ -1,45 +1,47 @@
+const { Robot } = require('pera-swarm');
 const {
     VirtualColorSensorEmulator,
-    ArenaType,
     AbstractObstacleBuilder,
     realityResolver,
-    hexToRGBC
-} = require('../../../../dist/pera-swarm');
+    hexToRGBC,
+    ExtendedReality
+} = require('pera-swarm');
 
 class ColorSensorEmulator extends VirtualColorSensorEmulator {
     /**
      * ColorSensorEmulator
      * @param {Robots} robots robot object
-     * @param {Function} mqttPublish mqtt publish function
+     * @param {Function} mqttPublish MQTT publish function
      * @param {AbstractObstacleBuilder | undefined} obstacleController (optional) obstacle controller
+     * @param {number} distanceThreshold maximum distance that color sensor can sense, in cm, default=30
      */
-    constructor(robots, mqttPublish, obstacleController = undefined) {
-        super(robots, mqttPublish);
+    constructor(
+        robots,
+        mqttPublish,
+        obstacleController = undefined,
+        distanceThreshold = 30
+    ) {
+        super(robots, mqttPublish, distanceThreshold);
         this._obstacleController = obstacleController;
     }
 
-    getReading = (robot, reality = 'M', callback) => {
+    /**
+     * getReading
+     * @param {Robot} robot robot object
+     * @param {ExtendedReality} reality reality need to be considered
+     * @param {Function} callback function
+     */
+    getReading = (robot, reality = ExtendedReality.M, callback) => {
         const { x, y, heading } = robot.getCoordinates();
-
-        // TODO: what about other robot colors ?
-
-        // Color reading of the obstacle, if it less than given threshold (in cm)
-        const COLOR_SENSE_DISTANCE = 30;
 
         const hexColor = this._obstacleController.getColor(
             heading,
             x,
             y,
             reality,
-            COLOR_SENSE_DISTANCE
+            this._distanceThreshold
         );
         let obstacleColor = hexToRGBC(hexColor);
-
-        // console.log(
-        //     'Color:',
-        //     obstacleColor,
-        //     ` (reality:${reality})\t measured from (${x},${y})  ^${heading} for R_${robot.id}`
-        // );
 
         this.publish(
             `sensor/color/${robot.id}`,
@@ -52,12 +54,22 @@ class ColorSensorEmulator extends VirtualColorSensorEmulator {
         if (callback != undefined) callback(obstacleColor);
     };
 
+    /**
+     * setData
+     * @param {Robot} robot robot object
+     * @param {any} value color value
+     * @returns {boolean} success status
+     */
     setData = (robot, value) => {
         if (robot === undefined) throw new TypeError('robot unspecified');
         if (value === undefined) throw new TypeError('value unspecified');
         return robot.setData('color', value);
     };
 
+    /**
+     * defaultSubscriptions
+     * @returns {object[]} MQTT routes
+     */
     defaultSubscriptions = () => {
         return [
             {

@@ -2,10 +2,15 @@ let cron = require('node-cron');
 const {
     DEFAULT_SWARM_PRUNE_INTERVAL,
     DEFAULT_SWARM_PRUNE_INTERVAL_EXTENDED
-} = require('../../dist/pera-swarm');
+} = require('pera-swarm');
 
 // Scheduler service class
 class Scheduler {
+    /**
+     * Cron Service
+     * @param {Function} function routing
+     * @param {number} interval interval
+     */
     constructor(routine, interval) {
         this._routine = routine;
         this._interval = interval;
@@ -39,6 +44,7 @@ const schedulerService = (routine, interval = this.THIRTY_SECONDS) => {
 /**
  * generates a cron interval in given seconds
  * @param {string} frequency in seconds
+ * @returns {string} interval
  */
 const secondsInterval = (freq) => {
     return '*/' + freq + ' * * * * *';
@@ -47,6 +53,7 @@ const secondsInterval = (freq) => {
 /**
  * Generates a cron interval in given minutes
  * @param {string} frequency in minutes
+ * @returns {string} interval
  */
 const minutesInterval = (freq) => {
     return '*/' + freq + ' * * * *';
