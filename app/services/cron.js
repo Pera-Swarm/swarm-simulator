@@ -2,7 +2,7 @@ let cron = require('node-cron');
 const {
     DEFAULT_SWARM_PRUNE_INTERVAL,
     DEFAULT_SWARM_PRUNE_INTERVAL_EXTENDED
-} = require('../../dist/pera-swarm');
+} = require('pera-swarm');
 
 // Scheduler service class
 class Scheduler {

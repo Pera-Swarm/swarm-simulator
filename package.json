@@ -1,12 +1,10 @@
 {
     "name": "pera-swarm-server",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "A mixed reality-based swarm simulator using node.js, cron, mqtt & pera-swarm",
     "main": "index.js",
     "scripts": {
         "start": "node app/index.js",
-        "compile:staging": "tsc",
-        "dev:staging": "tsc --watch",
         "dev": "nodemon app/index.js",
         "format": "prettier --write \"**/*.+(ts|js|jsx|json|yml|yaml|css|md)\"",
         "test": "mocha --recursive './app/**/*test.js'",
@@ -38,7 +36,7 @@
         "mocha": "^9.2.2",
         "mqtt": "^4.3.4",
         "node-cron": "^2.0.3",
-        "pera-swarm": "^1.2.3",
+        "pera-swarm": "^2.0.1",
         "prettier": "^2.1.2",
         "queue": "^6.0.2",
         "sequelize": "^6.14.0",

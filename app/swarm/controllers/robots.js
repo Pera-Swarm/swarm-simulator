@@ -1,10 +1,5 @@
 const { sqrt, pow, round, atan2, abs } = require('mathjs');
-const {
-    Reality,
-    ExtendedReality,
-    TInstruction,
-    getAngle
-} = require('../../../dist/pera-swarm');
+const { Reality, ExtendedReality, TInstruction, getAngle } = require('pera-swarm');
 
 const robotConfig = require('../../config/robot.config');
 

@@ -1,5 +1,5 @@
 const { AbstractCoordinateRobot, Coordinate, CoordinateValueInt } = require('pera-swarm');
-const { TReality, Reality } = require('../../../dist/pera-swarm/');
+const { Reality } = require('pera-swarm');
 
 /**
  * @class Robot Representation

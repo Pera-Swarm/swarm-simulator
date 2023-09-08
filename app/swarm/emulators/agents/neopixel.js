@@ -1,4 +1,4 @@
-const { AbstractAgentEmulator } = require('../../../../dist/pera-swarm');
+const { AbstractAgentEmulator } = require('pera-swarm');
 
 class NeoPixelAgent extends AbstractAgentEmulator {
     /**

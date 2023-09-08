@@ -1,4 +1,4 @@
-const { DirectedCommunication } = require('../../../../dist/pera-swarm');
+const { DirectedCommunication } = require('pera-swarm');
 
 class DirectionalCommunicationEmulator extends DirectedCommunication {
     /**

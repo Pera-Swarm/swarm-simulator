@@ -1,7 +1,4 @@
-const {
-    VirtualLocalizationController,
-    ExtendedReality
-} = require('../../../dist/pera-swarm');
+const { VirtualLocalizationController, ExtendedReality } = require('pera-swarm');
 
 class LocalizationController extends VirtualLocalizationController {
     /**

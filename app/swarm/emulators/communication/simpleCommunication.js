@@ -1,4 +1,4 @@
-const { SimpleCommunication } = require('../../../../dist/pera-swarm');
+const { SimpleCommunication } = require('pera-swarm');
 
 class SimpleCommunicationEmulator extends SimpleCommunication {
     /**

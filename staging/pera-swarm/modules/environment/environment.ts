@@ -88,13 +88,13 @@ export class Environment extends AbstractEnvironment {
             const jsonString = fs.readFileSync(file);
             // Converting to JSON
             config = JSON.parse(jsonString.toString());
-            console.log('Config_Found!');
+            console.log('Config Found!');
             // Validating configuration
             if (validateEnvConfig(config) === true) {
-                console.log('Config validated!');
+                console.log('Config Validated!');
                 return config;
             } else {
-                throw new Error('Invalid config');
+                throw new Error('Config Invalid');
             }
         } catch (err) {
             // Check for errors
