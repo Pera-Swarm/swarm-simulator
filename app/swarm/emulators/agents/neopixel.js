@@ -2,8 +2,7 @@ const { AbstractAgentEmulator } = require('pera-swarm');
 
 class NeoPixelAgent extends AbstractAgentEmulator {
     /**
-     * SimpleCommunicationEmulator
-     * @param {Robots} robots robot object
+     * NeoPixelEmulator
      * @param {Function} mqttPublish MQTT publish function
      */
     constructor(mqttPublish) {

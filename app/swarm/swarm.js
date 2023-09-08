@@ -84,7 +84,7 @@ class Swarm {
     };
 
     /**
-     * method for publishing a message to a given topic
+     * Method for publishing a message to a given topic
      * @param {string} topic mqtt topic
      * @param {string} message mqtt message object
      */
