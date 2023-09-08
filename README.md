@@ -22,7 +22,7 @@ MQTT_PASS=password
 MQTT_CLIENT=mqtt_server
 MQTT_CHANNEL=v1
 
-ARENA_CONFIG="./app/config/arena/{arean_config}.json"
+ARENA_CONFIG="./app/config/arena/{arena_config}.json"
 
 LOG_LEVEL='info'
 ```
