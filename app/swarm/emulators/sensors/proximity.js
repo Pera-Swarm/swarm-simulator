@@ -57,7 +57,7 @@ class ProximitySensorEmulator extends VirtualProximitySensorEmulator {
                 this._robots.getRobotDistance(sensorHeadings[i], x, y) -
                 robotConfig.diameter;
 
-            dist[i] = Math.ceil(Math.min(obstacleDist[i], robotDist[0])); // return as an int
+            dist[i] = Math.ceil(Math.min(obstacleDist[i], robotDist[i])); // return as an int
             color[i] = this._obstacleController.getColor(
                 sensorHeadings[i],
                 x,
