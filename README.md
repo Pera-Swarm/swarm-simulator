@@ -11,6 +11,8 @@ Please install node dependencies as follows:
 npm install
 ```
 
+(The recommended node version is Node 18)
+
 ### Environment Variables
 
 Please copy the _sample.env_ file and rename into _.env_ and complete the configurations for http and mqtt
