@@ -11,7 +11,7 @@ Please install node dependencies as follows:
 npm install
 ```
 
-(The recommended node version is Node 16)
+| It is recommended to use Node 16 or newer version
 
 ### Environment Variables
 
