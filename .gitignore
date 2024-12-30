@@ -64,4 +64,3 @@ nodemon.json
 .vscode
 dist
 .DS_Store
-package-lock.json
