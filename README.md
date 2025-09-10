@@ -1,4 +1,4 @@
-![Node.js CI](https://github.com/Pera-Swarm/e15-fyp-swarm-server/workflows/Node.js%20CI/badge.svg) 
+![Node.js CI](https://github.com/Pera-Swarm/e15-fyp-swarm-server/workflows/Node.js%20CI/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 # Mixed Reality Simulator
@@ -31,16 +31,33 @@ LOG_LEVEL='info'
 
 ### Run the scripts
 
-Development environment
+#### Development environment
 
-```
+```bash
 npm run dev
 ```
 
-Production environment
+#### Production environment
 
-```
-npm start
+```bash
+# Install PM2 globally (if not yet)
+sudo npm i -g pm2
+
+# Start the server (give a proper server name)
+pm2 start app/index.js --name {server_name}
+
+# Generate and register a systemd unit for PM2
+# This command above prints another command with sudo, and copy/paste that into CLI
+pm2 startup systemd
+
+# Persist the current PM2 process list
+pm2 save
+
+# Restart the server
+pm2 restart {server_name}
+
+# Stop the server
+pm2 stop {server_name}
 ```
 
 ### Documentation
@@ -48,6 +65,7 @@ npm start
 You can find more information about pera-swarm on the [Official Documentation Page](https://pera-swarm.ce.pdn.ac.lk/docs/).
 
 ### Read More
+
 - [TypeScript](https://www.typescriptlang.org/)
 - [NodeJS](https://nodejs.org/)
 - [NPM](https://www.npmjs.com/)
