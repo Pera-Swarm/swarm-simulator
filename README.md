@@ -7,8 +7,9 @@
 
 Please install node dependencies as follows:
 
-```
-npm install
+```bash
+corepack enable
+pnpm install
 ```
 
 | It is recommended to use Node 16 or newer version
@@ -34,14 +35,14 @@ LOG_LEVEL='info'
 #### Development environment
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 #### Production environment
 
 ```bash
 # Install PM2 globally (if not yet)
-sudo npm i -g pm2
+sudo pnpm add -g pm2
 
 # Start the server (give a proper server name)
 pm2 start app/index.js --name {server_name}
@@ -68,6 +69,6 @@ You can find more information about pera-swarm on the [Official Documentation Pa
 
 - [TypeScript](https://www.typescriptlang.org/)
 - [NodeJS](https://nodejs.org/)
-- [NPM](https://www.npmjs.com/)
+- [pnpm](https://pnpm.io/)
 - [MQTT](https://github.com/mqttjs/MQTT.js)
 - [Node Cron](https://github.com/merencia/node-cron)
